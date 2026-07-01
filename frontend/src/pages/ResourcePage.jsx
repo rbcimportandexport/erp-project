@@ -1,0 +1,120 @@
+import { useMemo, useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import Button from "../components/common/Button";
+import ConfirmDialog from "../components/common/ConfirmDialog";
+import Input from "../components/common/Input";
+import Select from "../components/common/Select";
+import Loader from "../components/common/Loader";
+import Modal from "../components/common/Modal";
+import Pagination from "../components/common/Pagination";
+import SearchBar from "../components/common/SearchBar";
+import Table from "../components/common/Table";
+import TopBar from "../components/layout/TopBar";
+import { useAlert } from "../hooks/useAlert";
+import { useDebounce } from "../hooks/useDebounce";
+import { useFetch } from "../hooks/useFetch";
+
+const ResourcePage = ({ title, api, fields, columns }) => {
+  const alert = useAlert();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [confirmId, setConfirmId] = useState(null);
+  const [form, setForm] = useState({});
+  const debouncedSearch = useDebounce(search);
+
+  const { data, loading, refetch } = useFetch(() => api.list({ search: debouncedSearch, page }), [api, debouncedSearch, page]);
+
+  const tableColumns = useMemo(
+    () => [
+      ...columns,
+      {
+        header: "Actions",
+        cell: ({ row }) => (
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => { setSelected(row.original); setForm(row.original); setOpen(true); }}>Edit</Button>
+            <Button variant="danger" className="h-10 w-10 p-0 flex items-center justify-center hover:bg-red-700 active:scale-95 transition-all" onClick={() => setConfirmId(row.original._id)} aria-label="Delete"><Trash2 className="h-5 w-5 shrink-0" /></Button>
+          </div>
+        ),
+      },
+    ],
+    [columns]
+  );
+
+  const save = async () => {
+    try {
+      if (selected?._id) await api.update(selected._id, form);
+      else await api.create(form);
+      alert.success(`${title} saved`);
+      setOpen(false);
+      setSelected(null);
+      setForm({});
+      refetch();
+    } catch (error) {
+      alert.error(error.response?.data?.error || error.response?.data?.message || error.message);
+    }
+  };
+
+  const remove = async () => {
+    try {
+      await api.remove(confirmId);
+      alert.success(`${title} deleted`);
+      setConfirmId(null);
+      refetch();
+    } catch (error) {
+      alert.error(error.response?.data?.message || error.message);
+    }
+  };
+
+  return (
+    <>
+      <TopBar
+        title={title}
+        actions={<Button onClick={() => { setSelected(null); setForm({}); setOpen(true); }}><Plus className="h-4 w-4" />Add</Button>}
+      />
+      <div className="mb-4 max-w-md"><SearchBar value={search} onChange={setSearch} placeholder={`Search ${title.toLowerCase()}`} /></div>
+      {loading ? <Loader /> : <Table columns={tableColumns} data={data?.items || []} />}
+      <Pagination page={data?.page || page} pages={data?.pages || 1} onPageChange={setPage} />
+
+      <Modal
+        open={open}
+        title={selected ? `Edit ${title}` : `Add ${title}`}
+        onClose={() => setOpen(false)}
+        footer={<div className="flex justify-end gap-2"><Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button><Button onClick={save}>Save</Button></div>}
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          {fields.map((field) => {
+            const val = form[field.name];
+            const displayValue = val && typeof val === "object" ? (val._id || "") : (val ?? "");
+            if (field.type === "select") {
+              return (
+                <Select
+                  key={field.name}
+                  label={field.label}
+                  options={field.options}
+                  value={displayValue}
+                  onChange={(event) => setForm((value) => ({ ...value, [field.name]: event.target.value }))}
+                  required={field.required}
+                />
+              );
+            }
+            return (
+              <Input
+                key={field.name}
+                label={field.label}
+                type={field.type || "text"}
+                value={displayValue}
+                onChange={(event) => setForm((value) => ({ ...value, [field.name]: field.type === "number" ? Number(event.target.value) : event.target.value }))}
+                required={field.required}
+              />
+            );
+          })}
+        </div>
+      </Modal>
+      <ConfirmDialog open={Boolean(confirmId)} onClose={() => setConfirmId(null)} onConfirm={remove} message={`Delete this ${title.toLowerCase()} record?`} />
+    </>
+  );
+};
+
+export default ResourcePage;
