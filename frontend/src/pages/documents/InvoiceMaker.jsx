@@ -254,10 +254,6 @@ const InvoiceMaker = () => {
   };
 
   const saveToContainer = async () => {
-    if (!selectedContainerId) {
-      toast.error("Please select a container to save this document.");
-      return;
-    }
     setSaving(true);
     try {
       const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
@@ -297,8 +293,8 @@ const InvoiceMaker = () => {
       formData.append("file", file);
       formData.append("docType", form.documentType === "PACKING LIST" ? "CPL" : "CBL");
 
-      await uploadDocument(selectedContainerId, formData);
-      toast.success("Document saved successfully to the container!");
+      await uploadDocument(selectedContainerId || null, formData);
+      toast.success("Document saved successfully!");
     } catch (err) {
       console.error(err);
       toast.error("Failed to save document: " + err.message);
@@ -757,11 +753,9 @@ const InvoiceMaker = () => {
         title="Packing List Form"
         actions={
           <div className="flex gap-2 items-center">
-            {selectedContainerId && (
-              <Button onClick={saveToContainer} loading={saving}>
-                <FileDown className="h-4 w-4" />Save to Container
-              </Button>
-            )}
+            <Button onClick={saveToContainer} loading={saving}>
+              <FileDown className="h-4 w-4" />Save Document
+            </Button>
             <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
               <Upload className="h-4 w-4" />Import Excel
             </Button>
@@ -774,15 +768,6 @@ const InvoiceMaker = () => {
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-slate-950">Manual Details</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <Select
-            label="Associate with Container"
-            value={selectedContainerId}
-            onChange={(event) => handleContainerChange(event.target.value)}
-            options={[
-              { value: "", label: "Select Container..." },
-              ...containersList.map((c) => ({ value: c._id, label: c.containerNo })),
-            ]}
-          />
           <Select
             label="Document Type"
             value={form.documentType}

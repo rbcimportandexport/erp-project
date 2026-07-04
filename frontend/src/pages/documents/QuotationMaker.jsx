@@ -332,11 +332,6 @@ const QuotationMaker = () => {
   };
 
   const generatePdf = async (shouldSave = false) => {
-    if (shouldSave && !selectedContainerId) {
-      toast.error("Please associate this quotation with a container to save it.");
-      return;
-    }
-
     setSaving(true);
     try {
       const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
@@ -381,8 +376,8 @@ const QuotationMaker = () => {
         formData.append("file", file);
         formData.append("docType", "CBL"); // Commercial bill / quotation category
 
-        await uploadDocument(selectedContainerId, formData);
-        toast.success("Quotation saved successfully to container!");
+        await uploadDocument(selectedContainerId || null, formData);
+        toast.success("Quotation saved successfully!");
       } else {
         const pdfBlobUrl = pdf.output("bloburl");
         window.open(pdfBlobUrl, "_blank", "noopener,noreferrer");
@@ -418,11 +413,9 @@ const QuotationMaker = () => {
         title="Quotation Maker"
         actions={
           <div className="flex gap-2 items-center">
-            {selectedContainerId && (
-              <Button onClick={() => generatePdf(true)} loading={saving}>
-                <FileDown className="h-4 w-4" />Save to Container
-              </Button>
-            )}
+            <Button onClick={() => generatePdf(true)} loading={saving}>
+              <FileDown className="h-4 w-4" />Save Document
+            </Button>
             <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
               <Upload className="h-4 w-4" />Import Excel
             </Button>
@@ -438,15 +431,6 @@ const QuotationMaker = () => {
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-slate-950">Quotation Details</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <Select
-            label="Associate with Container"
-            value={selectedContainerId}
-            onChange={(event) => handleContainerChange(event.target.value)}
-            options={[
-              { value: "", label: "Select Container..." },
-              ...containersList.map((c) => ({ value: c._id, label: c.containerNo })),
-            ]}
-          />
           <Input label="Invoice/Quotation No" value={form.invoiceNo} onChange={(event) => updateForm("invoiceNo", event.target.value)} />
           <Input label="Date" value={form.invoiceDate} onChange={(event) => updateForm("invoiceDate", event.target.value)} />
 

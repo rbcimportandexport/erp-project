@@ -9,7 +9,8 @@ export const uploadDocument = async (containerId, formData) => {
 
   // 1. Upload file to Supabase storage bucket 'documents'
   const fileExt = file.name.split(".").pop();
-  const fileName = `${containerId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+  const folder = containerId || "unassociated";
+  const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
   const filePath = `uploads/documents/${fileName}`;
 
   const { error: uploadError } = await supabase.storage
