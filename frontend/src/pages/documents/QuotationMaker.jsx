@@ -125,6 +125,19 @@ const QuotationMaker = () => {
   const [chinaPortsList, setChinaPortsList] = useState([]);
   const [containersList, setContainersList] = useState([]);
 
+  const filteredContainers = useMemo(() => {
+    return containersList.filter((c) => {
+      const statusUpper = (c.status || "").toUpperCase();
+      if (statusUpper === "ARRIVED" || statusUpper === "AAYA" || statusUpper === "DELIVERED") {
+        return false;
+      }
+      if (!c.etaDate) return true;
+      const eta = dayjs(c.etaDate);
+      const maxEta = dayjs().add(7, "day").endOf("day");
+      return eta.isBefore(maxEta.add(1, "day"));
+    });
+  }, [containersList]);
+
   // Column width controls (%)
   const [colWidths, setColWidths] = useState({
     sr: 8,
@@ -169,7 +182,12 @@ const QuotationMaker = () => {
           .sort(sortByName);
 
         const sortedContainers = (contRes.status === "fulfilled" ? contRes.value.data?.items : [])
-          .map((c) => ({ _id: c.id || c._id, containerNo: c.container_no || c.containerNo || "" }))
+          .map((c) => ({
+            _id: c.id || c._id,
+            containerNo: c.container_no || c.containerNo || "",
+            etaDate: c.eta_date || c.etaDate || "",
+            status: c.status || "",
+          }))
           .sort((a, b) => a.containerNo.localeCompare(b.containerNo));
 
         setImportersList(sortedImporters);
@@ -374,7 +392,7 @@ const QuotationMaker = () => {
 
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("docType", "CBL"); // Commercial bill / quotation category
+        formData.append("docType", "QUOTATION");
 
         await uploadDocument(selectedContainerId || null, formData);
         toast.success("Quotation saved successfully!");
@@ -431,6 +449,12 @@ const QuotationMaker = () => {
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-slate-950">Quotation Details</h2>
         <div className="grid gap-4 md:grid-cols-3">
+          <Select
+            label="Associate with Container"
+            value={selectedContainerId}
+            onChange={(event) => handleContainerChange(event.target.value)}
+            options={filteredContainers.map((c) => ({ value: c._id, label: c.containerNo }))}
+          />
           <Input label="Invoice/Quotation No" value={form.invoiceNo} onChange={(event) => updateForm("invoiceNo", event.target.value)} />
           <Input label="Date" value={form.invoiceDate} onChange={(event) => updateForm("invoiceDate", event.target.value)} />
 
