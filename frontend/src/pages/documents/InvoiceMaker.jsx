@@ -107,12 +107,53 @@ const parseDateCell = (value) => {
 
 const InvoiceMaker = () => {
   const documentRef = useRef(null);
-  const [form, setForm] = useState(initialForm);
-  const [items, setItems] = useState([]);
+  const [form, setForm] = useState(() => {
+    const saved = localStorage.getItem("invoice_maker_form");
+    try {
+      return saved ? JSON.parse(saved) : initialForm;
+    } catch (e) {
+      return initialForm;
+    }
+  });
+  const [items, setItems] = useState(() => {
+    const saved = localStorage.getItem("invoice_maker_items");
+    try {
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [selectedContainerId, setSelectedContainerId] = useState(() => {
+    return localStorage.getItem("invoice_maker_container_id") || "";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("invoice_maker_form", JSON.stringify(form));
+  }, [form]);
+
+  useEffect(() => {
+    localStorage.setItem("invoice_maker_items", JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem("invoice_maker_container_id", selectedContainerId);
+  }, [selectedContainerId]);
+
+  const handleResetForm = () => {
+    if (window.confirm("Are you sure you want to clear all form fields? This cannot be undone.")) {
+      setForm(initialForm);
+      setItems([]);
+      setSelectedContainerId("");
+      localStorage.removeItem("invoice_maker_form");
+      localStorage.removeItem("invoice_maker_items");
+      localStorage.removeItem("invoice_maker_container_id");
+      toast.success("Form cleared successfully!");
+    }
+  };
+
   const [spellingErrors, setSpellingErrors] = useState(new Set());
   const [shipmentRows, setShipmentRows] = useState([]);
   const [containersList, setContainersList] = useState([]);
-  const [selectedContainerId, setSelectedContainerId] = useState("");
   const [saving, setSaving] = useState(false);
   const toast = useAlert();
 
@@ -725,6 +766,7 @@ const InvoiceMaker = () => {
               <Upload className="h-4 w-4" />Import Excel
             </Button>
             <Button onClick={convertToPdf}><FileDown className="h-4 w-4" />Convert to PDF Preview</Button>
+            <Button variant="danger" onClick={handleResetForm}>Clear Form</Button>
           </div>
         }
       />

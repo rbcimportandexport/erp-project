@@ -71,10 +71,52 @@ const QuotationMaker = () => {
   const fileInputRef = useRef(null);
   const stampInputRef = useRef(null);
 
-  const [form, setForm] = useState(initialForm);
-  const [items, setItems] = useState([emptyItem]);
+  const [form, setForm] = useState(() => {
+    const saved = localStorage.getItem("quotation_maker_form");
+    try {
+      return saved ? JSON.parse(saved) : initialForm;
+    } catch (e) {
+      return initialForm;
+    }
+  });
+  const [items, setItems] = useState(() => {
+    const saved = localStorage.getItem("quotation_maker_items");
+    try {
+      return saved ? JSON.parse(saved) : [emptyItem];
+    } catch (e) {
+      return [emptyItem];
+    }
+  });
+  const [selectedContainerId, setSelectedContainerId] = useState(() => {
+    return localStorage.getItem("quotation_maker_container_id") || "";
+  });
+
   const [stampImg, setStampImg] = useState("");
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("quotation_maker_form", JSON.stringify(form));
+  }, [form]);
+
+  useEffect(() => {
+    localStorage.setItem("quotation_maker_items", JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem("quotation_maker_container_id", selectedContainerId);
+  }, [selectedContainerId]);
+
+  const handleResetForm = () => {
+    if (window.confirm("Are you sure you want to clear all quotation fields? This cannot be undone.")) {
+      setForm(initialForm);
+      setItems([emptyItem]);
+      setSelectedContainerId("");
+      localStorage.removeItem("quotation_maker_form");
+      localStorage.removeItem("quotation_maker_items");
+      localStorage.removeItem("quotation_maker_container_id");
+      toast.success("Quotation form cleared successfully!");
+    }
+  };
 
   // Master lists
   const [importersList, setImportersList] = useState([]);
@@ -82,7 +124,6 @@ const QuotationMaker = () => {
   const [indiaPortsList, setIndiaPortsList] = useState([]);
   const [chinaPortsList, setChinaPortsList] = useState([]);
   const [containersList, setContainersList] = useState([]);
-  const [selectedContainerId, setSelectedContainerId] = useState("");
 
   // Column width controls (%)
   const [colWidths, setColWidths] = useState({
@@ -388,6 +429,7 @@ const QuotationMaker = () => {
             <Button onClick={() => generatePdf(false)} loading={saving}>
               <FileDown className="h-4 w-4" />Preview / Print PDF
             </Button>
+            <Button variant="danger" onClick={handleResetForm}>Clear Form</Button>
           </div>
         }
       />
