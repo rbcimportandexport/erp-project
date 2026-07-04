@@ -7,6 +7,7 @@ import ContainerList from "../pages/container/ContainerList";
 import Dashboard from "../pages/dashboard/Dashboard";
 import DocumentsPage from "../pages/documents/DocumentsPage";
 import InvoiceMaker from "../pages/documents/InvoiceMaker";
+import QuotationMaker from "../pages/documents/QuotationMaker";
 import ActivityLogs from "../pages/activitylogs/ActivityLogs";
 import ExporterList from "../pages/masters/ExporterList";
 import HsnList from "../pages/masters/HsnList";
@@ -35,6 +36,7 @@ const AppRoutes = () => (
         <Route path="containers/:id" element={<ContainerDetail />} />
         <Route path="documents" element={<DocumentsPage />} />
         <Route path="documents/invoice-maker" element={<InvoiceMaker />} />
+        <Route path="documents/quotation-maker" element={<QuotationMaker />} />
         <Route path="payments" element={<PaymentsPage />} />
         <Route path="reports" element={<ReportsPage />} />
         <Route path="activity-logs" element={<ActivityLogs />} />

@@ -7,6 +7,7 @@ const items = [
   { to: "/containers", label: "Containers", icon: Boxes },
   { to: "/documents", label: "Documents", icon: Files, end: true },
   { to: "/documents/invoice-maker", label: "Packing List Form", icon: ClipboardList },
+  { to: "/documents/quotation-maker", label: "Quotation Form", icon: ClipboardList },
   { to: "/payments", label: "Payments", icon: Receipt },
 ];
 
