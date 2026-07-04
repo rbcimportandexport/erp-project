@@ -158,7 +158,6 @@ const Dashboard = () => {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.2em] text-red-700">Urgent ETA Watch</p>
             <h2 className="mt-1 text-2xl font-black text-slate-950">High Priority Containers</h2>
-            <p className="mt-1 text-sm font-medium text-slate-600">Yahan sirf 0-7 days ETA wale containers show honge.</p>
           </div>
           <span className="inline-flex w-fit rounded-2xl bg-red-700 px-4 py-2 text-sm font-black text-white">
             {highPriorityRows.length} High Priority
