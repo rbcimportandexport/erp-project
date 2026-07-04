@@ -111,6 +111,27 @@ export const deleteDocument = async (id) => {
   };
 };
 
+export const getAllDocuments = async () => {
+  const { data, error } = await supabase
+    .from("documents")
+    .select("*, containers(container_no)")
+    .order("uploaded_at", { ascending: false });
+
+  if (error) throw error;
+
+  return {
+    data: (data || []).map(d => ({
+      ...d,
+      _id: d.id,
+      container: d.container_id,
+      containerNo: d.containers?.container_no || "-",
+      docType: d.doc_type,
+      fileName: d.file_name,
+      filePath: d.file_path,
+    }))
+  };
+};
+
 // Keep pdf parsing using the backend endpoint (falls back safely if backend is down)
 export const parseInvoicePackingList = (formData) =>
   axiosInstance.post("/documents/parse-invoice-packing-list", formData, { headers: { "Content-Type": "multipart/form-data" } }).then((res) => res.data);
