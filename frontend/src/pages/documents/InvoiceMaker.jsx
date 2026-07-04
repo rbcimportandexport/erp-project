@@ -10,6 +10,9 @@ import importerApi from "../../api/importerApi";
 import exporterApi from "../../api/exporterApi";
 import { importerAddressApi, exporterAddressApi } from "../../api/addressApi";
 import { indiaPortApi, chinaPortApi } from "../../api/portApi";
+import containerApi from "../../api/containerApi";
+import { uploadDocument } from "../../api/documentApi";
+import { useAlert } from "../../hooks/useAlert";
 
 // ── Spell-check contenteditable input ─────────────────────────────────────────
 const SpellCheckInput = ({ value, onChange, spellCheck = true }) => {
@@ -108,6 +111,10 @@ const InvoiceMaker = () => {
   const [items, setItems] = useState([]);
   const [spellingErrors, setSpellingErrors] = useState(new Set());
   const [shipmentRows, setShipmentRows] = useState([]);
+  const [containersList, setContainersList] = useState([]);
+  const [selectedContainerId, setSelectedContainerId] = useState("");
+  const [saving, setSaving] = useState(false);
+  const toast = useAlert();
 
   // Master lists for dropdowns
   const [importersList, setImportersList] = useState([]);
@@ -117,17 +124,18 @@ const InvoiceMaker = () => {
   const [fromCountry, setFromCountry] = useState("");
   const [toCountry, setToCountry] = useState("");
 
-  // Fetch importers, exporters, and ports list on component load
+  // Fetch importers, exporters, ports, and containers list on component load
   useEffect(() => {
     const fetchMasters = async () => {
       try {
         const sortByName = (a, b) => (a.name || "").localeCompare(b.name || "", undefined, { sensitivity: "base" });
 
-        const [impRes, expRes, indPortRes, chnPortRes] = await Promise.allSettled([
+        const [impRes, expRes, indPortRes, chnPortRes, contRes] = await Promise.allSettled([
           importerApi.list({ limit: 1000 }),
           exporterApi.list({ limit: 1000 }),
           indiaPortApi.list({ limit: 1000 }),
           chinaPortApi.list({ limit: 1000 }),
+          containerApi.list({ limit: 1000 }),
         ]);
 
         const sortedImporters = (impRes.status === "fulfilled" ? impRes.value.data?.items : [])
@@ -146,21 +154,117 @@ const InvoiceMaker = () => {
           .map((p) => ({ _id: p._id, name: p.portName || p.port_name || p.city || "" }))
           .sort(sortByName);
 
+        const sortedContainers = (contRes.status === "fulfilled" ? contRes.value.data?.items : [])
+          .map((c) => ({ _id: c.id || c._id, containerNo: c.container_no || c.containerNo || "" }))
+          .sort((a, b) => a.containerNo.localeCompare(b.containerNo));
+
         setImportersList(sortedImporters);
         setExportersList(sortedExporters);
         setIndiaPortsList(indPorts);
         setChinaPortsList(chnPorts);
+        setContainersList(sortedContainers);
 
         if (impRes.status === "rejected") console.error("Importer load failed:", impRes.reason);
         if (expRes.status === "rejected") console.error("Exporter load failed:", expRes.reason);
         if (indPortRes.status === "rejected") console.error("India ports load failed:", indPortRes.reason);
         if (chnPortRes.status === "rejected") console.error("China ports load failed:", chnPortRes.reason);
+        if (contRes.status === "rejected") console.error("Containers load failed:", contRes.reason);
       } catch (err) {
         console.error("Error loading master datasets:", err);
       }
     };
     fetchMasters();
   }, []);
+
+  const handleContainerChange = async (containerId) => {
+    setSelectedContainerId(containerId);
+    if (!containerId) return;
+
+    try {
+      const res = await containerApi.get(containerId);
+      const container = res.data;
+      if (container) {
+        updateForm("invoiceNo", container.bl_no || container.blNo || "");
+        updateForm("invoiceDate", container.loading_date || container.loadingDate ? dayjs(container.loading_date || container.loadingDate).format("DD/MM/YYYY") : "");
+        updateForm("loadingPort", container.port_of_china || container.portOfChina || "");
+        updateForm("dischargePort", container.port_of_india || container.portOfIndia || "");
+        if (container.cbm) {
+          updateForm("cbm", String(container.cbm));
+        }
+        if (container.party) {
+          updateForm("party", container.party);
+        }
+        if (container.cha) {
+          updateForm("cha", container.cha);
+        }
+        if (container.shipping_line || container.shippingLine) {
+          updateForm("shippingLine", container.shipping_line || container.shippingLine);
+        }
+        if (container.port_of_china || container.portOfChina) {
+          updateForm("portOfChina", container.port_of_china || container.portOfChina);
+        }
+        if (container.document_processed || container.documentProcessed) {
+          updateForm("documentProcessed", container.document_processed || container.documentProcessed);
+        }
+      }
+    } catch (err) {
+      console.error("Error loading container details:", err);
+    }
+  };
+
+  const saveToContainer = async () => {
+    if (!selectedContainerId) {
+      toast.error("Please select a container to save this document.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+
+      const target = documentRef.current;
+      const canvas = await html2canvas(target, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        windowWidth: target.scrollWidth,
+        windowHeight: target.scrollHeight,
+      });
+      const imageData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("l", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 5;
+      const maxWidth = pageWidth - margin * 2;
+      const maxHeight = pageHeight - margin * 2;
+      const imageRatio = canvas.width / canvas.height;
+      const pageRatio = maxWidth / maxHeight;
+      const imageWidth = imageRatio > pageRatio ? maxWidth : maxHeight * imageRatio;
+      const imageHeight = imageRatio > pageRatio ? maxWidth / imageRatio : maxHeight;
+      const x = (pageWidth - imageWidth) / 2;
+      const y = (pageHeight - imageHeight) / 2;
+
+      pdf.addImage(imageData, "PNG", x, y, imageWidth, imageHeight);
+
+      const pdfBlob = pdf.output("blob");
+      const docTypeLabel = form.documentType === "PACKING LIST" ? "Packing_List" : "Commercial_Invoice";
+      const file = new File([pdfBlob], `${docTypeLabel}_${form.invoiceNo || "Draft"}.pdf`, { type: "application/pdf" });
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("docType", form.documentType === "PACKING LIST" ? "CPL" : "CBL");
+
+      await uploadDocument(selectedContainerId, formData);
+      toast.success("Document saved successfully to the container!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to save document: " + err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const getFromPortsOptions = () => {
     if (fromCountry === "India") return indiaPortsList;
@@ -611,7 +715,12 @@ const InvoiceMaker = () => {
       <TopBar
         title="Packing List Form"
         actions={
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            {selectedContainerId && (
+              <Button onClick={saveToContainer} loading={saving}>
+                <FileDown className="h-4 w-4" />Save to Container
+              </Button>
+            )}
             <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
               <Upload className="h-4 w-4" />Import Excel
             </Button>
@@ -623,6 +732,15 @@ const InvoiceMaker = () => {
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-slate-950">Manual Details</h2>
         <div className="grid gap-4 md:grid-cols-3">
+          <Select
+            label="Associate with Container"
+            value={selectedContainerId}
+            onChange={(event) => handleContainerChange(event.target.value)}
+            options={[
+              { value: "", label: "Select Container..." },
+              ...containersList.map((c) => ({ value: c._id, label: c.containerNo })),
+            ]}
+          />
           <Select
             label="Document Type"
             value={form.documentType}
