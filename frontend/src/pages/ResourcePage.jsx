@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import Button from "../components/common/Button";
 import ConfirmDialog from "../components/common/ConfirmDialog";
@@ -14,8 +14,9 @@ import { useAlert } from "../hooks/useAlert";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
 
-const ResourcePage = ({ title, api, fields, columns }) => {
+const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId, onEditClosed, tableVariant, renderHeader }) => {
   const alert = useAlert();
+  const lastAutoEditId = useRef(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
@@ -26,6 +27,43 @@ const ResourcePage = ({ title, api, fields, columns }) => {
 
   const { data, loading, refetch } = useFetch(() => api.list({ search: debouncedSearch, page }), [api, debouncedSearch, page]);
 
+  const openEditor = (record) => {
+    setSelected(record);
+    setForm(record);
+    setOpen(true);
+  };
+
+  const closeEditor = () => {
+    setOpen(false);
+    if (onEditClosed) onEditClosed();
+  };
+
+  useEffect(() => {
+    if (!openEditId || loading || lastAutoEditId.current === openEditId) return;
+
+    let cancelled = false;
+    const items = data?.items || [];
+    const existingRecord = items.find((item) => item._id === openEditId || item.id === openEditId);
+
+    const openRequestedRecord = async () => {
+      try {
+        const record = existingRecord || (await api.get(openEditId)).data;
+        if (!cancelled && record) {
+          lastAutoEditId.current = openEditId;
+          openEditor(record);
+        }
+      } catch (error) {
+        if (!cancelled) alert.error(error.message || "Could not open this record for editing");
+      }
+    };
+
+    openRequestedRecord();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [api, alert, data, loading, openEditId]);
+
   const tableColumns = useMemo(
     () => [
       ...columns,
@@ -33,7 +71,7 @@ const ResourcePage = ({ title, api, fields, columns }) => {
         header: "Actions",
         cell: ({ row }) => (
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => { setSelected(row.original); setForm(row.original); setOpen(true); }}>Edit</Button>
+            <Button variant="secondary" onClick={() => openEditor(row.original)}>Edit</Button>
             <Button variant="danger" className="h-10 w-10 p-0 flex items-center justify-center hover:bg-red-700 active:scale-95 transition-all" onClick={() => setConfirmId(row.original._id)} aria-label="Delete"><Trash2 className="h-5 w-5 shrink-0" /></Button>
           </div>
         ),
@@ -47,12 +85,16 @@ const ResourcePage = ({ title, api, fields, columns }) => {
       if (selected?._id) await api.update(selected._id, form);
       else await api.create(form);
       alert.success(`${title} saved`);
-      setOpen(false);
+      closeEditor();
       setSelected(null);
       setForm({});
       refetch();
     } catch (error) {
-      alert.error(error.response?.data?.error || error.response?.data?.message || error.message);
+      const rawMessage = error.response?.data?.error || error.response?.data?.message || error.message || "Something went wrong";
+      const message = rawMessage.includes('row-level security')
+        ? "Database permission blocked this save. Run the Supabase RLS policies for this table."
+        : rawMessage;
+      alert.error(message);
     }
   };
 
@@ -69,19 +111,32 @@ const ResourcePage = ({ title, api, fields, columns }) => {
 
   return (
     <>
-      <TopBar
-        title={title}
-        actions={<Button onClick={() => { setSelected(null); setForm({}); setOpen(true); }}><Plus className="h-4 w-4" />Add</Button>}
-      />
-      <div className="mb-4 max-w-md"><SearchBar value={search} onChange={setSearch} placeholder={`Search ${title.toLowerCase()}`} /></div>
-      {loading ? <Loader /> : <Table columns={tableColumns} data={data?.items || []} />}
+      {renderHeader ? (
+        renderHeader({
+          items: data?.items || [],
+          loading,
+          openAdd: () => { setSelected(null); setForm({}); setOpen(true); },
+          search,
+          setSearch,
+          title,
+        })
+      ) : (
+        <>
+          <TopBar
+            title={title}
+            actions={<Button onClick={() => { setSelected(null); setForm({}); setOpen(true); }}><Plus className="h-4 w-4" />Add</Button>}
+          />
+          <div className="mb-4 max-w-md"><SearchBar value={search} onChange={setSearch} placeholder={`Search ${title.toLowerCase()}`} /></div>
+        </>
+      )}
+      {loading ? <Loader /> : <Table columns={tableColumns} data={data?.items || []} getRowClassName={getRowClassName} meta={{ openEdit: openEditor }} variant={tableVariant} />}
       <Pagination page={data?.page || page} pages={data?.pages || 1} onPageChange={setPage} />
 
       <Modal
         open={open}
         title={selected ? `Edit ${title}` : `Add ${title}`}
-        onClose={() => setOpen(false)}
-        footer={<div className="flex justify-end gap-2"><Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button><Button onClick={save}>Save</Button></div>}
+        onClose={closeEditor}
+        footer={<div className="flex justify-end gap-2"><Button variant="secondary" onClick={closeEditor}>Cancel</Button><Button onClick={save}>Save</Button></div>}
       >
         <div className="grid gap-4 md:grid-cols-2">
           {fields.map((field) => {

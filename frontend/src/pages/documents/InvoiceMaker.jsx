@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
+import dayjs from "dayjs";
 import { FileDown, Plus, Trash2, Upload } from "lucide-react";
 import * as XLSX from "xlsx";
 import Button from "../../components/common/Button";
@@ -70,12 +71,43 @@ const initialForm = {
 };
 
 const toNumber = (value) => Number(String(value || "0").replace(/,/g, "")) || 0;
+const normalizeText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+const isEmpty = (value) => normalizeText(value) === "";
+
+const partyOptions = ["RBC", "Rama", "Shreeji", "Shivay"].map((value) => ({ value, label: value }));
+const chaOptions = ["Ocenus", "Mountain"].map((value) => ({ value, label: value }));
+const shippingLineOptions = ["HAL", "YML", "SNL", "EMC", "OOCL", "HAS", "KMTC", "MSC", "ONE", "HMM", "COSCO", "PEAK"].map((value) => ({ value, label: value }));
+const portOfChinaOptions = ["NINGBO", "NANSHA", "WUHAN"].map((value) => ({ value, label: value }));
+const documentProcessedOptions = ["Yes", "No", "PENDING", "Done"].map((value) => ({ value, label: value }));
+
+const getEtaPriority = (etaValue) => {
+  if (!etaValue) return { label: "No ETA", tone: "slate" };
+
+  const parsed = dayjs(etaValue, ["DD/MM/YYYY", "DD-MM-YYYY", "DD MMM YYYY", "YYYY-MM-DD"], true);
+  if (!parsed.isValid()) return { label: "ETA Set", tone: "slate" };
+
+  const today = dayjs().startOf("day");
+  const eta = parsed.startOf("day");
+  const diff = eta.diff(today, "day");
+
+  if (diff <= 7) return { label: "High Priority", tone: "red" };
+  if (diff <= 15) return { label: "Medium Priority", tone: "yellow" };
+  return { label: "Low Priority", tone: "green" };
+};
+
+const parseDateCell = (value) => {
+  const text = normalizeText(value);
+  if (!text) return "";
+  const parsed = dayjs(text, ["DD/MM/YYYY", "DD-MM-YYYY", "DD.MM.YYYY", "YYYY-MM-DD", "D/M/YYYY", "DD MMM YYYY"], true);
+  return parsed.isValid() ? parsed.format("DD/MM/YYYY") : text;
+};
 
 const InvoiceMaker = () => {
   const documentRef = useRef(null);
   const [form, setForm] = useState(initialForm);
   const [items, setItems] = useState([]);
   const [spellingErrors, setSpellingErrors] = useState(new Set());
+  const [shipmentRows, setShipmentRows] = useState([]);
 
   // Master lists for dropdowns
   const [importersList, setImportersList] = useState([]);
@@ -89,39 +121,40 @@ const InvoiceMaker = () => {
   useEffect(() => {
     const fetchMasters = async () => {
       try {
-        const [impRes, expRes, indPortRes, chnPortRes] = await Promise.all([
+        const sortByName = (a, b) => (a.name || "").localeCompare(b.name || "", undefined, { sensitivity: "base" });
+
+        const [impRes, expRes, indPortRes, chnPortRes] = await Promise.allSettled([
           importerApi.list({ limit: 1000 }),
           exporterApi.list({ limit: 1000 }),
           indiaPortApi.list({ limit: 1000 }),
           chinaPortApi.list({ limit: 1000 }),
         ]);
 
-        const sortByName = (a, b) => (a.name || "").localeCompare(b.name || "", undefined, { sensitivity: "base" });
+        const sortedImporters = (impRes.status === "fulfilled" ? impRes.value.data?.items : [])
+          .map((imp) => ({ _id: imp._id, name: imp.name }))
+          .sort(sortByName);
 
-        const sortedImporters = (impRes.data?.items || []).map((imp) => ({
-          _id: imp._id,
-          name: imp.name,
-        })).sort(sortByName);
+        const sortedExporters = (expRes.status === "fulfilled" ? expRes.value.data?.items : [])
+          .map((exp) => ({ _id: exp._id, name: exp.name }))
+          .sort(sortByName);
 
-        const sortedExporters = (expRes.data?.items || []).map((exp) => ({
-          _id: exp._id,
-          name: exp.name,
-        })).sort(sortByName);
+        const indPorts = (indPortRes.status === "fulfilled" ? indPortRes.value.data?.items : [])
+          .map((p) => ({ _id: p._id, name: p.portName || p.port_name || p.city || "" }))
+          .sort(sortByName);
 
-        const indPorts = (indPortRes.data?.items || []).map((p) => ({
-          _id: p._id,
-          name: p.portName,
-        })).sort(sortByName);
-
-        const chnPorts = (chnPortRes.data?.items || []).map((p) => ({
-          _id: p._id,
-          name: p.portName,
-        })).sort(sortByName);
+        const chnPorts = (chnPortRes.status === "fulfilled" ? chnPortRes.value.data?.items : [])
+          .map((p) => ({ _id: p._id, name: p.portName || p.port_name || p.city || "" }))
+          .sort(sortByName);
 
         setImportersList(sortedImporters);
         setExportersList(sortedExporters);
         setIndiaPortsList(indPorts);
         setChinaPortsList(chnPorts);
+
+        if (impRes.status === "rejected") console.error("Importer load failed:", impRes.reason);
+        if (expRes.status === "rejected") console.error("Exporter load failed:", expRes.reason);
+        if (indPortRes.status === "rejected") console.error("India ports load failed:", indPortRes.reason);
+        if (chnPortRes.status === "rejected") console.error("China ports load failed:", chnPortRes.reason);
       } catch (err) {
         console.error("Error loading master datasets:", err);
       }
@@ -176,16 +209,16 @@ const InvoiceMaker = () => {
 
     updateForm("importerName", selected.name);
 
-    try {
-      const addrRes = await importerAddressApi.list({ importer: importerId, limit: 10 });
-      const addresses = addrRes.data?.items || [];
-      if (addresses.length > 0) {
-        // Prefer default address, otherwise use the first one
-        const addr = addresses.find((a) => a.isDefault) || addresses[0];
-        updateForm("importerAddress", addr.addressLine1 || "");
-      } else {
-        updateForm("importerAddress", "");
-      }
+      try {
+        const addrRes = await importerAddressApi.list({ importer: importerId, limit: 10 });
+        const addresses = addrRes.data?.items || [];
+        if (addresses.length > 0) {
+          // Prefer default address, otherwise use the first one
+          const addr = addresses.find((a) => a.isDefault) || addresses[0];
+          updateForm("importerAddress", addr.addressLine1 || addr.address_line1 || "");
+        } else {
+          updateForm("importerAddress", "");
+        }
     } catch (err) {
       console.error("Error fetching importer address details:", err);
       updateForm("importerAddress", "");
@@ -203,15 +236,15 @@ const InvoiceMaker = () => {
 
     updateForm("exporterName", selected.name);
 
-    try {
-      const addrRes = await exporterAddressApi.list({ exporter: exporterId, limit: 10 });
-      const addresses = addrRes.data?.items || [];
-      if (addresses.length > 0) {
-        const addr = addresses[0];
-        updateForm("exporterAddress", addr.addressLine1 || "");
-      } else {
-        updateForm("exporterAddress", "");
-      }
+      try {
+        const addrRes = await exporterAddressApi.list({ exporter: exporterId, limit: 10 });
+        const addresses = addrRes.data?.items || [];
+        if (addresses.length > 0) {
+          const addr = addresses[0];
+          updateForm("exporterAddress", addr.addressLine1 || addr.address_line1 || "");
+        } else {
+          updateForm("exporterAddress", "");
+        }
     } catch (err) {
       console.error("Error fetching exporter address details:", err);
       updateForm("exporterAddress", "");
@@ -395,8 +428,8 @@ const InvoiceMaker = () => {
         }
 
         if (headerRow === -1) {
-          alert("❌ Header row nahi mili. File mein 'ENGLISH DESCRIPTION' aur 'T-QTY' columns hone chahiye.");
-          return;
+          // fallback for shipment-style sheets
+          headerRow = range.s.r + 1;
         }
 
         // Find specific column letters
@@ -416,46 +449,91 @@ const InvoiceMaker = () => {
         const tweightCol = findCol("T-WEIGHT");
         const priceCol   = findCol("UNIT PRICE");
         const hsnCol     = findCol("HSN");
-
-        if (!descCol) {
-          alert("❌ Description column nahi mila.");
-          return;
-        }
+        const loadingDateCol = findCol("LOADING DATE");
+        const loadingDaysCol = findCol("DAYS");
+        const containerNoCol = findCol("CONTAINER NO");
+        const partyCol = findCol("PARTY");
+        const chaCol = findCol("CHA");
+        const shippingLineCol = findCol("SHIPPING LINE");
+        const portOfChinaCol = findCol("PORT OF CHINA");
+        const blNoCol = findCol("BL NO", "B/L NO", "BL NUMBER");
+        const etaCol = findCol("ETA");
+        const etaDaysCol = findCol("DAYS");
+        const statusCol = findCol("STATUS");
+        const documentProcessedCol = findCol("DOCUMENT PROCESSED");
 
         // Parse data rows
         const parsedItems = [];
+        const parsedShipmentRows = [];
         for (let r = headerRow + 1; r <= range.e.r + 1; r++) {
-          const desc = cellVal(descCol, r);
-          if (!desc) continue;
-
-          const qty     = tqtyCol    ? cellVal(tqtyCol, r)    : "";
-          const pkg     = cartonCol  ? cellVal(cartonCol, r)  : "";
-          const unit    = unitCol    ? cellVal(unitCol, r)    : "PCS";
-          const tcbm    = tcbmCol    ? parseFloat(cellVal(tcbmCol, r))    || "" : "";
+          const desc = descCol ? cellVal(descCol, r) : "";
+          const qty = tqtyCol ? cellVal(tqtyCol, r) : "";
+          const pkg = cartonCol ? cellVal(cartonCol, r) : "";
+          const unit = unitCol ? cellVal(unitCol, r) : "PCS";
+          const tcbm = tcbmCol ? parseFloat(cellVal(tcbmCol, r)) || "" : "";
           const tweight = tweightCol ? parseFloat(cellVal(tweightCol, r)) || "" : "";
-          const price   = priceCol   ? cellVal(priceCol, r)  : "";
-          const hsn     = hsnCol     ? cellVal(hsnCol, r)    : "";
+          const price = priceCol ? cellVal(priceCol, r) : "";
+          const hsn = hsnCol ? cellVal(hsnCol, r) : "";
 
-          parsedItems.push({
-            ...emptyItem,
-            description: desc.toUpperCase(),
-            quantity:    String(qty),
-            packages:    String(pkg),
-            unit:        (unit || "PCS").toUpperCase(),
-            netWeight:   tweight !== "" ? String(tweight) : "",
-            grossWeight: "",
-            cbm:         tcbm    !== "" ? String(parseFloat(tcbm).toFixed(4))  : "",
-            unitPrice:   price,
-            hsnCode:     hsn,
-          });
+          const loadingDate = loadingDateCol ? parseDateCell(cellVal(loadingDateCol, r)) : "";
+          const loadingDays = loadingDaysCol ? cellVal(loadingDaysCol, r) : "";
+          const containerNo = containerNoCol ? cellVal(containerNoCol, r) : "";
+          const party = partyCol ? cellVal(partyCol, r) : "";
+          const cha = chaCol ? cellVal(chaCol, r) : "";
+          const shippingLine = shippingLineCol ? cellVal(shippingLineCol, r) : "";
+          const portOfChina = portOfChinaCol ? cellVal(portOfChinaCol, r) : "";
+          const blNo = blNoCol ? cellVal(blNoCol, r) : "";
+          const etaDate = etaCol ? parseDateCell(cellVal(etaCol, r)) : "";
+          const etaDays = etaDaysCol ? cellVal(etaDaysCol, r) : "";
+          const status = statusCol ? cellVal(statusCol, r) : "";
+          const documentProcessed = documentProcessedCol ? cellVal(documentProcessedCol, r) : "";
+
+          const hasShipmentData = [loadingDate, loadingDays, containerNo, party, cha, shippingLine, portOfChina, blNo, etaDate, etaDays, status, documentProcessed].some((value) => !isEmpty(value));
+          const hasItemData = !isEmpty(desc) || !isEmpty(qty) || !isEmpty(pkg) || !isEmpty(unit) || !isEmpty(tcbm) || !isEmpty(tweight) || !isEmpty(price) || !isEmpty(hsn);
+
+          if (hasItemData && !isEmpty(desc)) {
+            parsedItems.push({
+              ...emptyItem,
+              description: desc.toUpperCase(),
+              quantity: String(qty),
+              packages: String(pkg),
+              unit: (unit || "PCS").toUpperCase(),
+              netWeight: tweight !== "" ? String(tweight) : "",
+              grossWeight: "",
+              cbm: tcbm !== "" ? String(parseFloat(tcbm).toFixed(4)) : "",
+              unitPrice: price,
+              hsnCode: hsn,
+            });
+          }
+
+          if (hasShipmentData) {
+            const priority = getEtaPriority(etaDate);
+            parsedShipmentRows.push({
+              loadingDate,
+              loadingDays,
+              containerNo,
+              party,
+              cha,
+              shippingLine,
+              portOfChina,
+              blNo,
+              etaDate,
+              etaDays,
+              etaPriority: priority.label,
+              etaTone: priority.tone,
+              status,
+              documentProcessed,
+            });
+          }
         }
 
-        if (parsedItems.length === 0) {
-          alert("❌ Koi items nahi mile. Description column check karein.");
+        if (parsedItems.length === 0 && parsedShipmentRows.length === 0) {
+          alert("❌ Koi data nahi mila. Sheet headers check karein.");
           return;
         }
 
-        setItems(parsedItems);
+        if (parsedItems.length > 0) setItems(parsedItems);
+        setShipmentRows(parsedShipmentRows);
         event.target.value = "";
       } catch (err) {
         alert("❌ File parse error: " + err.message);
@@ -583,6 +661,37 @@ const InvoiceMaker = () => {
             <textarea className="min-h-10 h-10 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50" value={form.exporterAddress} onChange={(event) => updateForm("exporterAddress", event.target.value)} />
           </label>
 
+          <Select
+            label="Party"
+            value={form.party || ""}
+            onChange={(event) => updateForm("party", event.target.value)}
+            options={partyOptions}
+          />
+          <Select
+            label="CHA"
+            value={form.cha || ""}
+            onChange={(event) => updateForm("cha", event.target.value)}
+            options={chaOptions}
+          />
+          <Select
+            label="Shipping Line"
+            value={form.shippingLine || ""}
+            onChange={(event) => updateForm("shippingLine", event.target.value)}
+            options={shippingLineOptions}
+          />
+          <Select
+            label="Port Of China"
+            value={form.portOfChina || ""}
+            onChange={(event) => updateForm("portOfChina", event.target.value)}
+            options={portOfChinaOptions}
+          />
+          <Select
+            label="Document Processed"
+            value={form.documentProcessed || ""}
+            onChange={(event) => updateForm("documentProcessed", event.target.value)}
+            options={documentProcessedOptions}
+          />
+
           {/* From Port Section */}
           <Select
             label="From Country"
@@ -631,6 +740,71 @@ const InvoiceMaker = () => {
           <div className="hidden md:block" />
         </div>
       </section>
+
+      {shipmentRows.length > 0 && (
+        <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-950">Shipment Data</h2>
+              <p className="text-sm text-slate-500">Excel se aayi hui sari important fields aur ETA priority.</p>
+            </div>
+            <div className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700">
+              Rows: {shipmentRows.length}
+            </div>
+          </div>
+          <div className="overflow-x-auto rounded-md border border-slate-200">
+            <table className="min-w-full text-sm">
+              <thead className="bg-slate-50 text-slate-600">
+                <tr>
+                  <th className="px-3 py-2 text-left">Loading Date</th>
+                  <th className="px-3 py-2 text-left">Container No</th>
+                  <th className="px-3 py-2 text-left">Days</th>
+                  <th className="px-3 py-2 text-left">Party</th>
+                  <th className="px-3 py-2 text-left">CHA</th>
+                  <th className="px-3 py-2 text-left">Shipping Line</th>
+                  <th className="px-3 py-2 text-left">Port Of China</th>
+                  <th className="px-3 py-2 text-left">BL No</th>
+                  <th className="px-3 py-2 text-left">ETA</th>
+                  <th className="px-3 py-2 text-left">Priority</th>
+                  <th className="px-3 py-2 text-left">Status</th>
+                  <th className="px-3 py-2 text-left">Document Processed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shipmentRows.map((row, index) => (
+                  <tr key={`${row.containerNo || "row"}-${index}`} className="border-t border-slate-100">
+                    <td className="px-3 py-2">{row.loadingDate || "-"}</td>
+                    <td className="px-3 py-2 font-medium text-slate-900">{row.containerNo || "-"}</td>
+                    <td className="px-3 py-2">{row.loadingDays || "-"}</td>
+                    <td className="px-3 py-2">{row.party || "-"}</td>
+                    <td className="px-3 py-2">{row.cha || "-"}</td>
+                    <td className="px-3 py-2">{row.shippingLine || "-"}</td>
+                    <td className="px-3 py-2">{row.portOfChina || "-"}</td>
+                    <td className="px-3 py-2">{row.blNo || "-"}</td>
+                    <td className="px-3 py-2">{row.etaDate || "-"}</td>
+                    <td className="px-3 py-2">{row.etaDays || "-"}</td>
+                    <td className="px-3 py-2">
+                      <span className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                        row.etaTone === "red"
+                          ? "bg-red-100 text-red-700"
+                          : row.etaTone === "yellow"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : row.etaTone === "green"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-slate-100 text-slate-700"
+                      }`}>
+                        {row.etaPriority}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2">{row.status || "-"}</td>
+                    <td className="px-3 py-2">{row.documentProcessed || "-"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-center justify-between">

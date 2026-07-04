@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
+import { resendConfirmationEmail } from "../../api/authApi";
 import { useAlert } from "../../hooks/useAlert";
 import { useAuth } from "../../hooks/useAuth";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [showConfirmHelp, setShowConfirmHelp] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const { login, isAuthenticated } = useAuth();
@@ -38,9 +41,37 @@ const Login = () => {
       alert.success("Logged in successfully");
       navigate("/");
     } catch (error) {
-      alert.error(error.response?.data?.message || error.message);
+      const message = error.response?.data?.message || error.message || "";
+      if (message.toLowerCase().includes("email not confirmed")) {
+        setShowConfirmHelp(true);
+        alert.error("Email confirm nahi hai. Resend confirmation button se mail dobara bhejo.");
+        return;
+      }
+      alert.error(message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const resendEmail = async () => {
+    if (!form.email.trim()) {
+      setErrors((current) => ({ ...current, email: "Email is required" }));
+      return;
+    }
+
+    setResending(true);
+    try {
+      await resendConfirmationEmail(form.email.trim());
+      alert.success("Confirmation email sent. Inbox aur spam folder check karo.");
+    } catch (error) {
+      const message = error.response?.data?.message || error.message || "";
+      if (message.toLowerCase().includes("email rate limit")) {
+        alert.error("Supabase email limit hit ho gaya. Thoda wait karo ya Supabase SMTP setup karo.");
+        return;
+      }
+      alert.error(message);
+    } finally {
+      setResending(false);
     }
   };
 
@@ -52,6 +83,15 @@ const Login = () => {
         <div className="space-y-4">
           <Input label="Email" type="email" value={form.email} onChange={(event) => updateField("email", event.target.value)} error={errors.email} autoComplete="email" />
           <Input label="Password" type="password" value={form.password} onChange={(event) => updateField("password", event.target.value)} error={errors.password} autoComplete="current-password" />
+          {showConfirmHelp ? (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              <p className="font-semibold">Email confirmation pending hai.</p>
+              <p className="mt-1">Confirmation link inbox ya spam me check karo. Mail nahi aaya to dobara bhejo.</p>
+              <Button type="button" variant="outline" loading={resending} onClick={resendEmail} className="mt-3 w-full">
+                Resend Confirmation Email
+              </Button>
+            </div>
+          ) : null}
           <Button type="submit" loading={loading} className="w-full">Login</Button>
           
           <div className="text-center text-sm text-slate-500 pt-2">

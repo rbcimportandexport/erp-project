@@ -10,6 +10,49 @@ const mapKeys = (item) => {
     mapped._id = mapped.id;
   }
 
+  if ("address_line1" in mapped && !("addressLine1" in mapped)) {
+    mapped.addressLine1 = mapped.address_line1;
+  }
+  if ("is_default" in mapped && !("isDefault" in mapped)) {
+    mapped.isDefault = mapped.is_default;
+  }
+  if ("port_name" in mapped && !("portName" in mapped)) {
+    mapped.portName = mapped.port_name;
+  }
+  if ("portName" in mapped && !("port_name" in mapped)) {
+    mapped.port_name = mapped.portName;
+  }
+  if ("container_no" in mapped && !("containerNo" in mapped)) {
+    mapped.containerNo = mapped.container_no;
+  }
+  if ("loading_date" in mapped && !("loadingDate" in mapped)) {
+    mapped.loadingDate = mapped.loading_date;
+  }
+  if ("eta_date" in mapped && !("etaDate" in mapped)) {
+    mapped.etaDate = mapped.eta_date;
+  }
+  if ("unloading_date" in mapped && !("unloadingDate" in mapped)) {
+    mapped.unloadingDate = mapped.unloading_date;
+  }
+  if ("party" in mapped && !("party" in mapped)) {
+    mapped.party = mapped.party;
+  }
+  if ("cha" in mapped && !("cha" in mapped)) {
+    mapped.cha = mapped.cha;
+  }
+  if ("shipping_line" in mapped && !("shippingLine" in mapped)) {
+    mapped.shippingLine = mapped.shipping_line;
+  }
+  if ("port_of_china" in mapped && !("portOfChina" in mapped)) {
+    mapped.portOfChina = mapped.port_of_china;
+  }
+  if ("bl_no" in mapped && !("blNo" in mapped)) {
+    mapped.blNo = mapped.bl_no;
+  }
+  if ("document_processed" in mapped && !("documentProcessed" in mapped)) {
+    mapped.documentProcessed = mapped.document_processed;
+  }
+
   for (const key in mapped) {
     if (typeof mapped[key] === "object") {
       mapped[key] = mapKeys(mapped[key]);
@@ -30,16 +73,83 @@ const mapPayload = (payload) => {
   }
 
   if ("importer" in mapped) {
-    mapped.importer_id = mapped.importer;
+    const val = mapped.importer;
+    mapped.importer_id = val && typeof val === "object" ? (val.id || val._id) : val;
     delete mapped.importer;
   }
   if ("exporter" in mapped) {
-    mapped.exporter_id = mapped.exporter;
+    const val = mapped.exporter;
+    mapped.exporter_id = val && typeof val === "object" ? (val.id || val._id) : val;
     delete mapped.exporter;
   }
   if ("hsnCode" in mapped) {
-    mapped.hsn_code_id = mapped.hsnCode;
+    const val = mapped.hsnCode;
+    mapped.hsn_code_id = val && typeof val === "object" ? (val.id || val._id) : val;
     delete mapped.hsnCode;
+  }
+  if ("containerNo" in mapped) {
+    mapped.container_no = mapped.containerNo;
+    delete mapped.containerNo;
+  }
+  if ("loadingDate" in mapped) {
+    mapped.loading_date = mapped.loadingDate;
+    delete mapped.loadingDate;
+  }
+  if ("etaDate" in mapped) {
+    mapped.eta_date = mapped.etaDate;
+    delete mapped.etaDate;
+  }
+  if ("unloadingDate" in mapped) {
+    mapped.unloading_date = mapped.unloadingDate;
+    delete mapped.unloadingDate;
+  }
+  if ("party" in mapped) {
+    mapped.party = mapped.party;
+  }
+  if ("cha" in mapped) {
+    mapped.cha = mapped.cha;
+  }
+  if ("shippingLine" in mapped) {
+    mapped.shipping_line = mapped.shippingLine;
+    delete mapped.shippingLine;
+  }
+  if ("portOfChina" in mapped) {
+    mapped.port_of_china = mapped.portOfChina;
+    delete mapped.portOfChina;
+  }
+  if ("blNo" in mapped) {
+    mapped.bl_no = mapped.blNo;
+    delete mapped.blNo;
+  }
+  if ("documentProcessed" in mapped) {
+    mapped.document_processed = mapped.documentProcessed;
+    delete mapped.documentProcessed;
+  }
+  if ("loadingDays" in mapped) {
+    mapped.loading_days = mapped.loadingDays;
+    delete mapped.loadingDays;
+  }
+  if ("etaDays" in mapped) {
+    mapped.eta_days = mapped.etaDays;
+    delete mapped.etaDays;
+  }
+  if ("portName" in mapped) {
+    mapped.port_name = mapped.portName;
+    delete mapped.portName;
+  }
+  if ("state" in mapped) {
+    mapped.state = mapped.state;
+  }
+  if ("city" in mapped) {
+    mapped.city = mapped.city;
+  }
+  if ("addressLine1" in mapped) {
+    mapped.address_line1 = mapped.addressLine1;
+    delete mapped.addressLine1;
+  }
+  if ("isDefault" in mapped) {
+    mapped.is_default = mapped.isDefault;
+    delete mapped.isDefault;
   }
 
   // Remove timestamps & audit info
@@ -97,9 +207,22 @@ export const createCrudApi = (baseUrl) => {
           query = query.ilike("name", `%${params.search}%`);
         } else if (table === "containers") {
           query = query.ilike("container_no", `%${params.search}%`);
-        } else if (table === "hsn_codes" || table === "india_ports" || table === "china_ports") {
+        } else if (table === "hsn_codes") {
           query = query.ilike("code", `%${params.search}%`);
+        } else if (table === "india_ports" || table === "china_ports") {
+          query = query.ilike("port_name", `%${params.search}%`);
         }
+      }
+
+      if (table === "importer_addresses" && params.importer) {
+        query = query.eq("importer_id", params.importer);
+      }
+      if (table === "exporter_addresses" && params.exporter) {
+        query = query.eq("exporter_id", params.exporter);
+      }
+
+      if (table === "containers") {
+        query = query.order("eta_date", { ascending: true, nullsFirst: false });
       }
 
       query = query.range(from, to);

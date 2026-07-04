@@ -75,6 +75,17 @@ export const getUpcomingEta = async () => {
   return { data: mapKeys(data) };
 };
 
+export const getEtaPriorities = async () => {
+  const { data, error } = await supabase
+    .from("containers")
+    .select("*, importer:importers(*), exporter:exporters(*)")
+    .not("eta_date", "is", null)
+    .order("eta_date", { ascending: true });
+
+  if (error) throw error;
+  return { data: mapKeys(data || []) };
+};
+
 export const getPendingBoe = async () => {
   const { data: boeDocs } = await supabase.from("documents").select("container_id").eq("doc_type", "BOE");
   const containerIdsWithBoe = boeDocs ? boeDocs.map(d => d.container_id) : [];

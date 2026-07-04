@@ -6,21 +6,53 @@ import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
 import { register as registerUser } from "../../api/authApi";
 import { useAlert } from "../../hooks/useAlert";
+import { useAuth } from "../../hooks/useAuth";
 
 const Register = () => {
   const { register, handleSubmit, formState: { errors } } = useForm({ mode: "onChange", defaultValues: { role: "user", isActive: true } });
   const [loading, setLoading] = useState(false);
   const alert = useAlert();
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
 
   const submit = async (payload) => {
     setLoading(true);
     try {
-      await registerUser(payload);
-      alert.success("User registered successfully! Please login.");
+      const response = await registerUser(payload);
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        if (response.data.user) localStorage.setItem("user", JSON.stringify(response.data.user));
+        await refreshUser();
+        alert.success("Account created and logged in successfully");
+        navigate("/");
+        return;
+      }
+
+      if (response.data.needsEmailConfirmation) {
+        alert.success("Account created. Email inbox mein confirmation link click karke phir login karo.");
+        navigate("/login");
+        return;
+      }
+
+      alert.success("User registered successfully. Please login.");
       navigate("/login");
     } catch (error) {
-      alert.error(error.response?.data?.message || error.message);
+      const message = error.response?.data?.message || error.message || "";
+
+      if (message.toLowerCase().includes("email rate limit")) {
+        alert.error("Supabase email limit hit ho gaya. Same email se signup repeat mat karo, login try karo ya Supabase mein Confirm email OFF karo.");
+        navigate("/login");
+        return;
+      }
+
+      if (message.toLowerCase().includes("already registered")) {
+        alert.error("Ye email already signup ho chuka hai. Login page se login karo.");
+        navigate("/login");
+        return;
+      }
+
+      alert.error(message);
     } finally {
       setLoading(false);
     }
@@ -31,6 +63,9 @@ const Register = () => {
       <form onSubmit={handleSubmit(submit)} className="w-full max-w-md rounded-md bg-white p-6 shadow-sm space-y-4">
         <h1 className="text-2xl font-bold text-slate-950">RBC ERP</h1>
         <p className="text-sm text-slate-500">Create an account to manage import-export containers.</p>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+          Agar same email se signup ho chuka hai to dobara signup mat karo. Login page se login karo.
+        </div>
         
         <Input label="Name" error={errors.name?.message} {...register("name", { required: "Name is required" })} />
         <Input label="Email" type="email" error={errors.email?.message} {...register("email", { required: "Email is required" })} />

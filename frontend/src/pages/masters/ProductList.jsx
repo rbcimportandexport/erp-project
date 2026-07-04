@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { productApi } from "../../api/productApi";
 import hsnApi from "../../api/hsnApi";
 import ResourcePage from "../ResourcePage";
+import { EditCellButton, MasterHeader, masterRowClass } from "./masterPageUi";
 
 const ProductList = () => {
   const [hsnCodes, setHsnCodes] = useState([]);
@@ -11,7 +12,7 @@ const ProductList = () => {
     const fetchOptions = async () => {
       try {
         const hsnRes = await hsnApi.list({ limit: 1000 });
-        const sortedHsn = (hsnRes.data?.items || []).sort((a, b) => 
+        const sortedHsn = (hsnRes.data?.items || []).sort((a, b) =>
           (a.code || "").localeCompare(b.code || "", undefined, { sensitivity: "base" })
         ).map((item) => ({
           value: item._id,
@@ -39,6 +40,11 @@ const ProductList = () => {
     <ResourcePage
       title="Products"
       api={productApi}
+      tableVariant="cards"
+      getRowClassName={masterRowClass}
+      renderHeader={(props) => (
+        <MasterHeader {...props} addLabel="Add Product" searchPlaceholder="Search product name" />
+      )}
       fields={[
         { name: "name", label: "Name", required: true },
         { name: "hsnCode", label: "HSN Code", type: "select", options: hsnCodes, required: true },
@@ -48,11 +54,15 @@ const ProductList = () => {
         { name: "mark", label: "Mark" },
       ]}
       columns={[
-        { header: "Name", accessorKey: "name" },
-        { header: "Unit", accessorKey: "unit" },
-        { header: "Unit Price", accessorKey: "unitPrice" },
-        { header: "Mark", accessorKey: "mark" },
-        { header: "Description", accessorKey: "description" }
+        {
+          header: "Product",
+          accessorKey: "name",
+          cell: ({ row, table }) => <EditCellButton row={row} table={table}>{row.original.name}</EditCellButton>,
+        },
+        { header: "Unit", accessorKey: "unit", cell: ({ row }) => row.original.unit || "-" },
+        { header: "Unit Price", accessorKey: "unitPrice", cell: ({ row }) => row.original.unitPrice ?? row.original.unit_price ?? "-" },
+        { header: "Mark", accessorKey: "mark", cell: ({ row }) => row.original.mark || "-" },
+        { header: "Description", accessorKey: "description", cell: ({ row }) => row.original.description || "-" },
       ]}
     />
   );
