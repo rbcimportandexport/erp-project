@@ -343,3 +343,46 @@ on public.containers
 for delete
 to authenticated
 using (true);
+
+-- Documents
+create table if exists public.documents (
+  id uuid primary key default gen_random_uuid(),
+  container_id uuid references public.containers(id) on delete cascade,
+  doc_type text not null,
+  file_name text not null,
+  file_path text not null,
+  uploaded_at timestamptz default timezone('utc'::text, now()) not null,
+  created_at timestamptz default timezone('utc'::text, now()) not null,
+  updated_at timestamptz default timezone('utc'::text, now()) not null
+);
+
+alter table if exists public.documents enable row level security;
+
+drop policy if exists "Authenticated users can read documents" on public.documents;
+create policy "Authenticated users can read documents"
+on public.documents
+for select
+to authenticated
+using (true);
+
+drop policy if exists "Authenticated users can insert documents" on public.documents;
+create policy "Authenticated users can insert documents"
+on public.documents
+for insert
+to authenticated
+with check (true);
+
+drop policy if exists "Authenticated users can update documents" on public.documents;
+create policy "Authenticated users can update documents"
+on public.documents
+for update
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Authenticated users can delete documents" on public.documents;
+create policy "Authenticated users can delete documents"
+on public.documents
+for delete
+to authenticated
+using (true);
