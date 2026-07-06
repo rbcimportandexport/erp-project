@@ -2,6 +2,8 @@ import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import dayjs from "dayjs";
 import { FileDown, Plus, Trash2, Upload } from "lucide-react";
 import * as XLSX from "xlsx";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
@@ -123,10 +125,6 @@ const InvoiceMaker = () => {
       return [];
     }
   });
-  const [selectedContainerId, setSelectedContainerId] = useState(() => {
-    return localStorage.getItem("invoice_maker_container_id") || "";
-  });
-
   useEffect(() => {
     localStorage.setItem("invoice_maker_form", JSON.stringify(form));
   }, [form]);
@@ -135,18 +133,12 @@ const InvoiceMaker = () => {
     localStorage.setItem("invoice_maker_items", JSON.stringify(items));
   }, [items]);
 
-  useEffect(() => {
-    localStorage.setItem("invoice_maker_container_id", selectedContainerId);
-  }, [selectedContainerId]);
-
   const handleResetForm = () => {
     if (window.confirm("Are you sure you want to clear all form fields? This cannot be undone.")) {
       setForm(initialForm);
       setItems([]);
-      setSelectedContainerId("");
       localStorage.removeItem("invoice_maker_form");
       localStorage.removeItem("invoice_maker_items");
-      localStorage.removeItem("invoice_maker_container_id");
       toast.success("Form cleared successfully!");
     }
   };
@@ -157,18 +149,23 @@ const InvoiceMaker = () => {
   const [saving, setSaving] = useState(false);
   const toast = useAlert();
 
-  const filteredContainers = useMemo(() => {
-    return containersList.filter((c) => {
-      const statusUpper = (c.status || "").toUpperCase();
-      if (statusUpper === "ARRIVED" || statusUpper === "AAYA" || statusUpper === "DELIVERED") {
-        return false;
-      }
-      if (!c.etaDate) return true;
-      const eta = dayjs(c.etaDate);
-      const maxEta = dayjs().add(7, "day").endOf("day");
-      return eta.isBefore(maxEta.add(1, "day"));
+  const matchedContainer = useMemo(() => {
+    const excelVal = shipmentRows.find(r => r.containerNo)?.containerNo;
+    const targetNo = String(excelVal || form.invoiceNo || "").trim();
+    if (!targetNo) return null;
+
+    let match = containersList.find(c => (c.containerNo || "").toLowerCase() === targetNo.toLowerCase());
+    if (match) return match;
+
+    match = containersList.find(c => {
+      const cNo = (c.containerNo || "").toLowerCase();
+      const tNo = targetNo.toLowerCase();
+      return cNo.includes(tNo) || tNo.includes(cNo);
     });
-  }, [containersList]);
+    return match || null;
+  }, [form.invoiceNo, shipmentRows, containersList]);
+
+  const selectedContainerId = matchedContainer?._id || matchedContainer?.id || "";
 
   // Master lists for dropdowns
   const [importersList, setImportersList] = useState([]);
@@ -235,49 +232,59 @@ const InvoiceMaker = () => {
     fetchMasters();
   }, []);
 
-  const handleContainerChange = async (containerId) => {
-    setSelectedContainerId(containerId);
-    if (!containerId) return;
+  // Auto-populate container details when a container is matched
+  useEffect(() => {
+    if (!matchedContainer) return;
 
-    try {
-      const res = await containerApi.get(containerId);
-      const container = res.data;
-      if (container) {
-        updateForm("invoiceNo", container.bl_no || container.blNo || "");
-        updateForm("invoiceDate", container.loading_date || container.loadingDate ? dayjs(container.loading_date || container.loadingDate).format("DD/MM/YYYY") : "");
-        updateForm("loadingPort", container.port_of_china || container.portOfChina || "");
-        updateForm("dischargePort", container.port_of_india || container.portOfIndia || "");
-        if (container.cbm) {
-          updateForm("cbm", String(container.cbm));
+    const fetchAndPopulate = async () => {
+      try {
+        const res = await containerApi.get(matchedContainer._id || matchedContainer.id);
+        const container = res.data;
+        if (container) {
+          setForm((current) => {
+            const updated = { ...current };
+            if (!updated.invoiceDate && (container.loadingDate || container.loading_date)) {
+              const rawDate = container.loadingDate || container.loading_date;
+              updated.invoiceDate = dayjs(rawDate).format("DD/MM/YYYY");
+            }
+            if (!updated.loadingPort && (container.portOfChina || container.port_of_china)) {
+              updated.loadingPort = container.portOfChina || container.port_of_china;
+            }
+            if (!updated.dischargePort && (container.portOfIndia || container.port_of_india)) {
+              updated.dischargePort = container.portOfIndia || container.port_of_india;
+            }
+            if (!updated.cbm && container.cbm) {
+              updated.cbm = String(container.cbm);
+            }
+            if (!updated.party && container.party) {
+              updated.party = container.party;
+            }
+            if (!updated.cha && container.cha) {
+              updated.cha = container.cha;
+            }
+            if (!updated.shippingLine && (container.shippingLine || container.shipping_line)) {
+              updated.shippingLine = container.shippingLine || container.shipping_line;
+            }
+            if (!updated.portOfChina && (container.portOfChina || container.port_of_china)) {
+              updated.portOfChina = container.portOfChina || container.port_of_china;
+            }
+            if (!updated.documentProcessed && (container.documentProcessed || container.document_processed)) {
+              updated.documentProcessed = container.documentProcessed || container.document_processed;
+            }
+            return updated;
+          });
         }
-        if (container.party) {
-          updateForm("party", container.party);
-        }
-        if (container.cha) {
-          updateForm("cha", container.cha);
-        }
-        if (container.shipping_line || container.shippingLine) {
-          updateForm("shippingLine", container.shipping_line || container.shippingLine);
-        }
-        if (container.port_of_china || container.portOfChina) {
-          updateForm("portOfChina", container.port_of_china || container.portOfChina);
-        }
-        if (container.document_processed || container.documentProcessed) {
-          updateForm("documentProcessed", container.document_processed || container.documentProcessed);
-        }
+      } catch (err) {
+        console.error("Error auto-populating container details:", err);
       }
-    } catch (err) {
-      console.error("Error loading container details:", err);
-    }
-  };
+    };
+
+    fetchAndPopulate();
+  }, [matchedContainer]);
 
   const saveToContainer = async () => {
     setSaving(true);
     try {
-      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import("html2canvas"),
-        import("jspdf"),
-      ]);
 
       const target = documentRef.current;
       const canvas = await html2canvas(target, {
@@ -311,7 +318,24 @@ const InvoiceMaker = () => {
       formData.append("file", file);
       formData.append("docType", form.documentType === "PACKING LIST" ? "CPL" : "CBL");
 
-      await uploadDocument(selectedContainerId || null, formData);
+      // Auto-create container if it starts with RBC or contains RBC and doesn't exist yet
+      let finalContainerId = selectedContainerId || null;
+      if (!finalContainerId) {
+        const excelVal = shipmentRows.find(r => r.containerNo)?.containerNo;
+        const containerNoVal = String(excelVal || form.invoiceNo || "").trim();
+        if (containerNoVal && (containerNoVal.toUpperCase().startsWith("RBC") || /RBC/i.test(containerNoVal))) {
+          try {
+            const createRes = await containerApi.create({ containerNo: containerNoVal });
+            if (createRes.data) {
+              finalContainerId = createRes.data._id || createRes.data.id;
+            }
+          } catch (e) {
+            console.error("Auto-container creation failed:", e);
+          }
+        }
+      }
+
+      await uploadDocument(finalContainerId || null, formData);
       toast.success("Document saved successfully!");
     } catch (err) {
       console.error(err);
@@ -702,11 +726,6 @@ const InvoiceMaker = () => {
   };
 
   const convertToPdf = async () => {
-    const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-      import("html2canvas"),
-      import("jspdf"),
-    ]);
-
     const target = documentRef.current;
     const canvas = await html2canvas(target, {
       scale: 2,
@@ -786,13 +805,7 @@ const InvoiceMaker = () => {
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-slate-950">Manual Details</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <Select
-            label="Associate with Container"
-            value={selectedContainerId}
-            onChange={(event) => handleContainerChange(event.target.value)}
-            options={filteredContainers.map((c) => ({ value: c._id, label: c.containerNo }))}
-          />
-          <Select
+  <Select
             label="Document Type"
             value={form.documentType}
             onChange={(event) => updateForm("documentType", event.target.value)}
@@ -801,7 +814,20 @@ const InvoiceMaker = () => {
               { value: "COMMERCIAL INVOICE", label: "Commercial Invoice" },
             ]}
           />
-          <Input label="Invoice No" value={form.invoiceNo} onChange={(event) => updateForm("invoiceNo", event.target.value)} />
+          <div className="flex flex-col justify-end">
+            <Input label="Invoice No" value={form.invoiceNo} onChange={(event) => updateForm("invoiceNo", event.target.value)} />
+            {matchedContainer ? (
+              <span className="text-xs font-semibold text-emerald-600 mt-1">
+                ✓ Linked to Container: {matchedContainer.containerNo} {matchedContainer.status ? `(${matchedContainer.status})` : ""}
+              </span>
+            ) : (
+              form.invoiceNo && /RBC/i.test(form.invoiceNo) ? (
+                <span className="text-xs font-semibold text-amber-600 mt-1">
+                  ⚠ Will create container: {form.invoiceNo} on save
+                </span>
+              ) : null
+            )}
+          </div>
           <Input label="Date" value={form.invoiceDate} onChange={(event) => updateForm("invoiceDate", event.target.value)} />
 
           {/* Importer Section */}

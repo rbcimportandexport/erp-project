@@ -68,18 +68,59 @@ const DocumentsPage = () => {
 
         <Table
           columns={[
-            { header: "Container No", accessorKey: "containerNo" },
+            {
+              header: "Invoice No",
+              cell: ({ row }) => {
+                const fileName = row.original.fileName || "";
+                const cleanName = fileName.replace(/\.pdf$/i, "");
+                const prefixes = ["Commercial_Invoice_", "Packing_List_", "Quotation_"];
+                for (const prefix of prefixes) {
+                  if (cleanName.startsWith(prefix)) {
+                    return cleanName.substring(prefix.length);
+                  }
+                }
+                return cleanName || "-";
+              }
+            },
+            {
+              header: "Container No",
+              accessorKey: "containerNo",
+              cell: ({ value, row }) => {
+                if (value && value !== "-") return value;
+                const fileName = row.original.fileName || "";
+                const cleanName = fileName.replace(/\.pdf$/i, "");
+                const prefixes = ["Commercial_Invoice_", "Packing_List_", "Quotation_"];
+                let invoiceNo = cleanName;
+                for (const prefix of prefixes) {
+                  if (cleanName.startsWith(prefix)) {
+                    invoiceNo = cleanName.substring(prefix.length);
+                    break;
+                  }
+                }
+                if (invoiceNo && (invoiceNo.toUpperCase().startsWith("RBC") || /RBC/i.test(invoiceNo))) {
+                  return invoiceNo;
+                }
+                return value || "-";
+              }
+            },
             {
               header: "Document Type",
               accessorKey: "docType",
-              cell: ({ value }) => {
+              cell: ({ value, row }) => {
                 const labels = {
                   CPL: "Packing List",
                   CBL: "Commercial Invoice",
                   QUOTATION: "Quotation",
                   BOE: "BOE",
                 };
-                return labels[value] || value || "-";
+                let resolved = labels[value] || value;
+                if (!resolved || resolved === "-") {
+                  const fName = row.original.fileName || "";
+                  if (fName.startsWith("Commercial_Invoice_")) return "Commercial Invoice";
+                  if (fName.startsWith("Packing_List_")) return "Packing List";
+                  if (fName.startsWith("Quotation_")) return "Quotation";
+                }
+                return resolved || "-";
               },
             },
             { header: "File Name", accessorKey: "fileName" },

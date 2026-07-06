@@ -7,9 +7,17 @@ const containerSchema = new mongoose.Schema(
     exporter: { type: mongoose.Schema.Types.ObjectId, ref: "Exporter", required: true },
     hsnCode: { type: mongoose.Schema.Types.ObjectId, ref: "HsnCode" },
     loadingDate: Date,
+    loadingDays: { type: String, trim: true },
+    party: { type: String, trim: true },
+    cha: { type: String, trim: true },
+    shippingLine: { type: String, trim: true },
+    portOfChina: { type: String, trim: true },
+    blNo: { type: String, trim: true },
     etaDate: Date,
+    etaDays: { type: String, trim: true },
     unloadingDate: Date,
     status: { type: String, enum: ["pending", "inTransit", "arrived", "cleared", "done"], default: "pending" },
+    documentProcessed: { type: String, trim: true },
     remarks: { type: String, trim: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -17,6 +25,7 @@ const containerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-containerSchema.index({ containerNo: "text", remarks: "text" });
+containerSchema.index({ containerNo: "text", remarks: "text", blNo: "text" });
 
 module.exports = mongoose.model("Container", containerSchema);
+

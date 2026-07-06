@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import * as XLSX from "xlsx";
 import dayjs from "dayjs";
 import { Plus, Trash2, Upload, FileDown, Image as ImageIcon } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import importerApi from "../../api/importerApi";
 import exporterApi from "../../api/exporterApi";
 import { importerAddressApi, exporterAddressApi } from "../../api/addressApi";
@@ -87,10 +89,6 @@ const QuotationMaker = () => {
       return [emptyItem];
     }
   });
-  const [selectedContainerId, setSelectedContainerId] = useState(() => {
-    return localStorage.getItem("quotation_maker_container_id") || "";
-  });
-
   const [stampImg, setStampImg] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -102,18 +100,12 @@ const QuotationMaker = () => {
     localStorage.setItem("quotation_maker_items", JSON.stringify(items));
   }, [items]);
 
-  useEffect(() => {
-    localStorage.setItem("quotation_maker_container_id", selectedContainerId);
-  }, [selectedContainerId]);
-
   const handleResetForm = () => {
     if (window.confirm("Are you sure you want to clear all quotation fields? This cannot be undone.")) {
       setForm(initialForm);
       setItems([emptyItem]);
-      setSelectedContainerId("");
       localStorage.removeItem("quotation_maker_form");
       localStorage.removeItem("quotation_maker_items");
-      localStorage.removeItem("quotation_maker_container_id");
       toast.success("Quotation form cleared successfully!");
     }
   };
@@ -125,18 +117,22 @@ const QuotationMaker = () => {
   const [chinaPortsList, setChinaPortsList] = useState([]);
   const [containersList, setContainersList] = useState([]);
 
-  const filteredContainers = useMemo(() => {
-    return containersList.filter((c) => {
-      const statusUpper = (c.status || "").toUpperCase();
-      if (statusUpper === "ARRIVED" || statusUpper === "AAYA" || statusUpper === "DELIVERED") {
-        return false;
-      }
-      if (!c.etaDate) return true;
-      const eta = dayjs(c.etaDate);
-      const maxEta = dayjs().add(7, "day").endOf("day");
-      return eta.isBefore(maxEta.add(1, "day"));
+  const matchedContainer = useMemo(() => {
+    const targetNo = String(form.invoiceNo || "").trim();
+    if (!targetNo) return null;
+
+    let match = containersList.find(c => (c.containerNo || "").toLowerCase() === targetNo.toLowerCase());
+    if (match) return match;
+
+    match = containersList.find(c => {
+      const cNo = (c.containerNo || "").toLowerCase();
+      const tNo = targetNo.toLowerCase();
+      return cNo.includes(tNo) || tNo.includes(cNo);
     });
-  }, [containersList]);
+    return match || null;
+  }, [form.invoiceNo, containersList]);
+
+  const selectedContainerId = matchedContainer?._id || matchedContainer?.id || "";
 
   // Column width controls (%)
   const [colWidths, setColWidths] = useState({
@@ -203,29 +199,61 @@ const QuotationMaker = () => {
   }, []);
 
   const updateForm = (field, value) => {
-    setForm((current) => ({ ...current, [field]: value }));
-  };
-
-  const handleContainerChange = async (containerId) => {
-    setSelectedContainerId(containerId);
-    if (!containerId) return;
-
-    try {
-      const res = await containerApi.get(containerId);
-      const container = res.data;
-      if (container) {
-        updateForm("invoiceNo", container.bl_no || container.blNo || "");
-        updateForm("invoiceDate", container.loading_date || container.loadingDate ? dayjs(container.loading_date || container.loadingDate).format("DD-MM-YYYY") : "");
-        updateForm("loadingPort", container.port_of_china || container.portOfChina || "");
-        updateForm("dischargePort", container.port_of_india || container.portOfIndia || "");
-        if (container.party) {
-          updateForm("importerName", container.party);
+    setForm((current) => {
+      const updated = { ...current, [field]: value };
+      if (field === "invoiceNo") {
+        const match = value.match(/\d{8}/);
+        if (match) {
+          const dateStr = match[0];
+          const year = dateStr.substring(0, 4);
+          const month = dateStr.substring(4, 6);
+          const day = dateStr.substring(6, 8);
+          const y = parseInt(year, 10);
+          const m = parseInt(month, 10);
+          const d = parseInt(day, 10);
+          if (y >= 2000 && y <= 2099 && m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+            updated.invoiceDate = `${day}-${month}-${year}`;
+          }
         }
       }
-    } catch (err) {
-      console.error("Error loading container details:", err);
-    }
+      return updated;
+    });
   };
+
+  // Auto-populate container details when a container is matched
+  useEffect(() => {
+    if (!matchedContainer) return;
+
+    const fetchAndPopulate = async () => {
+      try {
+        const res = await containerApi.get(matchedContainer._id || matchedContainer.id);
+        const container = res.data;
+        if (container) {
+          setForm((current) => {
+            const updated = { ...current };
+            if (!updated.invoiceDate && (container.loadingDate || container.loading_date)) {
+              const rawDate = container.loadingDate || container.loading_date;
+              updated.invoiceDate = dayjs(rawDate).format("DD-MM-YYYY");
+            }
+            if (!updated.loadingPort && (container.portOfChina || container.port_of_china)) {
+              updated.loadingPort = container.portOfChina || container.port_of_china;
+            }
+            if (!updated.dischargePort && (container.portOfIndia || container.port_of_india)) {
+              updated.dischargePort = container.portOfIndia || container.port_of_india;
+            }
+            if (!updated.importerName && container.party) {
+              updated.importerName = container.party;
+            }
+            return updated;
+          });
+        }
+      } catch (err) {
+        console.error("Error auto-populating container details:", err);
+      }
+    };
+
+    fetchAndPopulate();
+  }, [matchedContainer]);
 
   const handleImporterChange = async (importerId) => {
     if (!importerId) {
@@ -352,11 +380,6 @@ const QuotationMaker = () => {
   const generatePdf = async (shouldSave = false) => {
     setSaving(true);
     try {
-      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import("html2canvas"),
-        import("jspdf"),
-      ]);
-
       const target = documentRef.current;
       const canvas = await html2canvas(target, {
         scale: 2,
@@ -394,7 +417,23 @@ const QuotationMaker = () => {
         formData.append("file", file);
         formData.append("docType", "QUOTATION");
 
-        await uploadDocument(selectedContainerId || null, formData);
+        // Auto-create container if it starts with RBC or contains RBC and doesn't exist yet
+        let finalContainerId = selectedContainerId || null;
+        if (!finalContainerId) {
+          const containerNoVal = String(form.invoiceNo || "").trim();
+          if (containerNoVal && (containerNoVal.toUpperCase().startsWith("RBC") || /RBC/i.test(containerNoVal))) {
+            try {
+              const createRes = await containerApi.create({ containerNo: containerNoVal });
+              if (createRes.data) {
+                finalContainerId = createRes.data._id || createRes.data.id;
+              }
+            } catch (e) {
+              console.error("Auto-container creation failed:", e);
+            }
+          }
+        }
+
+        await uploadDocument(finalContainerId || null, formData);
         toast.success("Quotation saved successfully!");
       } else {
         const pdfBlobUrl = pdf.output("bloburl");
@@ -449,14 +488,22 @@ const QuotationMaker = () => {
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-slate-950">Quotation Details</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <Select
-            label="Associate with Container"
-            value={selectedContainerId}
-            onChange={(event) => handleContainerChange(event.target.value)}
-            options={filteredContainers.map((c) => ({ value: c._id, label: c.containerNo }))}
-          />
-          <Input label="Invoice/Quotation No" value={form.invoiceNo} onChange={(event) => updateForm("invoiceNo", event.target.value)} />
+          <div className="flex flex-col justify-end">
+            <Input label="Invoice/Quotation No" value={form.invoiceNo} onChange={(event) => updateForm("invoiceNo", event.target.value)} />
+            {matchedContainer ? (
+              <span className="text-xs font-semibold text-emerald-600 mt-1">
+                ✓ Linked to Container: {matchedContainer.containerNo} {matchedContainer.status ? `(${matchedContainer.status})` : ""}
+              </span>
+            ) : (
+              form.invoiceNo && /RBC/i.test(form.invoiceNo) ? (
+                <span className="text-xs font-semibold text-amber-600 mt-1">
+                  ⚠ Will create container: {form.invoiceNo} on save
+                </span>
+              ) : null
+            )}
+          </div>
           <Input label="Date" value={form.invoiceDate} onChange={(event) => updateForm("invoiceDate", event.target.value)} />
+          <div /> {/* Spacer to maintain 3-column layout */}
 
           <Select
             label="Load Importer"

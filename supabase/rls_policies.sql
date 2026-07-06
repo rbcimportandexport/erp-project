@@ -386,3 +386,93 @@ on public.documents
 for delete
 to authenticated
 using (true);
+
+-- User profiles mirror for Supabase Auth users.
+-- Browser apps cannot safely list auth.users directly, so the Users page reads this table.
+create table if not exists public.user_profiles (
+  id uuid primary key,
+  email text not null unique,
+  name text not null default 'User',
+  role text not null default 'user' check (role in ('masterAdmin', 'admin', 'user')),
+  is_active boolean not null default true,
+  created_at timestamptz default timezone('utc'::text, now()) not null,
+  updated_at timestamptz default timezone('utc'::text, now()) not null
+);
+
+alter table public.user_profiles enable row level security;
+
+drop policy if exists "Authenticated users can read user profiles" on public.user_profiles;
+create policy "Authenticated users can read user profiles"
+on public.user_profiles
+for select
+to authenticated
+using (true);
+
+drop policy if exists "Authenticated users can insert user profiles" on public.user_profiles;
+create policy "Authenticated users can insert user profiles"
+on public.user_profiles
+for insert
+to authenticated
+with check (true);
+
+drop policy if exists "Authenticated users can update user profiles" on public.user_profiles;
+create policy "Authenticated users can update user profiles"
+on public.user_profiles
+for update
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Authenticated users can delete user profiles" on public.user_profiles;
+create policy "Authenticated users can delete user profiles"
+on public.user_profiles
+for delete
+to authenticated
+using (true);
+
+create or replace function public.sync_auth_user_profile()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.user_profiles (id, email, name, role, is_active)
+  values (
+    new.id,
+    lower(coalesce(new.email, '')),
+    coalesce(new.raw_user_meta_data->>'name', split_part(coalesce(new.email, 'User'), '@', 1), 'User'),
+    coalesce(nullif(new.raw_user_meta_data->>'role', ''), 'user'),
+    true
+  )
+  on conflict (id) do update set
+    email = excluded.email,
+    name = excluded.name,
+    role = excluded.role,
+    updated_at = timezone('utc'::text, now());
+
+  return new;
+end;
+$$;
+
+drop trigger if exists sync_auth_user_profile_on_signup on auth.users;
+create trigger sync_auth_user_profile_on_signup
+after insert or update on auth.users
+for each row execute function public.sync_auth_user_profile();
+
+insert into public.user_profiles (id, email, name, role, is_active, created_at, updated_at)
+select
+  id,
+  lower(coalesce(email, '')),
+  coalesce(raw_user_meta_data->>'name', split_part(coalesce(email, 'User'), '@', 1), 'User'),
+  coalesce(nullif(raw_user_meta_data->>'role', ''), 'user'),
+  true,
+  coalesce(created_at, timezone('utc'::text, now())),
+  timezone('utc'::text, now())
+from auth.users
+where email is not null
+on conflict (id) do update set
+  email = excluded.email,
+  name = excluded.name,
+  role = excluded.role,
+  updated_at = timezone('utc'::text, now());

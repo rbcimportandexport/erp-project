@@ -65,8 +65,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (payload) => {
     const response = await loginRequest(payload);
     localStorage.setItem("token", response.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-    setUser(response.data.user);
+    await refreshUser();
     return response;
   };
 

@@ -15,7 +15,14 @@ const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
 
 app.set("trust proxy", 1);
 
-app.use(helmet());
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Private-Network", "true");
+  next();
+});
+
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 app.use(
   cors({
     origin(origin, callback) {

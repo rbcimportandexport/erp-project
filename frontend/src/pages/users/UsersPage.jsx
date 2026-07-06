@@ -15,6 +15,7 @@ import TopBar from "../../components/layout/TopBar";
 import { useAlert } from "../../hooks/useAlert";
 import { useDebounce } from "../../hooks/useDebounce";
 import { useFetch } from "../../hooks/useFetch";
+import { useAuth } from "../../hooks/useAuth";
 
 const emptyForm = {
   name: "",
@@ -32,6 +33,9 @@ const roleOptions = [
 
 const UsersPage = () => {
   const alert = useAlert();
+  const { user: currentUser } = useAuth();
+  const currentUserRole = currentUser?.role || "user";
+
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
@@ -42,9 +46,20 @@ const UsersPage = () => {
 
   const { data, loading, refetch } = useFetch(() => userApi.list({ search: debouncedSearch, page }), [debouncedSearch, page]);
 
+  const visibleRoleOptions = useMemo(() => {
+    if (currentUserRole === "masterAdmin") {
+      return roleOptions;
+    }
+    // If admin, only show 'user' option
+    return roleOptions.filter((opt) => opt.value === "user");
+  }, [currentUserRole]);
+
   const startAdd = () => {
     setSelected(null);
-    setForm(emptyForm);
+    setForm({
+      ...emptyForm,
+      role: "user",
+    });
     setOpen(true);
   };
 
@@ -64,6 +79,11 @@ const UsersPage = () => {
     try {
       const payload = { ...form };
       if (selected && !payload.password) delete payload.password;
+
+      // Force role to user if non-masterAdmin tries to set it otherwise
+      if (currentUserRole !== "masterAdmin") {
+        payload.role = "user";
+      }
 
       if (selected?._id) await userApi.update(selected._id, payload);
       else await userApi.create(payload);
@@ -95,17 +115,24 @@ const UsersPage = () => {
       { header: "Status", accessorKey: "isActive", cell: ({ row }) => <Badge tone={row.original.isActive ? "green" : "red"}>{row.original.isActive ? "Active" : "Inactive"}</Badge> },
       {
         header: "Actions",
-        cell: ({ row }) => (
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => startEdit(row.original)}>Edit</Button>
-            <Button variant="danger" className="h-10 w-10 p-0 flex items-center justify-center hover:bg-red-700 active:scale-95 transition-all" onClick={() => setConfirmId(row.original._id)} aria-label="Delete user">
-              <Trash2 className="h-5 w-5 shrink-0" />
-            </Button>
-          </div>
-        ),
+        cell: ({ row }) => {
+          const targetRole = row.original.role;
+          const canManage = currentUserRole === "masterAdmin" || (currentUserRole === "admin" && targetRole === "user");
+
+          if (!canManage) return null;
+
+          return (
+            <div className="flex gap-2">
+              <Button variant="secondary" onClick={() => startEdit(row.original)}>Edit</Button>
+              <Button variant="danger" className="h-10 w-10 p-0 flex items-center justify-center hover:bg-red-700 active:scale-95 transition-all" onClick={() => setConfirmId(row.original._id)} aria-label="Delete user">
+                <Trash2 className="h-5 w-5 shrink-0" />
+              </Button>
+            </div>
+          );
+        },
       },
     ],
-    []
+    [currentUserRole]
   );
 
   return (
@@ -132,7 +159,7 @@ const UsersPage = () => {
           <Input label="Name" value={form.name} onChange={(event) => setForm((value) => ({ ...value, name: event.target.value }))} />
           <Input label="Email" type="email" value={form.email} onChange={(event) => setForm((value) => ({ ...value, email: event.target.value }))} />
           <Input label={selected ? "New Password" : "Password"} type="password" value={form.password} onChange={(event) => setForm((value) => ({ ...value, password: event.target.value }))} />
-          <Select label="Role" value={form.role} onChange={(event) => setForm((value) => ({ ...value, role: event.target.value }))} options={roleOptions} />
+          <Select label="Role" value={form.role} onChange={(event) => setForm((value) => ({ ...value, role: event.target.value }))} options={visibleRoleOptions} />
           <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
             <input type="checkbox" checked={form.isActive} onChange={(event) => setForm((value) => ({ ...value, isActive: event.target.checked }))} />
             Active user

@@ -34,12 +34,6 @@ const mapKeys = (item) => {
   if ("unloading_date" in mapped && !("unloadingDate" in mapped)) {
     mapped.unloadingDate = mapped.unloading_date;
   }
-  if ("party" in mapped && !("party" in mapped)) {
-    mapped.party = mapped.party;
-  }
-  if ("cha" in mapped && !("cha" in mapped)) {
-    mapped.cha = mapped.cha;
-  }
   if ("shipping_line" in mapped && !("shippingLine" in mapped)) {
     mapped.shippingLine = mapped.shipping_line;
   }
@@ -51,6 +45,12 @@ const mapKeys = (item) => {
   }
   if ("document_processed" in mapped && !("documentProcessed" in mapped)) {
     mapped.documentProcessed = mapped.document_processed;
+  }
+  if ("loading_days" in mapped && !("loadingDays" in mapped)) {
+    mapped.loadingDays = mapped.loading_days;
+  }
+  if ("eta_days" in mapped && !("etaDays" in mapped)) {
+    mapped.etaDays = mapped.eta_days;
   }
 
   for (const key in mapped) {
@@ -92,15 +92,15 @@ const mapPayload = (payload) => {
     delete mapped.containerNo;
   }
   if ("loadingDate" in mapped) {
-    mapped.loading_date = mapped.loadingDate;
+    mapped.loading_date = mapped.loadingDate === "" ? null : mapped.loadingDate;
     delete mapped.loadingDate;
   }
   if ("etaDate" in mapped) {
-    mapped.eta_date = mapped.etaDate;
+    mapped.eta_date = mapped.etaDate === "" ? null : mapped.etaDate;
     delete mapped.etaDate;
   }
   if ("unloadingDate" in mapped) {
-    mapped.unloading_date = mapped.unloadingDate;
+    mapped.unloading_date = mapped.unloadingDate === "" ? null : mapped.unloadingDate;
     delete mapped.unloadingDate;
   }
   if ("party" in mapped) {

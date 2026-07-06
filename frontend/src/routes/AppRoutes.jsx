@@ -50,7 +50,7 @@ const AppRoutes = () => (
         <Route path="masters/products" element={<ProductList />} />
         <Route path="masters/product-rates" element={<ProductRates />} />
         <Route path="masters/invoice-templates" element={<InvoiceTemplates />} />
-        <Route element={<RoleRoute roles={["masterAdmin"]} />}>
+        <Route element={<RoleRoute roles={["masterAdmin", "admin"]} />}>
           <Route path="users" element={<UsersPage />} />
         </Route>
       </Route>

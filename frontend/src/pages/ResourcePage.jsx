@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import dayjs from "dayjs";
 import { Plus, Trash2 } from "lucide-react";
 import Button from "../components/common/Button";
 import ConfirmDialog from "../components/common/ConfirmDialog";
@@ -141,7 +142,13 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
         <div className="grid gap-4 md:grid-cols-2">
           {fields.map((field) => {
             const val = form[field.name];
-            const displayValue = val && typeof val === "object" ? (val._id || "") : (val ?? "");
+            let displayValue = val && typeof val === "object" ? (val._id || "") : (val ?? "");
+            if (field.type === "date" && val) {
+              const d = dayjs(val);
+              if (d.isValid()) {
+                displayValue = d.format("YYYY-MM-DD");
+              }
+            }
             if (field.type === "select") {
               return (
                 <Select

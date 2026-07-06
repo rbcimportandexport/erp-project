@@ -1,4 +1,5 @@
 import { supabase } from "../supabaseClient";
+import axiosInstance from "./axiosInstance";
 
 const mapSupabaseUser = (user) => ({
   id: user.id,
@@ -46,6 +47,18 @@ export const register = async (payload) => {
   });
   if (error) throw error;
 
+  // Sync to MongoDB backend immediately
+  try {
+    await axiosInstance.post("/auth/register", {
+      name: payload.name,
+      email: payload.email,
+      password: payload.password,
+      role: payload.role || "user",
+    });
+  } catch (err) {
+    console.error("Backend registration sync failed:", err);
+  }
+
   const user = data.user ? mapSupabaseUser(data.user) : null;
 
   return {
@@ -71,13 +84,8 @@ export const resendConfirmationEmail = async (email) => {
 };
 
 export const me = async () => {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error) throw error;
-  if (!user) throw new Error("No active session");
-
-  return {
-    data: mapSupabaseUser(user),
-  };
+  const response = await axiosInstance.get("/auth/me");
+  return response.data;
 };
 
 export const changePassword = async (payload) => {
