@@ -312,10 +312,9 @@ const InvoiceMaker = () => {
 
       const pdfBlob = pdf.output("blob");
       const docTypeLabel = form.documentType === "PACKING LIST" ? "Packing_List" : "Commercial_Invoice";
-      const file = new File([pdfBlob], `${docTypeLabel}_${form.invoiceNo || "Draft"}.pdf`, { type: "application/pdf" });
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", pdfBlob, `${docTypeLabel}_${form.invoiceNo || "Draft"}.pdf`);
       formData.append("docType", form.documentType === "PACKING LIST" ? "CPL" : "CBL");
 
       // Auto-create container if it starts with RBC or contains RBC and doesn't exist yet
