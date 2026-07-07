@@ -98,6 +98,11 @@ const Login = () => {
         <div className="space-y-4">
           <Input label="Email" type="email" value={form.email} onChange={(event) => updateField("email", event.target.value)} error={errors.email} autoComplete="email" />
           <Input label="Password" type="password" value={form.password} onChange={(event) => updateField("password", event.target.value)} error={errors.password} autoComplete="current-password" />
+          <div className="flex justify-end text-sm -mt-2">
+            <span onClick={() => navigate("/forgot-password")} className="text-brand-600 hover:underline cursor-pointer font-semibold">
+              Forgot Password?
+            </span>
+          </div>
           {showConfirmHelp ? (
             <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
               <p className="font-semibold">Email confirmation pending hai.</p>

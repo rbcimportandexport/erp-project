@@ -58,3 +58,12 @@ export const changePassword = async (payload) => {
   });
   return { data: response.data.data || response.data };
 };
+
+export const forgotPassword = async (payload) => {
+  const response = await axiosInstance.post("/auth/forgot-password", {
+    email: payload.email,
+    pin: payload.pin,
+    newPassword: payload.newPassword,
+  });
+  return { data: response.data.data || response.data };
+};

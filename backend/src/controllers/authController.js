@@ -66,3 +66,30 @@ exports.changePassword = async (req, res) => {
     return errorResponse(res, error.message, "Unable to change password", 400);
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email, pin, newPassword } = req.body;
+    const secretPin = process.env.RESET_PIN || "RBC2026";
+
+    if (!email || !pin || !newPassword) {
+      return errorResponse(res, "Email, Security PIN, and New Password are required", "Validation failed", 400);
+    }
+
+    if (String(pin).trim() !== String(secretPin).trim()) {
+      return errorResponse(res, "Invalid Security PIN", "Reset failed", 400);
+    }
+
+    const user = await User.findOne({ email: String(email || "").toLowerCase() });
+    if (!user) {
+      return errorResponse(res, "User not found", "No account associated with this email", 404);
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    return successResponse(res, {}, "Password reset successfully!");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to reset password", 500);
+  }
+};
