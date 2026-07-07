@@ -325,31 +325,41 @@ const InvoiceMaker = () => {
         const containerNoVal = String(excelVal || form.invoiceNo || "").trim();
         if (containerNoVal && (containerNoVal.toUpperCase().startsWith("RBC") || /RBC/i.test(containerNoVal))) {
           try {
-            const matchedImp = importersList.find((i) => i.name.toLowerCase() === (form.importerName || "").trim().toLowerCase());
-            const matchedExp = exportersList.find((e) => e.name.toLowerCase() === (form.exporterName || "").trim().toLowerCase());
-            const defaultImp = importersList.find((i) => i.name.toUpperCase() === "UNKNOWN IMPORTER");
-            const defaultExp = exportersList.find((e) => e.name.toUpperCase() === "UNKNOWN EXPORTER");
+            // First check if the container already exists
+            const searchRes = await containerApi.list({ search: containerNoVal, limit: 10 });
+            const existingContainer = (searchRes.data?.items || []).find(
+              (c) => (c.containerNo || c.container_no || "").trim().toUpperCase() === containerNoVal.toUpperCase()
+            );
 
-            const importerId = matchedImp?._id || defaultImp?._id;
-            const exporterId = matchedExp?._id || defaultExp?._id;
+            if (existingContainer) {
+              finalContainerId = existingContainer._id || existingContainer.id;
+            } else {
+              const matchedImp = importersList.find((i) => i.name.toLowerCase() === (form.importerName || "").trim().toLowerCase());
+              const matchedExp = exportersList.find((e) => e.name.toLowerCase() === (form.exporterName || "").trim().toLowerCase());
+              const defaultImp = importersList.find((i) => i.name.toUpperCase() === "UNKNOWN IMPORTER");
+              const defaultExp = exportersList.find((e) => e.name.toUpperCase() === "UNKNOWN EXPORTER");
 
-            const createRes = await containerApi.create({
-              containerNo: containerNoVal,
-              importer: importerId,
-              exporter: exporterId,
-              party: form.party || undefined,
-              cha: form.cha || undefined,
-              shippingLine: form.shippingLine || undefined,
-              portOfChina: form.portOfChina || undefined,
-              loadingPort: form.loadingPort || undefined,
-              dischargePort: form.dischargePort || undefined,
-              cbm: form.cbm || undefined,
-            });
-            if (createRes.data) {
-              finalContainerId = createRes.data._id || createRes.data.id;
+              const importerId = matchedImp?._id || defaultImp?._id;
+              const exporterId = matchedExp?._id || defaultExp?._id;
+
+              const createRes = await containerApi.create({
+                containerNo: containerNoVal,
+                importer: importerId,
+                exporter: exporterId,
+                party: form.party || undefined,
+                cha: form.cha || undefined,
+                shippingLine: form.shippingLine || undefined,
+                portOfChina: form.portOfChina || undefined,
+                loadingPort: form.loadingPort || undefined,
+                dischargePort: form.dischargePort || undefined,
+                cbm: form.cbm || undefined,
+              });
+              if (createRes.data) {
+                finalContainerId = createRes.data._id || createRes.data.id;
+              }
             }
           } catch (e) {
-            console.error("Auto-container creation failed:", e);
+            console.error("Auto-container lookup/creation failed:", e);
           }
         }
       }
