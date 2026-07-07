@@ -22,6 +22,8 @@ app.use((req, res, next) => {
 
 app.use(helmet({
   crossOriginResourcePolicy: false,
+  frameguard: false,
+  contentSecurityPolicy: false,
 }));
 app.use(
   cors({
