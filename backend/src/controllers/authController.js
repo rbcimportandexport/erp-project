@@ -73,11 +73,11 @@ exports.forgotPassword = async (req, res) => {
     const secretPin = process.env.RESET_PIN || "RBC2026";
 
     if (!email || !pin || !newPassword) {
-      return errorResponse(res, "Email, Security PIN, and New Password are required", "Validation failed", 400);
+      return errorResponse(res, "Validation failed", "Email, Security PIN, and New Password are required", 400);
     }
 
-    if (String(pin).trim() !== String(secretPin).trim()) {
-      return errorResponse(res, "Invalid Security PIN", "Reset failed", 400);
+    if (String(pin).trim().toUpperCase() !== String(secretPin).trim().toUpperCase()) {
+      return errorResponse(res, "Invalid PIN", "Invalid Security PIN", 400);
     }
 
     const user = await User.findOne({ email: String(email || "").toLowerCase() });

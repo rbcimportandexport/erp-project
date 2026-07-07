@@ -38,7 +38,7 @@ const ForgotPassword = () => {
       navigate("/login");
     } catch (error) {
       console.error("Reset password error:", error);
-      const message = error.response?.data?.message || error.message || "Failed to reset password. Please try again.";
+      const message = error.response?.data?.message || error.response?.data?.error || error.message || "Failed to reset password. Please try again.";
       alert.error(message);
     } finally {
       setLoading(false);
