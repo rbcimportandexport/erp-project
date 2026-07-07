@@ -38,15 +38,29 @@ const Register = () => {
       alert.success("User registered successfully. Please login.");
       navigate("/login");
     } catch (error) {
-      const message = error.response?.data?.message || error.message || "";
+      console.error("Register error details:", error);
+      let message = "";
+      if (typeof error === "string") {
+        message = error;
+      } else if (error && typeof error === "object") {
+        message = error.response?.data?.message || error.message || error.error_description || error.error || "";
+        if (typeof message === "object") {
+          message = JSON.stringify(message);
+        }
+      }
+      
+      message = message.trim();
+      if (!message || message === "{}") {
+        message = "Registration failed. Please check your credentials or network connection.";
+      }
 
-      if (message.toLowerCase().includes("email rate limit")) {
+      if (message.toLowerCase().includes("email rate limit") || message.toLowerCase().includes("email_rate_limit")) {
         alert.error("Supabase email limit hit ho gaya. Same email se signup repeat mat karo, login try karo ya Supabase mein Confirm email OFF karo.");
         navigate("/login");
         return;
       }
 
-      if (message.toLowerCase().includes("already registered")) {
+      if (message.toLowerCase().includes("already registered") || message.toLowerCase().includes("user_already_exists")) {
         alert.error("Ye email already signup ho chuka hai. Login page se login karo.");
         navigate("/login");
         return;

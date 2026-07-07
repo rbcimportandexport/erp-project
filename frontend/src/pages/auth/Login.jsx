@@ -41,8 +41,23 @@ const Login = () => {
       alert.success("Logged in successfully");
       navigate("/");
     } catch (error) {
-      const message = error.response?.data?.message || error.message || "";
-      if (message.toLowerCase().includes("email not confirmed")) {
+      console.error("Login error details:", error);
+      let message = "";
+      if (typeof error === "string") {
+        message = error;
+      } else if (error && typeof error === "object") {
+        message = error.response?.data?.message || error.message || error.error_description || error.error || "";
+        if (typeof message === "object") {
+          message = JSON.stringify(message);
+        }
+      }
+      
+      message = message.trim();
+      if (!message || message === "{}") {
+        message = "Login failed. Please check your credentials or network connection.";
+      }
+
+      if (message.toLowerCase().includes("email not confirmed") || message.toLowerCase().includes("email_not_confirmed")) {
         setShowConfirmHelp(true);
         alert.error("Email confirm nahi hai. Resend confirmation button se mail dobara bhejo.");
         return;
