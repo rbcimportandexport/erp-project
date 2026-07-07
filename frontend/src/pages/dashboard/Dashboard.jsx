@@ -141,9 +141,11 @@ const Dashboard = () => {
       const eta = item.eta_date || item.etaDate;
       return { ...item, eta, priority: getEtaPriority(eta) };
     })
-    .filter((item) => item.eta && item.status !== "done" && item.priority.daysLeft >= 0)
+    .filter((item) => item.status !== "done" && (!item.eta || item.priority.daysLeft >= 0))
     .sort((a, b) => {
       if (a.priority.sort !== b.priority.sort) return a.priority.sort - b.priority.sort;
+      if (!a.eta) return 1;
+      if (!b.eta) return -1;
       return dayjs(a.eta).valueOf() - dayjs(b.eta).valueOf();
     });
 
