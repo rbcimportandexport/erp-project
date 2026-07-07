@@ -16,9 +16,7 @@ const mapDoc = (doc) => {
 };
 
 export const uploadDocument = async (containerId, formData) => {
-  const response = await axiosInstance.post(`/documents/upload/${containerId}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const response = await axiosInstance.post(`/documents/upload/${containerId}`, formData);
   const resData = response.data.data || response.data;
   return { data: mapDoc(resData) };
 };
@@ -47,7 +45,5 @@ export const getAllDocuments = async () => {
 
 export const parseInvoicePackingList = (formData) =>
   axiosInstance
-    .post("/documents/parse-invoice-packing-list", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
+    .post("/documents/parse-invoice-packing-list", formData)
     .then((res) => res.data);
