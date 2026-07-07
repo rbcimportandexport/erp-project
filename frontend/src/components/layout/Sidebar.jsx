@@ -44,7 +44,7 @@ const Sidebar = ({ collapsed, onToggle }) => {
   return (
     <aside className={`${collapsed ? "w-20" : "w-64"} sticky top-0 h-screen overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] hidden shrink-0 bg-white border-r border-slate-200 text-slate-750 transition-all md:block`}>
       <div className="flex h-16 items-center justify-between px-4">
-        <Link to="/" className="min-w-0 font-bold text-slate-900 text-lg tracking-tight">{collapsed ? "RBC" : "RBC ERP"}</Link>
+        <Link to="/" className="min-w-0 font-black text-2xl tracking-wider text-slate-950 uppercase">{collapsed ? "RBC" : "RBC ERP"}</Link>
         <Button variant="ghost" className="h-8 w-8 px-0 text-slate-500 hover:bg-slate-100 hover:text-slate-800" onClick={onToggle} aria-label="Toggle sidebar">
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </Button>
