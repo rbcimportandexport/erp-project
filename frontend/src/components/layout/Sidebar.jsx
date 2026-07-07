@@ -42,10 +42,10 @@ const Sidebar = ({ collapsed, onToggle }) => {
   });
 
   return (
-    <aside className={`${collapsed ? "w-20" : "w-64"} sticky top-0 h-screen overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] hidden shrink-0 bg-slate-950 text-white transition-all md:block`}>
+    <aside className={`${collapsed ? "w-20" : "w-64"} sticky top-0 h-screen overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] hidden shrink-0 bg-white border-r border-slate-200 text-slate-750 transition-all md:block`}>
       <div className="flex h-16 items-center justify-between px-4">
-        <Link to="/" className="min-w-0 font-bold">{collapsed ? "RBC" : "RBC ERP"}</Link>
-        <Button variant="ghost" className="h-8 w-8 px-0 text-white hover:bg-slate-800" onClick={onToggle} aria-label="Toggle sidebar">
+        <Link to="/" className="min-w-0 font-bold text-slate-900 text-lg tracking-tight">{collapsed ? "RBC" : "RBC ERP"}</Link>
+        <Button variant="ghost" className="h-8 w-8 px-0 text-slate-500 hover:bg-slate-100 hover:text-slate-800" onClick={onToggle} aria-label="Toggle sidebar">
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </Button>
       </div>
@@ -57,21 +57,21 @@ const Sidebar = ({ collapsed, onToggle }) => {
               key={item.to}
               to={item.to}
               end={item.end}
-              className={({ isActive }) => `flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium ${isActive ? "bg-brand-600 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"}`}
+              className={({ isActive }) => `flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors ${isActive ? "bg-brand-50 text-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
             >
               <Icon className="h-4 w-4 shrink-0" />
               {!collapsed && <span className="truncate">{item.label}</span>}
             </NavLink>
           );
         })}
-        {!collapsed && <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wide text-slate-500">Masters</div>}
+        {!collapsed && <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Masters</div>}
         {masterItems.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => `flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium ${isActive ? "bg-brand-600 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"}`}
+              className={({ isActive }) => `flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors ${isActive ? "bg-brand-50 text-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
             >
               <Icon className="h-4 w-4 shrink-0" />
               {!collapsed && <span className="truncate">{item.label}</span>}
@@ -79,7 +79,7 @@ const Sidebar = ({ collapsed, onToggle }) => {
           );
         })}
         {visibleAdminItems.length > 0 && !collapsed && (
-          <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wide text-slate-500">Admin</div>
+          <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Admin</div>
         )}
         {visibleAdminItems.map((item) => {
           const Icon = item.icon;
@@ -87,7 +87,7 @@ const Sidebar = ({ collapsed, onToggle }) => {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => `flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium ${isActive ? "bg-brand-600 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"}`}
+              className={({ isActive }) => `flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors ${isActive ? "bg-brand-50 text-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
             >
               <Icon className="h-4 w-4 shrink-0" />
               {!collapsed && <span className="truncate">{item.label}</span>}
