@@ -1,3 +1,4 @@
+import { useState } from "react";
 import dayjs from "dayjs";
 import {
   AlertTriangle,
@@ -9,10 +10,18 @@ import {
   IndianRupee,
   ListTodo,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { getEtaPriorities, getStats } from "../../api/dashboardApi";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  getEtaPriorities,
+  getStats,
+  getUpcomingEta,
+  getPendingBoe,
+  getPendingLinePayment,
+} from "../../api/dashboardApi";
+import containerApi from "../../api/containerApi";
 import Loader from "../../components/common/Loader";
 import TopBar from "../../components/layout/TopBar";
+import Modal from "../../components/common/Modal";
 import { useFetch } from "../../hooks/useFetch";
 
 const metricCards = [
@@ -69,6 +78,61 @@ const getImporterName = (item) => item.importer?.name || item.importer_name || "
 const Dashboard = () => {
   const { data, loading } = useFetch(getStats, []);
   const { data: etaContainers = [], loading: etaLoading } = useFetch(getEtaPriorities, []);
+
+  const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [activeModalKey, setActiveModalKey] = useState("");
+  const [modalData, setModalData] = useState([]);
+  const [modalLoading, setModalLoading] = useState(false);
+
+  const handleCardClick = async (key, label) => {
+    setActiveModalKey(key);
+    setModalTitle(label);
+    setModalLoading(true);
+    setOpenModal(true);
+
+    try {
+      let list = [];
+      if (key === "totalContainers") {
+        const res = await containerApi.list({ limit: 1000 });
+        list = res.data?.items || [];
+      } else if (key === "upcomingEta") {
+        const res = await getUpcomingEta();
+        list = res.data || [];
+      } else if (key === "todaysTasks") {
+        const res = await containerApi.list({ limit: 1000 });
+        const today = dayjs().startOf("day");
+        list = (res.data?.items || []).filter((item) => {
+          const eta = item.etaDate || item.eta_date ? dayjs(item.etaDate || item.eta_date).startOf("day") : null;
+          const unloading = item.unloadingDate || item.unloading_date ? dayjs(item.unloadingDate || item.unloading_date).startOf("day") : null;
+          return (eta && eta.isSame(today)) || (unloading && unloading.isSame(today));
+        });
+      } else if (key === "doneContainers") {
+        const res = await containerApi.list({ status: "done", limit: 1000 });
+        list = res.data?.items || [];
+      } else if (key === "pendingContainers") {
+        const res = await containerApi.list({ limit: 1000 });
+        list = (res.data?.items || []).filter((item) => item.status !== "done");
+      } else if (key === "pendingBoe") {
+        const res = await getPendingBoe();
+        list = res.data || [];
+      } else if (key === "pendingLinePayment") {
+        const res = await getPendingLinePayment();
+        list = (res.data || [])
+          .map((payment) => ({
+            ...(payment.container || {}),
+            pendingAmount: payment.pendingAmount,
+          }))
+          .filter((c) => c._id || c.id);
+      }
+      setModalData(list);
+    } catch (error) {
+      console.error("Error fetching modal data:", error);
+    } finally {
+      setModalLoading(false);
+    }
+  };
 
   if (loading || etaLoading) return <Loader />;
 
@@ -138,7 +202,11 @@ const Dashboard = () => {
         {metricCards.map((card) => {
           const Icon = card.icon;
           return (
-            <article key={card.key} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <button
+              key={card.key}
+              onClick={() => handleCardClick(card.key, card.label)}
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-brand-400 hover:-translate-y-0.5 active:scale-[0.98] text-left w-full block focus:outline-none focus:ring-2 focus:ring-brand-50"
+            >
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">{card.label}</p>
@@ -148,7 +216,7 @@ const Dashboard = () => {
                   <Icon className="h-5 w-5" />
                 </div>
               </div>
-            </article>
+            </button>
           );
         })}
       </section>
@@ -204,6 +272,77 @@ const Dashboard = () => {
           )}
         </div>
       </section>
+
+      <Modal
+        open={openModal}
+        title={modalTitle}
+        subtitle="Metric Details"
+        onClose={() => setOpenModal(false)}
+      >
+        {modalLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-200 border-t-brand-600" />
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            {modalData.length === 0 ? (
+              <p className="py-8 text-center text-sm font-bold text-slate-500">No records found matching this metric.</p>
+            ) : (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-500">
+                    <th className="py-3 px-4">Container No</th>
+                    <th className="py-3 px-4">Importer</th>
+                    <th className="py-3 px-4">ETA</th>
+                    {activeModalKey === "pendingLinePayment" ? (
+                      <th className="py-3 px-4">Pending Amount</th>
+                    ) : (
+                      <th className="py-3 px-4">Status</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-sm">
+                  {modalData.map((item) => (
+                    <tr
+                      key={item._id || item.id}
+                      onClick={() => {
+                        setOpenModal(false);
+                        navigate(`/containers?edit=${item._id || item.id}`);
+                      }}
+                      className="hover:bg-slate-50 cursor-pointer transition-colors"
+                    >
+                      <td className="py-3 px-4 font-bold text-brand-600 hover:underline">
+                        {item.containerNo || item.container_no || "-"}
+                      </td>
+                      <td className="py-3 px-4 text-slate-700">
+                        {item.importer?.name || item.importer_name || item.importer || "-"}
+                      </td>
+                      <td className="py-3 px-4 text-slate-600">
+                        {item.etaDate || item.eta_date ? dayjs(item.etaDate || item.eta_date).format("DD MMM YYYY") : "-"}
+                      </td>
+                      {activeModalKey === "pendingLinePayment" ? (
+                        <td className="py-3 px-4 font-bold text-red-600">
+                          ₹{item.pendingAmount || 0}
+                        </td>
+                      ) : (
+                        <td className="py-3 px-4">
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${
+                            item.status === "done" ? "bg-emerald-50 text-emerald-700" :
+                            item.status === "inTransit" ? "bg-blue-50 text-blue-700" :
+                            "bg-amber-50 text-amber-700"
+                          }`}>
+                            {item.status || "Pending"}
+                          </span>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+      </Modal>
     </>
   );
 };
