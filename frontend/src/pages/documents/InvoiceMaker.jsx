@@ -325,7 +325,26 @@ const InvoiceMaker = () => {
         const containerNoVal = String(excelVal || form.invoiceNo || "").trim();
         if (containerNoVal && (containerNoVal.toUpperCase().startsWith("RBC") || /RBC/i.test(containerNoVal))) {
           try {
-            const createRes = await containerApi.create({ containerNo: containerNoVal });
+            const matchedImp = importersList.find((i) => i.name.toLowerCase() === (form.importerName || "").trim().toLowerCase());
+            const matchedExp = exportersList.find((e) => e.name.toLowerCase() === (form.exporterName || "").trim().toLowerCase());
+            const defaultImp = importersList.find((i) => i.name.toUpperCase() === "UNKNOWN IMPORTER");
+            const defaultExp = exportersList.find((e) => e.name.toUpperCase() === "UNKNOWN EXPORTER");
+
+            const importerId = matchedImp?._id || defaultImp?._id;
+            const exporterId = matchedExp?._id || defaultExp?._id;
+
+            const createRes = await containerApi.create({
+              containerNo: containerNoVal,
+              importer: importerId,
+              exporter: exporterId,
+              party: form.party || undefined,
+              cha: form.cha || undefined,
+              shippingLine: form.shippingLine || undefined,
+              portOfChina: form.portOfChina || undefined,
+              loadingPort: form.loadingPort || undefined,
+              dischargePort: form.dischargePort || undefined,
+              cbm: form.cbm || undefined,
+            });
             if (createRes.data) {
               finalContainerId = createRes.data._id || createRes.data.id;
             }
@@ -335,7 +354,13 @@ const InvoiceMaker = () => {
         }
       }
 
-      await uploadDocument(finalContainerId || null, formData);
+      if (!finalContainerId) {
+        toast.error("Document cannot be saved. Please link to an existing container or use an Invoice Number that contains 'RBC' to automatically create one.");
+        setSaving(false);
+        return;
+      }
+
+      await uploadDocument(finalContainerId, formData);
       toast.success("Document saved successfully!");
     } catch (err) {
       console.error(err);
