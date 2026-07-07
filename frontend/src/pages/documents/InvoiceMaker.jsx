@@ -310,7 +310,8 @@ const InvoiceMaker = () => {
 
       pdf.addImage(imageData, "PNG", x, y, imageWidth, imageHeight);
 
-      const pdfBlob = pdf.output("blob");
+      const rawPdfBlob = pdf.output("blob");
+      const pdfBlob = new Blob([rawPdfBlob], { type: "application/pdf" });
       const docTypeLabel = form.documentType === "PACKING LIST" ? "Packing_List" : "Commercial_Invoice";
 
       const formData = new FormData();
