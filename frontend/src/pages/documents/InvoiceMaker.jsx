@@ -294,7 +294,7 @@ const InvoiceMaker = () => {
         windowWidth: target.scrollWidth,
         windowHeight: target.scrollHeight,
       });
-      const imageData = canvas.toDataURL("image/png");
+      const imageData = canvas.toDataURL("image/jpeg", 0.7);
       const pdf = new jsPDF("l", "mm", "a4");
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
@@ -308,7 +308,7 @@ const InvoiceMaker = () => {
       const x = (pageWidth - imageWidth) / 2;
       const y = (pageHeight - imageHeight) / 2;
 
-      pdf.addImage(imageData, "PNG", x, y, imageWidth, imageHeight);
+      pdf.addImage(imageData, "JPEG", x, y, imageWidth, imageHeight);
 
       const rawPdfBlob = pdf.output("blob");
       const pdfBlob = new Blob([rawPdfBlob], { type: "application/pdf" });
