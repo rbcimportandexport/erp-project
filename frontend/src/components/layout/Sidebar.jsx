@@ -42,7 +42,7 @@ const Sidebar = ({ collapsed, onToggle }) => {
   });
 
   return (
-    <aside className={`${collapsed ? "w-20" : "w-64"} hidden min-h-screen shrink-0 bg-slate-950 text-white transition-all md:block`}>
+    <aside className={`${collapsed ? "w-20" : "w-64"} sticky top-0 h-screen overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] hidden shrink-0 bg-slate-950 text-white transition-all md:block`}>
       <div className="flex h-16 items-center justify-between px-4">
         <Link to="/" className="min-w-0 font-bold">{collapsed ? "RBC" : "RBC ERP"}</Link>
         <Button variant="ghost" className="h-8 w-8 px-0 text-white hover:bg-slate-800" onClick={onToggle} aria-label="Toggle sidebar">
