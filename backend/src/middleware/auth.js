@@ -16,8 +16,16 @@ const protect = async (req, res, next) => {
       // Try local verify
       decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
-      // Decode directly (Supabase token or others)
-      decoded = jwt.decode(token);
+      // Only decode directly if signature is verified with SUPABASE_JWT_SECRET
+      if (process.env.SUPABASE_JWT_SECRET) {
+        try {
+          decoded = jwt.verify(token, process.env.SUPABASE_JWT_SECRET);
+        } catch (subErr) {
+          return errorResponse(res, "Invalid token signature", "Please login again.", 401);
+        }
+      } else {
+        return errorResponse(res, "Invalid token signature", "Please login again.", 401);
+      }
     }
 
     if (!decoded) {

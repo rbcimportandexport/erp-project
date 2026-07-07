@@ -31,7 +31,8 @@ exports.list = async (req, res) => {
     }
 
     if (req.query.search) {
-      const regex = new RegExp(req.query.search, "i");
+      const escapedSearch = String(req.query.search).replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+      const regex = new RegExp(escapedSearch, "i");
       query.$or = [{ name: regex }, { email: regex }];
     }
 

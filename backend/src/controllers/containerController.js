@@ -26,7 +26,8 @@ exports.list = async (req, res) => {
       if (req.query.toDate) query.etaDate.$lte = new Date(req.query.toDate);
     }
     if (req.query.search) {
-      const regex = new RegExp(req.query.search, "i");
+      const escapedSearch = String(req.query.search).replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+      const regex = new RegExp(escapedSearch, "i");
       const docs = await Document.find({ $or: [{ fileName: regex }, { docType: regex }] }).select("container");
       const transports = await Transport.find({
         $or: [{ vehicleNo: regex }, { driverName: regex }, { driverPhone: regex }, { transporterName: regex }, { fromLocation: regex }, { toLocation: regex }],

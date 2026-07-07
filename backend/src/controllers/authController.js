@@ -32,7 +32,8 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const user = await User.create({ ...req.body, createdBy: req.user?._id });
+    const { name, email, password } = req.body;
+    const user = await User.create({ name, email, password, role: "user", createdBy: req.user?._id });
     await writeActivityLog({ req, action: "create", module: "User", recordId: user._id, description: "User registered" });
     return successResponse(res, sanitizeUser(user), "User registered", 201);
   } catch (error) {
@@ -79,7 +80,7 @@ exports.forgotPassword = async (req, res) => {
     const trimmedPin = String(pin).trim().toUpperCase();
     const trimmedSecret = String(secretPin).trim().toUpperCase();
 
-    if (trimmedPin !== "RBC2026" && trimmedPin !== trimmedSecret) {
+    if (trimmedPin !== trimmedSecret) {
       return errorResponse(res, "Invalid PIN", "Invalid Security PIN", 400);
     }
 

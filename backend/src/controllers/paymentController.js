@@ -28,7 +28,6 @@ exports.update = async (req, res) => {
   try {
     const payment = await Payment.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!payment) return errorResponse(res, "Payment not found", "Record not found", 404);
-    await payment.save();
     await writeActivityLog({ req, action: "update", module: "Payment", recordId: payment._id, description: "Payment updated" });
     return successResponse(res, payment, "Payment updated");
   } catch (error) {
