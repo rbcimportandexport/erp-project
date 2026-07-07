@@ -1,4 +1,4 @@
-import { supabase } from "../supabaseClient";
+import axiosInstance from "./axiosInstance";
 
 // Helper to map DB keys
 const mapKeys = (item) => {
@@ -6,7 +6,13 @@ const mapKeys = (item) => {
   if (Array.isArray(item)) return item.map(mapKeys);
 
   const mapped = { ...item };
-  if (mapped.id) mapped._id = mapped.id;
+  if (mapped._id) {
+    mapped.id = mapped._id.toString();
+  } else if (mapped.id) {
+    mapped._id = mapped.id;
+  }
+
+  // Ensure compatibility with container reference field
   if (mapped.container_id) mapped.container = mapped.container_id;
 
   for (const key in mapped) {
@@ -19,98 +25,37 @@ const mapKeys = (item) => {
 };
 
 export const getStats = async () => {
-  const todayStr = new Date().toISOString().split("T")[0];
-  const nextWeek = new Date();
-  nextWeek.setDate(nextWeek.getDate() + 7);
-  const nextWeekStr = nextWeek.toISOString().split("T")[0];
-
-  const [
-    { count: totalContainers },
-    { count: upcomingEta },
-    { count: todaysTasks },
-    { count: doneContainers },
-    { count: pendingContainers },
-    { count: pendingLinePayment },
-    { data: boeDocs }
-  ] = await Promise.all([
-    supabase.from("containers").select("*", { count: "exact", head: true }),
-    supabase.from("containers").select("*", { count: "exact", head: true }).gte("eta_date", todayStr).lte("eta_date", nextWeekStr),
-    supabase.from("containers").select("*", { count: "exact", head: true }).or(`eta_date.eq.${todayStr},unloading_date.eq.${todayStr}`),
-    supabase.from("containers").select("*", { count: "exact", head: true }).eq("status", "done"),
-    supabase.from("containers").select("*", { count: "exact", head: true }).neq("status", "done"),
-    supabase.from("payments").select("*", { count: "exact", head: true }).gt("pending_amount", 0),
-    supabase.from("documents").select("container_id").eq("doc_type", "BOE")
-  ]);
-
-  const total = totalContainers || 0;
-  const boeCount = boeDocs ? new Set(boeDocs.map(d => d.container_id)).size : 0;
-
-  return {
-    data: {
-      totalContainers: total,
-      upcomingEta: upcomingEta || 0,
-      todaysTasks: todaysTasks || 0,
-      doneContainers: doneContainers || 0,
-      pendingContainers: pendingContainers || 0,
-      pendingBoe: Math.max(total - boeCount, 0),
-      pendingLinePayment: pendingLinePayment || 0,
-    }
-  };
+  const response = await axiosInstance.get("/dashboard/stats");
+  const resData = response.data.data || response.data;
+  return { data: mapKeys(resData) };
 };
 
 export const getUpcomingEta = async () => {
-  const todayStr = new Date().toISOString().split("T")[0];
-  const nextWeek = new Date();
-  nextWeek.setDate(nextWeek.getDate() + 7);
-  const nextWeekStr = nextWeek.toISOString().split("T")[0];
-
-  const { data, error } = await supabase
-    .from("containers")
-    .select("*, importer:importers(*), exporter:exporters(*)")
-    .gte("eta_date", todayStr)
-    .lte("eta_date", nextWeekStr)
-    .order("eta_date");
-
-  if (error) throw error;
-  return { data: mapKeys(data) };
+  const response = await axiosInstance.get("/dashboard/upcoming-eta");
+  const resData = response.data.data || response.data;
+  return { data: mapKeys(resData) };
 };
 
 export const getEtaPriorities = async () => {
-  const { data, error } = await supabase
-    .from("containers")
-    .select("*, importer:importers(*), exporter:exporters(*)")
-    .not("eta_date", "is", null)
-    .order("eta_date", { ascending: true });
-
-  if (error) throw error;
-  return { data: mapKeys(data || []) };
+  // Use containers endpoint with order logic since eta-priorities list is containers sorted by eta
+  const response = await axiosInstance.get("/containers", {
+    params: {
+      limit: 1000,
+      sort: "etaDate"
+    }
+  });
+  const resData = response.data.data || response.data;
+  return { data: mapKeys(resData.items || []) };
 };
 
 export const getPendingBoe = async () => {
-  const { data: boeDocs } = await supabase.from("documents").select("container_id").eq("doc_type", "BOE");
-  const containerIdsWithBoe = boeDocs ? boeDocs.map(d => d.container_id) : [];
-
-  let query = supabase
-    .from("containers")
-    .select("*, importer:importers(*), exporter:exporters(*)")
-    .order("eta_date");
-
-  if (containerIdsWithBoe.length > 0) {
-    query = query.not("id", "in", `(${containerIdsWithBoe.join(",")})`);
-  }
-
-  const { data, error } = await query;
-  if (error) throw error;
-  return { data: mapKeys(data) };
+  const response = await axiosInstance.get("/dashboard/pending-boe");
+  const resData = response.data.data || response.data;
+  return { data: mapKeys(resData) };
 };
 
 export const getPendingLinePayment = async () => {
-  const { data, error } = await supabase
-    .from("payments")
-    .select("*, container:containers(*, importer:importers(*), exporter:exporters(*))")
-    .gt("pending_amount", 0)
-    .order("updated_at", { ascending: false });
-
-  if (error) throw error;
-  return { data: mapKeys(data) };
+  const response = await axiosInstance.get("/dashboard/pending-line-payment");
+  const resData = response.data.data || response.data;
+  return { data: mapKeys(resData) };
 };

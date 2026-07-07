@@ -75,3 +75,12 @@ exports.parseInvoicePackingList = async (req, res) => {
     return errorResponse(res, error.message, "Unable to parse PDF", 400);
   }
 };
+
+exports.listAll = async (req, res) => {
+  try {
+    const documents = await Document.find({}).populate("container", "containerNo").populate("uploadedBy", "name email").sort("-uploadedAt");
+    return successResponse(res, documents, "All documents fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch all documents", 500);
+  }
+};

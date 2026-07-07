@@ -1,6 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { login as loginRequest, me } from "../api/authApi";
-import { supabase } from "../supabaseClient";
 
 export const AuthContext = createContext(null);
 
@@ -13,8 +12,6 @@ export const AuthProvider = ({ children }) => {
       const response = await me();
       setUser(response.data);
       localStorage.setItem("user", JSON.stringify(response.data));
-      const { data } = await supabase.auth.getSession();
-      if (data.session?.access_token) localStorage.setItem("token", data.session.access_token);
     } catch {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -25,52 +22,24 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    let mounted = true;
-
-    const initSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!mounted) return;
-
-      if (data.session?.access_token) {
-        localStorage.setItem("token", data.session.access_token);
-        await refreshUser();
-      } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setUser(null);
-        setLoading(false);
-      }
-    };
-
-    initSession();
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.access_token) {
-        localStorage.setItem("token", session.access_token);
-        refreshUser();
-      } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setUser(null);
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      mounted = false;
-      listener.subscription.unsubscribe();
-    };
+    const token = localStorage.getItem("token");
+    if (token) {
+      refreshUser();
+    } else {
+      setLoading(false);
+    }
   }, [refreshUser]);
 
   const login = async (payload) => {
     const response = await loginRequest(payload);
     localStorage.setItem("token", response.data.token);
-    await refreshUser();
+    setUser(response.data.user);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+    setLoading(false);
     return response;
   };
 
   const logout = () => {
-    supabase.auth.signOut();
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);

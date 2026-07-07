@@ -6,6 +6,7 @@ const authorize = require("../middleware/role");
 
 router.post("/upload/:containerId", protect, authorize("masterAdmin", "admin", "user"), upload.single("file"), controller.upload);
 router.post("/parse-invoice-packing-list", protect, authorize("masterAdmin", "admin", "user"), upload.single("file"), controller.parseInvoicePackingList);
+router.get("/", protect, authorize("masterAdmin", "admin", "user"), controller.listAll);
 router.get("/:containerId", protect, authorize("masterAdmin", "admin", "user"), controller.listByContainer);
 router.delete("/:id", protect, authorize("masterAdmin"), controller.remove);
 
