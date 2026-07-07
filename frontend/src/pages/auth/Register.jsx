@@ -84,7 +84,6 @@ const Register = () => {
         <Input label="Name" error={errors.name?.message} {...register("name", { required: "Name is required" })} />
         <Input label="Email" type="email" error={errors.email?.message} {...register("email", { required: "Email is required" })} />
         <Input label="Password" type="password" error={errors.password?.message} {...register("password", { required: "Password is required", minLength: { value: 6, message: "Minimum 6 characters" } })} />
-        <Select label="Role" options={[{ value: "masterAdmin", label: "Master Admin" }, { value: "admin", label: "Admin" }, { value: "user", label: "User" }]} {...register("role")} />
         
         <Button type="submit" loading={loading} className="w-full">Sign Up</Button>
         
