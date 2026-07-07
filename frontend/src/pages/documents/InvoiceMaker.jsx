@@ -364,7 +364,8 @@ const InvoiceMaker = () => {
       toast.success("Document saved successfully!");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to save document: " + err.message);
+      const serverMsg = err.response?.data?.error || err.response?.data?.message || err.message;
+      toast.error("Failed to save document: " + serverMsg);
     } finally {
       setSaving(false);
     }
