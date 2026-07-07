@@ -38,6 +38,26 @@ exports.list = async (req, res) => {
       ];
     }
 
+    if (req.query.missing) {
+      const field = req.query.missing;
+      const missingQuery = {
+        $or: [
+          { [field]: null },
+          { [field]: "" },
+          { [field]: { $exists: false } }
+        ]
+      };
+      if (query.$or) {
+        query.$and = [
+          { $or: query.$or },
+          missingQuery
+        ];
+        delete query.$or;
+      } else {
+        query.$or = missingQuery.$or;
+      }
+    }
+
     const [items, total] = await Promise.all([
       applyPopulate(Container.find(query).sort(req.query.sort || "-createdAt").skip((page - 1) * limit).limit(limit)),
       Container.countDocuments(query),

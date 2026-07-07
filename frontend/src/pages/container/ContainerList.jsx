@@ -91,6 +91,7 @@ const ContainerList = () => {
   const [exporters, setExporters] = useState([]);
   const [hsnCodes, setHsnCodes] = useState([]);
   const [loadingOptions, setLoadingOptions] = useState(true);
+  const [missingField, setMissingField] = useState("");
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -146,6 +147,7 @@ const ContainerList = () => {
       api={containerApi}
       getRowClassName={getPriorityRowClassName}
       tableVariant="cards"
+      filters={{ missing: missingField }}
       renderHeader={({ items, openAdd, search, setSearch }) => {
         const counts = getPriorityCounts(items);
         return (
@@ -153,7 +155,7 @@ const ContainerList = () => {
             <div className="bg-slate-950 px-6 py-6 text-white">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.24em] text-brand-50">Shipment Board</p>
+                  <p className="text-xs font-black uppercase tracking-[0.24em] text-brand-55">Shipment Board</p>
                   <h1 className="mt-2 text-3xl font-black tracking-tight">Containers</h1>
                   <p className="mt-2 text-sm text-slate-300">Container number par click karo, edit direct open hoga.</p>
                 </div>
@@ -180,8 +182,27 @@ const ContainerList = () => {
               </div>
             </div>
 
-            <div className="p-4">
-              <SearchBar value={search} onChange={setSearch} placeholder="Search container number" />
+            <div className="flex flex-col md:flex-row gap-4 p-4">
+              <div className="flex-1">
+                <SearchBar value={search} onChange={setSearch} placeholder="Search container number" />
+              </div>
+              <div className="w-full md:w-72">
+                <select
+                  value={missingField}
+                  onChange={(e) => setMissingField(e.target.value)}
+                  className="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-50 font-medium text-slate-700"
+                >
+                  <option value="">Show All Containers</option>
+                  <option value="etaDate">⚠️ Missing ETA Date</option>
+                  <option value="blNo">⚠️ Missing BL No</option>
+                  <option value="party">⚠️ Missing Party</option>
+                  <option value="cha">⚠️ Missing CHA</option>
+                  <option value="shippingLine">⚠️ Missing Shipping Line</option>
+                  <option value="portOfChina">⚠️ Missing Port Of China</option>
+                  <option value="loadingDate">⚠️ Missing Loading Date</option>
+                  <option value="unloadingDate">⚠️ Missing Unloading Date</option>
+                </select>
+              </div>
             </div>
           </div>
         );

@@ -15,7 +15,7 @@ import { useAlert } from "../hooks/useAlert";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
 
-const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId, onEditClosed, tableVariant, renderHeader }) => {
+const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId, onEditClosed, tableVariant, renderHeader, filters = {} }) => {
   const alert = useAlert();
   const lastAutoEditId = useRef(null);
   const [search, setSearch] = useState("");
@@ -26,7 +26,10 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
   const [form, setForm] = useState({});
   const debouncedSearch = useDebounce(search);
 
-  const { data, loading, refetch } = useFetch(() => api.list({ search: debouncedSearch, page }), [api, debouncedSearch, page]);
+  const { data, loading, refetch } = useFetch(
+    () => api.list({ search: debouncedSearch, page, ...filters }),
+    [api, debouncedSearch, page, JSON.stringify(filters)]
+  );
 
   const openEditor = (record) => {
     setSelected(record);
