@@ -59,9 +59,9 @@ const documentProcessedOptions = [
 ].map((value) => ({ value, label: value }));
 
 const getEtaPriority = (etaValue) => {
-  if (!etaValue) return { label: "-", tone: "slate" };
+  if (!etaValue) return { label: "Low", tone: "green" };
   const eta = dayjs(etaValue);
-  if (!eta.isValid()) return { label: "-", tone: "slate" };
+  if (!eta.isValid()) return { label: "Low", tone: "green" };
 
   const diff = eta.startOf("day").diff(dayjs().startOf("day"), "day");
   if (diff <= 7) return { label: "High", tone: "red" };
