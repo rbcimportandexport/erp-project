@@ -71,7 +71,18 @@ export const createCrudApi = (baseUrl) => {
 
     get: async (id) => {
       const response = await axiosInstance.get(`${baseUrl}/${id}`);
-      const resData = response.data.data || response.data;
+      let resData = response.data.data || response.data;
+
+      // If the response contains a nested container object, flatten it
+      if (resData && resData.container && typeof resData.container === "object") {
+        resData = {
+          ...resData.container,
+          documents: resData.documents,
+          payment: resData.payment,
+          transports: resData.transports,
+        };
+      }
+
       return { data: mapKeys(resData) };
     },
 
