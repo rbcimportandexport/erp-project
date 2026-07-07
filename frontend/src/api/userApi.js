@@ -40,6 +40,24 @@ const userApi = {
       .order("created_at", { ascending: false })
       .range(from, to);
 
+    // Apply role-based filtering based on the logged-in user
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+      const role = storedUser?.role || "user";
+      if (role === "admin") {
+        // admin can only see 'user' role accounts
+        query = query.eq("role", "user");
+      } else if (role === "masterAdmin") {
+        // masterAdmin can see all roles
+        query = query.in("role", ["admin", "user", "masterAdmin"]);
+      } else {
+        // Regular user or other roles cannot view users list
+        query = query.eq("role", "none");
+      }
+    } catch (e) {
+      console.error("Error parsing user role for user list query:", e);
+    }
+
     if (search) {
       const safeSearch = search.replace(/[%_]/g, "");
       query = query.or(`name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%`);

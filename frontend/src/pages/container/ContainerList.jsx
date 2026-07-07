@@ -70,6 +70,7 @@ const getEtaPriority = (etaValue) => {
 };
 
 const getPriorityRowClassName = (row) => {
+  if (row.status === "done") return "bg-white ring-1 ring-slate-200 hover:bg-slate-50";
   const priority = getEtaPriority(row.eta_date || row.etaDate);
   if (priority.tone === "red") return "bg-red-100 ring-1 ring-red-200 hover:bg-red-200";
   if (priority.tone === "yellow") return "bg-amber-100 ring-1 ring-amber-200 hover:bg-amber-200";
@@ -78,6 +79,7 @@ const getPriorityRowClassName = (row) => {
 };
 
 const getPriorityCounts = (items) => items.reduce((acc, item) => {
+  if (item.status === "done") return acc;
   const priority = getEtaPriority(item.eta_date || item.etaDate);
   acc[priority.tone] = (acc[priority.tone] || 0) + 1;
   return acc;
