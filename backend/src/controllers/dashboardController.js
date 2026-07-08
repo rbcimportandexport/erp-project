@@ -84,7 +84,12 @@ exports.pendingBoe = async (req, res) => {
 
 exports.pendingLinePayment = async (req, res) => {
   try {
-    const items = await Payment.find({ pendingAmount: { $gt: 0 } }).populate("container").sort("-updatedAt");
+    const items = await Payment.find({ pendingAmount: { $gt: 0 } })
+      .populate({
+        path: "container",
+        populate: { path: "importer" }
+      })
+      .sort("-updatedAt");
     return successResponse(res, items, "Pending line payment fetched");
   } catch (error) {
     return errorResponse(res, error.message, "Unable to fetch pending line payment", 500);
