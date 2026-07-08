@@ -105,6 +105,7 @@ const Dashboard = () => {
         const res = await containerApi.list({ limit: 1000 });
         const today = dayjs().startOf("day");
         list = (res.data?.items || []).filter((item) => {
+          if (item.status?.toLowerCase() === "done") return false;
           const eta = item.etaDate || item.eta_date ? dayjs(item.etaDate || item.eta_date).startOf("day") : null;
           const unloading = item.unloadingDate || item.unloading_date ? dayjs(item.unloadingDate || item.unloading_date).startOf("day") : null;
           return (eta && eta.isSame(today)) || (unloading && unloading.isSame(today));

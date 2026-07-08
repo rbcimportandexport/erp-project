@@ -15,8 +15,14 @@ exports.stats = async (req, res) => {
 
     const [totalContainers, upcomingEta, todaysTasks, doneContainers, pendingContainers, linePaymentPending, pendingBl, pendingBoeCount] = await Promise.all([
       Container.countDocuments(),
-      Container.countDocuments({ etaDate: { $gte: todayStart, $lte: nextWeek } }),
-      Container.countDocuments({ $or: [{ etaDate: { $gte: todayStart, $lte: todayEnd } }, { unloadingDate: { $gte: todayStart, $lte: todayEnd } }] }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        etaDate: { $gte: todayStart, $lte: nextWeek }
+      }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        $or: [{ etaDate: { $gte: todayStart, $lte: todayEnd } }, { unloadingDate: { $gte: todayStart, $lte: todayEnd } }]
+      }),
       Container.countDocuments({ status: { $in: ["done", "DONE"] } }),
       Container.countDocuments({ status: { $nin: ["done", "DONE"] } }),
       Payment.countDocuments({ pendingAmount: { $gt: 0 } }),
@@ -51,7 +57,10 @@ exports.stats = async (req, res) => {
 
 exports.upcomingEta = async (req, res) => {
   try {
-    const items = await Container.find({ etaDate: { $gte: startOfToday(), $lte: dayjs().add(7, "day").endOf("day").toDate() } })
+    const items = await Container.find({
+      status: { $nin: ["done", "DONE"] },
+      etaDate: { $gte: startOfToday(), $lte: dayjs().add(7, "day").endOf("day").toDate() }
+    })
       .populate("importer exporter")
       .sort("etaDate");
     return successResponse(res, items, "Upcoming ETA fetched");
