@@ -14,7 +14,7 @@ const applyPopulate = (query) => {
 exports.list = async (req, res) => {
   try {
     const page = Math.max(Number(req.query.page) || 1, 1);
-    const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 100);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 10000);
     const query = {};
 
     if (req.query.status) {

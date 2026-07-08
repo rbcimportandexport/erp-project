@@ -11,13 +11,14 @@ exports.stats = async (req, res) => {
     const todayEnd = endOfToday();
     const nextWeek = addDays(todayStart, 7);
 
-    const [totalContainers, upcomingEta, todaysTasks, doneContainers, pendingContainers, boeContainers, linePaymentPending, pendingBl] = await Promise.all([
+    const boeContainers = await Document.distinct("container", { docType: "BOE" });
+
+    const [totalContainers, upcomingEta, todaysTasks, doneContainers, pendingContainers, linePaymentPending, pendingBl, pendingBoeCount] = await Promise.all([
       Container.countDocuments(),
       Container.countDocuments({ etaDate: { $gte: todayStart, $lte: nextWeek } }),
       Container.countDocuments({ $or: [{ etaDate: { $gte: todayStart, $lte: todayEnd } }, { unloadingDate: { $gte: todayStart, $lte: todayEnd } }] }),
       Container.countDocuments({ status: { $in: ["done", "DONE"] } }),
       Container.countDocuments({ status: { $nin: ["done", "DONE"] } }),
-      Document.distinct("container", { docType: "BOE" }),
       Payment.countDocuments({ pendingAmount: { $gt: 0 } }),
       Container.countDocuments({
         status: { $nin: ["done", "DONE"] },
@@ -27,6 +28,10 @@ exports.stats = async (req, res) => {
           { blNo: "" }
         ]
       }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        _id: { $nin: boeContainers }
+      }),
     ]);
 
     return successResponse(res, {
@@ -35,7 +40,7 @@ exports.stats = async (req, res) => {
       todaysTasks,
       doneContainers,
       pendingContainers,
-      pendingBoe: Math.max(totalContainers - boeContainers.length, 0),
+      pendingBoe: pendingBoeCount,
       pendingLinePayment: linePaymentPending,
       pendingBl,
     }, "Dashboard stats fetched");
@@ -58,7 +63,10 @@ exports.upcomingEta = async (req, res) => {
 exports.pendingBoe = async (req, res) => {
   try {
     const withBoe = await Document.distinct("container", { docType: "BOE" });
-    const items = await Container.find({ _id: { $nin: withBoe } }).populate("importer exporter").sort("etaDate");
+    const items = await Container.find({ 
+      status: { $nin: ["done", "DONE"] },
+      _id: { $nin: withBoe } 
+    }).populate("importer exporter").sort("etaDate");
     return successResponse(res, items, "Pending BOE fetched");
   } catch (error) {
     return errorResponse(res, error.message, "Unable to fetch pending BOE", 500);
