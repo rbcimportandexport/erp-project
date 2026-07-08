@@ -1,10 +1,26 @@
+import { useEffect } from "react";
 import Button from "./Button";
 
 const Modal = ({ open, title, children, onClose, footer, subtitle = "Record Editor" }) => {
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      setTimeout(() => {
+        const activeModals = document.querySelectorAll(".modal-backdrop");
+        if (activeModals.length === 0) {
+          document.body.style.overflow = "";
+        }
+      }, 0);
+    };
+  }, [open]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+    <div className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
       <div className="max-h-[92vh] w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
         <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-slate-50 px-6 py-5">
           <div>
