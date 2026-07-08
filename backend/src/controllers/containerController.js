@@ -17,7 +17,15 @@ exports.list = async (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 100);
     const query = {};
 
-    if (req.query.status) query.status = req.query.status;
+    if (req.query.status) {
+      if (req.query.status === "active") {
+        query.status = { $nin: ["done", "DONE"] };
+      } else if (req.query.status === "done") {
+        query.status = { $in: ["done", "DONE"] };
+      } else {
+        query.status = req.query.status;
+      }
+    }
     if (req.query.importer) query.importer = req.query.importer;
     if (req.query.exporter) query.exporter = req.query.exporter;
     if (req.query.fromDate || req.query.toDate) {

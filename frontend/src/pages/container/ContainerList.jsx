@@ -88,6 +88,10 @@ const getEtaPriority = (etaValue) => {
 };
 
 const getPriorityRowClassName = (row) => {
+  const normStatus = (row.status || "").trim().toLowerCase();
+  if (normStatus === "done") {
+    return "bg-slate-50 text-slate-400 hover:bg-slate-100 ring-1 ring-slate-200";
+  }
   const priority = getEtaPriority(row.eta_date || row.etaDate);
   if (priority.tone === "red") return "bg-red-100 ring-1 ring-red-200 hover:bg-red-200";
   if (priority.tone === "yellow") return "bg-amber-100 ring-1 ring-amber-200 hover:bg-amber-200";
@@ -96,6 +100,8 @@ const getPriorityRowClassName = (row) => {
 };
 
 const getPriorityCounts = (items) => items.reduce((acc, item) => {
+  const normStatus = (item.status || "").trim().toLowerCase();
+  if (normStatus === "done") return acc;
   const priority = getEtaPriority(item.eta_date || item.etaDate);
   acc[priority.tone] = (acc[priority.tone] || 0) + 1;
   return acc;
@@ -108,6 +114,7 @@ const ContainerList = () => {
   const [hsnCodes, setHsnCodes] = useState([]);
   const [loadingOptions, setLoadingOptions] = useState(true);
   const [missingField, setMissingField] = useState("");
+  const [statusFilter, setStatusFilter] = useState("active");
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -163,7 +170,7 @@ const ContainerList = () => {
       api={containerApi}
       getRowClassName={getPriorityRowClassName}
       tableVariant="cards"
-      filters={{ missing: missingField }}
+      filters={{ missing: missingField, status: statusFilter }}
       renderHeader={({ items, openAdd, search, setSearch }) => {
         const counts = getPriorityCounts(items);
         return (
@@ -202,13 +209,24 @@ const ContainerList = () => {
               <div className="flex-1">
                 <SearchBar value={search} onChange={setSearch} placeholder="Search container number" />
               </div>
-              <div className="w-full md:w-72">
+              <div className="w-full md:w-48">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-50 font-medium text-slate-700"
+                >
+                  <option value="active">Active Containers</option>
+                  <option value="done">Completed (Done)</option>
+                  <option value="">All Containers</option>
+                </select>
+              </div>
+              <div className="w-full md:w-64">
                 <select
                   value={missingField}
                   onChange={(e) => setMissingField(e.target.value)}
                   className="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-50 font-medium text-slate-700"
                 >
-                  <option value="">Show All Containers</option>
+                  <option value="">Filter Missing Fields...</option>
                   <option value="etaDate">⚠️ Missing ETA Date</option>
                   <option value="blNo">⚠️ Missing BL No</option>
                   <option value="party">⚠️ Missing Party</option>

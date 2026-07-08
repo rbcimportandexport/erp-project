@@ -114,7 +114,7 @@ const Dashboard = () => {
         list = res.data?.items || [];
       } else if (key === "pendingContainers") {
         const res = await containerApi.list({ limit: 1000 });
-        list = (res.data?.items || []).filter((item) => item.status !== "done");
+        list = (res.data?.items || []).filter((item) => item.status?.toLowerCase() !== "done");
       } else if (key === "pendingBoe") {
         const res = await getPendingBoe();
         list = res.data || [];
@@ -128,7 +128,7 @@ const Dashboard = () => {
           .filter((c) => c._id || c.id);
       } else if (key === "pendingBl") {
         const res = await containerApi.list({ limit: 1000 });
-        list = (res.data?.items || []).filter((item) => item.status !== "done" && !item.blNo && !item.bl_no);
+        list = (res.data?.items || []).filter((item) => item.status?.toLowerCase() !== "done" && !item.blNo && !item.bl_no);
       }
       setModalData(list);
     } catch (error) {
@@ -145,7 +145,7 @@ const Dashboard = () => {
       const eta = item.eta_date || item.etaDate;
       return { ...item, eta, priority: getEtaPriority(eta) };
     })
-    .filter((item) => item.status !== "done" && (!item.eta || item.priority.daysLeft >= 0))
+    .filter((item) => item.status?.toLowerCase() !== "done" && (!item.eta || item.priority.daysLeft >= 0))
     .sort((a, b) => {
       if (a.priority.sort !== b.priority.sort) return a.priority.sort - b.priority.sort;
       if (!a.eta) return 1;
