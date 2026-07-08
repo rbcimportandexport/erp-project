@@ -209,19 +209,21 @@ const AnalyticsPage = () => {
             <BarChart3 className="h-5 w-5 text-slate-400" />
           </div>
 
-          <div className="flex h-64 items-end gap-3 px-2 pt-4">
+          <div className="flex h-60 items-end gap-2 px-1 pt-4">
             {monthlyData.map((d) => {
               const heightPercent = Math.round((d.count / maxMonthCount) * 100);
               return (
-                <div key={d.name} className="group flex flex-1 flex-col items-center gap-2 h-full justify-end">
-                  <span className="opacity-0 group-hover:opacity-100 bg-slate-900 text-white text-[10px] font-black py-1 px-1.5 rounded transition-opacity duration-200">
-                    {d.count}
+                <div key={d.name} className="flex flex-1 flex-col items-center">
+                  <span className="text-xs font-black text-slate-700 mb-1 h-4">
+                    {d.count > 0 ? d.count : ""}
                   </span>
-                  <div 
-                    className="w-full rounded-t-lg bg-gradient-to-t from-brand-500 to-indigo-500 hover:from-brand-600 hover:to-indigo-600 transition-all duration-500"
-                    style={{ height: `${Math.max(heightPercent, 4)}%` }}
-                  />
-                  <span className="text-[10px] font-bold text-slate-500 rotate-45 md:rotate-0 origin-left">
+                  <div className="relative w-full h-40 bg-slate-50 rounded-t-lg overflow-hidden flex items-end">
+                    <div 
+                      className="w-full rounded-t bg-gradient-to-t from-brand-500 to-indigo-500 hover:from-brand-600 hover:to-indigo-600 transition-all duration-300"
+                      style={{ height: `${Math.max(heightPercent, 2)}%` }}
+                    />
+                  </div>
+                  <span className="mt-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                     {d.name.slice(0, 3)}
                   </span>
                 </div>
@@ -303,17 +305,19 @@ const AnalyticsPage = () => {
           {weeksData.map((w) => {
             const heightPercent = Math.round((w.count / maxWeekCount) * 100);
             return (
-              <div key={w.name} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 flex flex-col items-center justify-between gap-4">
+              <div key={w.name} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 flex flex-col items-center gap-4">
                 <p className="text-xs font-black uppercase tracking-wider text-slate-500">{w.name}</p>
-                <div className="flex items-end justify-center w-full h-32">
-                  <div 
-                    className="w-16 rounded-t-lg bg-gradient-to-t from-teal-500 to-emerald-500 transition-all duration-500"
-                    style={{ height: `${Math.max(heightPercent, 4)}%` }}
-                  />
-                </div>
-                <div className="text-center">
-                  <h4 className="text-2xl font-black text-slate-950">{w.count}</h4>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Containers</p>
+                
+                <div className="flex flex-col items-center justify-end w-full h-36">
+                  <span className="text-sm font-black text-slate-700 mb-1.5 h-5">
+                    {w.count > 0 ? `${w.count} Loads` : "0 Loads"}
+                  </span>
+                  <div className="relative w-16 h-28 bg-slate-200 rounded-t-lg overflow-hidden flex items-end">
+                    <div 
+                      className="w-full rounded-t bg-gradient-to-t from-teal-500 to-emerald-500 transition-all duration-300"
+                      style={{ height: `${Math.max(heightPercent, 2)}%` }}
+                    />
+                  </div>
                 </div>
               </div>
             );
