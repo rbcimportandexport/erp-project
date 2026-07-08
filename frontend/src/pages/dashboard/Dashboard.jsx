@@ -159,6 +159,18 @@ const Dashboard = () => {
 
   const highPriorityRows = etaRows.filter((item) => item.priority.tone === "red");
 
+  const pendingBlRows = etaContainers
+    .filter((item) => item.status !== "done" && !item.blNo && !item.bl_no)
+    .map((item) => {
+      const eta = item.eta_date || item.etaDate;
+      return { ...item, eta, priority: getEtaPriority(eta) };
+    })
+    .sort((a, b) => {
+      if (!a.eta) return 1;
+      if (!b.eta) return -1;
+      return dayjs(a.eta).valueOf() - dayjs(b.eta).valueOf();
+    });
+
   return (
     <>
       <TopBar title="Dashboard" />
@@ -270,6 +282,58 @@ const Dashboard = () => {
           {highPriorityRows.length === 0 && (
             <div className="px-5 py-10 text-center">
               <p className="text-lg font-black text-slate-950">No high priority containers right now</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="mt-5 overflow-hidden rounded-[28px] border border-amber-200 bg-white shadow-sm">
+        <div className="flex flex-col gap-3 border-b border-amber-100 bg-amber-50 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-700">Missing BL Watch</p>
+            <h2 className="mt-1 text-2xl font-black text-slate-950">Pending BL Containers</h2>
+          </div>
+          <span className="inline-flex w-fit rounded-2xl bg-amber-600 px-4 py-2 text-sm font-black text-white">
+            {pendingBlRows.length} Pending BL
+          </span>
+        </div>
+
+        <div className="divide-y divide-amber-100">
+          {pendingBlRows.map((item) => {
+            const daysLeft = item.priority.daysLeft !== null ? Math.max(item.priority.daysLeft, 0) : null;
+            return (
+              <Link
+                key={item.id || item._id}
+                to={`/containers?edit=${item._id || item.id}`}
+                className="grid gap-4 bg-amber-50 px-5 py-4 text-slate-950 transition hover:bg-amber-100 lg:grid-cols-[1.1fr_1.4fr_1fr_0.8fr_0.8fr]"
+              >
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-[0.16em] text-amber-700">Container</p>
+                  <p className="mt-1 text-lg font-black text-amber-950">{getContainerNo(item)}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-[0.16em] text-amber-700">Importer</p>
+                  <p className="mt-1 font-bold">{getImporterName(item)}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-[0.16em] text-amber-700">ETA</p>
+                  <p className="mt-1 font-bold">{item.eta ? dayjs(item.eta).format("DD MMM YYYY") : "-"}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-[0.16em] text-amber-700">Days Left</p>
+                  <p className="mt-1 font-black">{daysLeft !== null ? `${daysLeft} days` : "-"}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-[0.16em] text-amber-700">Status</p>
+                  <p className="mt-1 font-bold capitalize">{item.status || "-"}</p>
+                </div>
+              </Link>
+            );
+          })}
+
+          {pendingBlRows.length === 0 && (
+            <div className="px-5 py-10 text-center">
+              <p className="text-lg font-black text-slate-950">No containers with pending BL right now</p>
             </div>
           )}
         </div>
