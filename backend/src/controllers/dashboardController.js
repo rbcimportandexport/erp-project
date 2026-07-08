@@ -52,7 +52,7 @@ exports.stats = async (req, res) => {
 exports.upcomingEta = async (req, res) => {
   try {
     const items = await Container.find({ etaDate: { $gte: startOfToday(), $lte: dayjs().add(7, "day").endOf("day").toDate() } })
-      .populate("importer exporter product")
+      .populate("importer exporter")
       .sort("etaDate");
     return successResponse(res, items, "Upcoming ETA fetched");
   } catch (error) {
