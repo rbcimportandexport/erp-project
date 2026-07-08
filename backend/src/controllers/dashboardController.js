@@ -11,7 +11,7 @@ exports.stats = async (req, res) => {
     const todayEnd = endOfToday();
     const nextWeek = addDays(todayStart, 7);
 
-    const [totalContainers, upcomingEta, todaysTasks, doneContainers, pendingContainers, boeContainers, linePaymentPending] = await Promise.all([
+    const [totalContainers, upcomingEta, todaysTasks, doneContainers, pendingContainers, boeContainers, linePaymentPending, pendingBl] = await Promise.all([
       Container.countDocuments(),
       Container.countDocuments({ etaDate: { $gte: todayStart, $lte: nextWeek } }),
       Container.countDocuments({ $or: [{ etaDate: { $gte: todayStart, $lte: todayEnd } }, { unloadingDate: { $gte: todayStart, $lte: todayEnd } }] }),
@@ -19,6 +19,14 @@ exports.stats = async (req, res) => {
       Container.countDocuments({ status: { $ne: "done" } }),
       Document.distinct("container", { docType: "BOE" }),
       Payment.countDocuments({ pendingAmount: { $gt: 0 } }),
+      Container.countDocuments({
+        status: { $ne: "done" },
+        $or: [
+          { blNo: { $exists: false } },
+          { blNo: null },
+          { blNo: "" }
+        ]
+      }),
     ]);
 
     return successResponse(res, {
@@ -29,6 +37,7 @@ exports.stats = async (req, res) => {
       pendingContainers,
       pendingBoe: Math.max(totalContainers - boeContainers.length, 0),
       pendingLinePayment: linePaymentPending,
+      pendingBl,
     }, "Dashboard stats fetched");
   } catch (error) {
     return errorResponse(res, error.message, "Unable to fetch dashboard stats", 500);

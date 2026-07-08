@@ -32,6 +32,7 @@ const metricCards = [
   { key: "pendingContainers", label: "Pending Containers", icon: Clock },
   { key: "pendingBoe", label: "Pending BOE", icon: FileWarning },
   { key: "pendingLinePayment", label: "Pending Line Payment", icon: IndianRupee },
+  { key: "pendingBl", label: "Pending BL", icon: AlertTriangle },
 ];
 
 const priorityConfig = {
@@ -125,6 +126,9 @@ const Dashboard = () => {
             pendingAmount: payment.pendingAmount,
           }))
           .filter((c) => c._id || c.id);
+      } else if (key === "pendingBl") {
+        const res = await containerApi.list({ limit: 1000 });
+        list = (res.data?.items || []).filter((item) => item.status !== "done" && !item.blNo && !item.bl_no);
       }
       setModalData(list);
     } catch (error) {
