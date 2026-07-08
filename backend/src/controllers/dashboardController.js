@@ -15,12 +15,12 @@ exports.stats = async (req, res) => {
       Container.countDocuments(),
       Container.countDocuments({ etaDate: { $gte: todayStart, $lte: nextWeek } }),
       Container.countDocuments({ $or: [{ etaDate: { $gte: todayStart, $lte: todayEnd } }, { unloadingDate: { $gte: todayStart, $lte: todayEnd } }] }),
-      Container.countDocuments({ status: "done" }),
-      Container.countDocuments({ status: { $ne: "done" } }),
+      Container.countDocuments({ status: { $in: ["done", "DONE"] } }),
+      Container.countDocuments({ status: { $nin: ["done", "DONE"] } }),
       Document.distinct("container", { docType: "BOE" }),
       Payment.countDocuments({ pendingAmount: { $gt: 0 } }),
       Container.countDocuments({
-        status: { $ne: "done" },
+        status: { $nin: ["done", "DONE"] },
         $or: [
           { blNo: { $exists: false } },
           { blNo: null },

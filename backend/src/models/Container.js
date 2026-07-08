@@ -16,7 +16,17 @@ const containerSchema = new mongoose.Schema(
     etaDate: Date,
     etaDays: { type: String, trim: true },
     unloadingDate: Date,
-    status: { type: String, enum: ["pending", "inTransit", "arrived", "cleared", "done"], default: "pending" },
+    status: {
+      type: String,
+      enum: [
+        "pending", "inTransit", "arrived", "cleared", "done",
+        "BL", "BOE", "CBL", "CFS PAYMENT", "CHA PHOTO FILE", "CHECKLIST",
+        "CPL", "DONE", "DUTY", "E-WAY BILL", "ECPL", "FECPL", "LINE PAYMENT",
+        "MD", "P&I", "HOLD AT CHA", "HOLD AT PARTY", "HOLD AT SIR", "HOLD AT ME",
+        "WORK NOT STARTED", "AWATING FOR CHECKLIST", "CHECKLIST APPROVED", "HOLD AT ANSHU"
+      ],
+      default: "pending"
+    },
     documentProcessed: { type: String, trim: true },
     remarks: { type: String, trim: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

@@ -11,12 +11,30 @@ import StatusBadge from "../../components/common/StatusBadge";
 import ResourcePage from "../ResourcePage";
 
 const statusOptions = [
-  { value: "pending", label: "Pending" },
-  { value: "inTransit", label: "In Transit" },
-  { value: "arrived", label: "Arrived" },
-  { value: "cleared", label: "Cleared" },
-  { value: "done", label: "Done" },
-];
+  "BL",
+  "BOE",
+  "CBL",
+  "CFS PAYMENT",
+  "CHA PHOTO FILE",
+  "CHECKLIST",
+  "CPL",
+  "DONE",
+  "DUTY",
+  "E-WAY BILL",
+  "ECPL",
+  "FECPL",
+  "LINE PAYMENT",
+  "MD",
+  "P&I",
+  "HOLD AT CHA",
+  "HOLD AT PARTY",
+  "HOLD AT SIR",
+  "HOLD AT ME",
+  "WORK NOT STARTED",
+  "AWATING FOR CHECKLIST",
+  "CHECKLIST APPROVED",
+  "HOLD AT ANSHU",
+].map((val) => ({ value: val, label: val }));
 
 const partyOptions = [
   "RBC",
