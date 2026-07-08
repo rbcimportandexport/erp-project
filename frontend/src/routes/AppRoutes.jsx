@@ -23,6 +23,7 @@ import ProductRates from "../pages/masters/ProductRates";
 import PaymentsPage from "../pages/payments/PaymentsPage";
 import ReportsPage from "../pages/reports/ReportsPage";
 import UsersPage from "../pages/users/UsersPage";
+import AnalyticsPage from "../pages/analytics/AnalyticsPage";
 import PrivateRoute from "./PrivateRoute";
 import RoleRoute from "./RoleRoute";
 
@@ -40,6 +41,7 @@ const AppRoutes = () => (
         <Route path="documents/invoice-maker" element={<InvoiceMaker />} />
         <Route path="documents/quotation-maker" element={<QuotationMaker />} />
         <Route path="payments" element={<PaymentsPage />} />
+        <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="reports" element={<ReportsPage />} />
         <Route path="activity-logs" element={<ActivityLogs />} />
         <Route path="masters/importers" element={<ImporterList />} />
