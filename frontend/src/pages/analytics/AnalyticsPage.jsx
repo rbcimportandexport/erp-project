@@ -219,7 +219,7 @@ const AnalyticsPage = () => {
                   </span>
                   <div className="relative w-full h-40 bg-slate-50 rounded-t-lg overflow-hidden flex items-end">
                     <div 
-                      className="w-full rounded-t bg-gradient-to-t from-brand-500 to-indigo-500 hover:from-brand-600 hover:to-indigo-600 transition-all duration-300"
+                      className="w-full rounded-t bg-gradient-to-t from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 transition-all duration-300"
                       style={{ height: `${Math.max(heightPercent, 2)}%` }}
                     />
                   </div>
