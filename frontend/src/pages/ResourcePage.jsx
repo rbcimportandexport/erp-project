@@ -22,6 +22,7 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [sort, setSort] = useState("-createdAt");
+  const [customFilters, setCustomFilters] = useState({});
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
@@ -30,11 +31,11 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, JSON.stringify(customFilters)]);
 
   const { data, loading, refetch } = useFetch(
-    () => api.list({ search: debouncedSearch, page, limit, sort, ...filters }),
-    [api, debouncedSearch, page, limit, sort, JSON.stringify(filters)]
+    () => api.list({ search: debouncedSearch, page, limit, sort, ...filters, ...customFilters }),
+    [api, debouncedSearch, page, limit, sort, JSON.stringify(filters), JSON.stringify(customFilters)]
   );
 
   const openEditor = (record) => {
@@ -131,6 +132,8 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
           title,
           sort,
           setSort,
+          customFilters,
+          setCustomFilters,
         })
       ) : (
         <>

@@ -12,6 +12,47 @@ const getInitials = (value) => {
   return `${words[0][0]}${words[1][0]}`.toUpperCase();
 };
 
+const hsnChapters = [
+  { value: "", label: "All Chapters" },
+  { value: "32", label: "Chapter 32 - Tanning/Dyeing" },
+  { value: "33", label: "Chapter 33 - Cosmetics/Toiletries" },
+  { value: "34", label: "Chapter 34 - Soaps/Lubricants" },
+  { value: "35", label: "Chapter 35 - Albumins/Glues" },
+  { value: "38", label: "Chapter 38 - Chemical Products" },
+  { value: "39", label: "Chapter 39 - Plastics" },
+  { value: "40", label: "Chapter 40 - Rubber" },
+  { value: "42", label: "Chapter 42 - Leather Articles" },
+  { value: "48", label: "Chapter 48 - Paper/Paperboard" },
+  { value: "49", label: "Chapter 49 - Printed Books" },
+  { value: "56", label: "Chapter 56 - Wadding/Felt/Yarn" },
+  { value: "58", label: "Chapter 58 - Special Fabrics" },
+  { value: "59", label: "Chapter 59 - Coated Fabrics" },
+  { value: "61", label: "Chapter 61 - Apparel (Knitted)" },
+  { value: "62", label: "Chapter 62 - Apparel (Not Knitted)" },
+  { value: "63", label: "Chapter 63 - Other Textile Articles" },
+  { value: "64", label: "Chapter 64 - Footwear" },
+  { value: "65", label: "Chapter 65 - Headgear" },
+  { value: "66", label: "Chapter 66 - Umbrellas" },
+  { value: "67", label: "Chapter 67 - Wigs/Feathers" },
+  { value: "68", label: "Chapter 68 - Stone/Cement Articles" },
+  { value: "69", label: "Chapter 69 - Ceramic Products" },
+  { value: "70", label: "Chapter 70 - Glass & Glassware" },
+  { value: "71", label: "Chapter 71 - Pearls/Precious Stones" },
+  { value: "73", label: "Chapter 73 - Articles of Iron/Steel" },
+  { value: "76", label: "Chapter 76 - Aluminum" },
+  { value: "82", label: "Chapter 82 - Tools & Cutlery" },
+  { value: "83", label: "Chapter 83 - Metal Articles" },
+  { value: "84", label: "Chapter 84 - Machinery/Boilers" },
+  { value: "85", label: "Chapter 85 - Electrical Equipment" },
+  { value: "87", label: "Chapter 87 - Vehicles" },
+  { value: "90", label: "Chapter 90 - Optical/Measuring" },
+  { value: "91", label: "Chapter 91 - Clocks/Watches" },
+  { value: "94", label: "Chapter 94 - Furniture/Bedding" },
+  { value: "95", label: "Chapter 95 - Toys/Sports" },
+  { value: "96", label: "Chapter 96 - Misc Manufactured" },
+  { value: "97", label: "Chapter 97 - Works of Art" },
+];
+
 export const masterRowClass = () => "bg-white ring-1 ring-slate-200 hover:-translate-y-0.5 hover:ring-brand-200";
 
 export const MasterHeader = ({
@@ -28,6 +69,8 @@ export const MasterHeader = ({
   statThreeLabel = "Ready For Use",
   sort,
   setSort,
+  customFilters,
+  setCustomFilters,
 }) => (
   <div className="mb-5 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
     <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
@@ -61,10 +104,23 @@ export const MasterHeader = ({
       </div>
     </div>
 
-    <div className="mt-5 flex flex-col sm:flex-row gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-2">
+    <div className="mt-5 flex flex-col md:flex-row gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-2">
       <div className="flex-1">
         <SearchBar value={search} onChange={setSearch} placeholder={searchPlaceholder || `Search ${title.toLowerCase()}`} />
       </div>
+      {title === "HSN Codes" && setCustomFilters && (
+        <select
+          value={customFilters?.chapters || ""}
+          onChange={(e) => setCustomFilters({ ...customFilters, chapters: e.target.value })}
+          className="h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50"
+        >
+          {hsnChapters.map((ch) => (
+            <option key={ch.value} value={ch.value}>
+              {ch.label}
+            </option>
+          ))}
+        </select>
+      )}
       {setSort && (
         <select
           value={sort || "-createdAt"}

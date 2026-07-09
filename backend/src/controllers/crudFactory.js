@@ -24,8 +24,32 @@ const createCrudController = ({ Model, moduleName, searchFields = [], populate =
       const query = buildQuery(req.query.search, searchFields);
 
       Object.entries(req.query).forEach(([key, value]) => {
-        if (!["page", "limit", "search", "sort"].includes(key) && value !== "") query[key] = value;
+        if (!["page", "limit", "search", "sort", "chapters"].includes(key) && value !== "") query[key] = value;
       });
+
+      if (req.query.chapters) {
+        const chapterList = req.query.chapters
+          .split(",")
+          .map((c) => c.trim())
+          .filter(Boolean);
+
+        if (chapterList.length > 0) {
+          const chapterQueries = chapterList.map((chap) => ({
+            code: new RegExp("^" + chap, "i"),
+          }));
+
+          if (query.$or) {
+            const originalOr = query.$or;
+            delete query.$or;
+            query.$and = [
+              { $or: originalOr },
+              { $or: chapterQueries }
+            ];
+          } else {
+            query.$or = chapterQueries;
+          }
+        }
+      }
 
       let request = Model.find(query).sort(req.query.sort || "-createdAt").skip(skip).limit(limit);
       populate.forEach((path) => {
