@@ -246,25 +246,43 @@ const Dashboard = () => {
               <Link
                 key={item.id || item._id}
                 to={`/containers?edit=${item._id || item.id}`}
-                className="grid gap-4 bg-red-100 px-5 py-4 text-slate-950 transition hover:bg-red-200 lg:grid-cols-[1.1fr_1.4fr_1fr_0.8fr_0.8fr]"
+                className="block bg-red-50 hover:bg-red-100/60 px-5 py-4 text-slate-950 transition lg:grid lg:gap-4 lg:grid-cols-[1.1fr_1.4fr_1fr_0.8fr_0.8fr]"
               >
-                <div>
+                {/* Mobile Card Layout (Hidden on Desktop) */}
+                <div className="flex flex-col gap-2 lg:hidden">
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-black text-red-950 tracking-tight">{getContainerNo(item)}</span>
+                    <span className="rounded-full bg-red-700 px-2.5 py-0.5 text-xs font-black text-white">
+                      {daysLeft} days left
+                    </span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    Importer: <span className="font-extrabold text-slate-900 normal-case">{getImporterName(item)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs font-bold text-slate-500 pt-1.5 border-t border-red-200/40">
+                    <span>ETA: {dayjs(item.eta).format("DD MMM YYYY")}</span>
+                    <span className="capitalize text-red-800 font-extrabold">Status: {item.status || "-"}</span>
+                  </div>
+                </div>
+
+                {/* Desktop Layout (Hidden on Mobile) */}
+                <div className="hidden lg:block">
                   <p className="text-[11px] font-black uppercase tracking-[0.16em] text-red-700">Container</p>
                   <p className="mt-1 text-lg font-black text-red-950">{getContainerNo(item)}</p>
                 </div>
-                <div>
+                <div className="hidden lg:block">
                   <p className="text-[11px] font-black uppercase tracking-[0.16em] text-red-700">Importer</p>
                   <p className="mt-1 font-bold">{getImporterName(item)}</p>
                 </div>
-                <div>
+                <div className="hidden lg:block">
                   <p className="text-[11px] font-black uppercase tracking-[0.16em] text-red-700">ETA</p>
                   <p className="mt-1 font-bold">{dayjs(item.eta).format("DD MMM YYYY")}</p>
                 </div>
-                <div>
+                <div className="hidden lg:block">
                   <p className="text-[11px] font-black uppercase tracking-[0.16em] text-red-700">Days Left</p>
                   <p className="mt-1 font-black">{daysLeft} days</p>
                 </div>
-                <div>
+                <div className="hidden lg:block">
                   <p className="text-[11px] font-black uppercase tracking-[0.16em] text-red-700">Status</p>
                   <p className="mt-1 font-bold capitalize">{item.status || "-"}</p>
                 </div>
