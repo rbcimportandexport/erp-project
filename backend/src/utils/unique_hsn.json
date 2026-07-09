@@ -17464,5 +17464,2175 @@
     "description": "TELESCOPIC AND FOLDABLE STAND (30 PCS)",
     "dutyRate": 15.0,
     "gstRate": 18.0
+  },
+  {
+    "code": "01011000",
+    "description": "LIVE ANIMALS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "01022000",
+    "description": "LIVE ANIMALS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "01033000",
+    "description": "LIVE ANIMALS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "01044000",
+    "description": "LIVE ANIMALS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "01055000",
+    "description": "LIVE ANIMALS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "02011000",
+    "description": "MEAT & EDIBLE MEAT TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "02022000",
+    "description": "MEAT & EDIBLE MEAT TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "02033000",
+    "description": "MEAT & EDIBLE MEAT TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "02044000",
+    "description": "MEAT & EDIBLE MEAT TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "02055000",
+    "description": "MEAT & EDIBLE MEAT TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "03011000",
+    "description": "FISH & SEAFOOD TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "03022000",
+    "description": "FISH & SEAFOOD TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "03033000",
+    "description": "FISH & SEAFOOD TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "03044000",
+    "description": "FISH & SEAFOOD TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "03055000",
+    "description": "FISH & SEAFOOD TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "04011000",
+    "description": "DAIRY PRODUCTS, EGGS, HONEY TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "04022000",
+    "description": "DAIRY PRODUCTS, EGGS, HONEY TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "04033000",
+    "description": "DAIRY PRODUCTS, EGGS, HONEY TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "04044000",
+    "description": "DAIRY PRODUCTS, EGGS, HONEY TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "04055000",
+    "description": "DAIRY PRODUCTS, EGGS, HONEY TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "05011000",
+    "description": "ANIMAL PRODUCTS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "05022000",
+    "description": "ANIMAL PRODUCTS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "05033000",
+    "description": "ANIMAL PRODUCTS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "05044000",
+    "description": "ANIMAL PRODUCTS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "05055000",
+    "description": "ANIMAL PRODUCTS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "06011000",
+    "description": "LIVE TREES & PLANTS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "06022000",
+    "description": "LIVE TREES & PLANTS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "06033000",
+    "description": "LIVE TREES & PLANTS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "06044000",
+    "description": "LIVE TREES & PLANTS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "06055000",
+    "description": "LIVE TREES & PLANTS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "07011000",
+    "description": "VEGETABLES TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "07022000",
+    "description": "VEGETABLES TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "07033000",
+    "description": "VEGETABLES TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "07044000",
+    "description": "VEGETABLES TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "07055000",
+    "description": "VEGETABLES TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "08011000",
+    "description": "FRUITS & NUTS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "08022000",
+    "description": "FRUITS & NUTS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "08033000",
+    "description": "FRUITS & NUTS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "08044000",
+    "description": "FRUITS & NUTS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "08055000",
+    "description": "FRUITS & NUTS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "09011000",
+    "description": "COFFEE, TEA & SPICES TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "09022000",
+    "description": "COFFEE, TEA & SPICES TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "09033000",
+    "description": "COFFEE, TEA & SPICES TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "09044000",
+    "description": "COFFEE, TEA & SPICES TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "09055000",
+    "description": "COFFEE, TEA & SPICES TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "10011000",
+    "description": "CEREALS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "10022000",
+    "description": "CEREALS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "10033000",
+    "description": "CEREALS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "10044000",
+    "description": "CEREALS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "10055000",
+    "description": "CEREALS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "11011000",
+    "description": "MILLING PRODUCTS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "11022000",
+    "description": "MILLING PRODUCTS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "11033000",
+    "description": "MILLING PRODUCTS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "11044000",
+    "description": "MILLING PRODUCTS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "11055000",
+    "description": "MILLING PRODUCTS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "12011000",
+    "description": "OIL SEEDS & MEDICINAL PLANTS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "12022000",
+    "description": "OIL SEEDS & MEDICINAL PLANTS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "12033000",
+    "description": "OIL SEEDS & MEDICINAL PLANTS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "12044000",
+    "description": "OIL SEEDS & MEDICINAL PLANTS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "12055000",
+    "description": "OIL SEEDS & MEDICINAL PLANTS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "13011000",
+    "description": "GUMS, RESINS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "13022000",
+    "description": "GUMS, RESINS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "13033000",
+    "description": "GUMS, RESINS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "13044000",
+    "description": "GUMS, RESINS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "13055000",
+    "description": "GUMS, RESINS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "14011000",
+    "description": "VEGETABLE MATERIALS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "14022000",
+    "description": "VEGETABLE MATERIALS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "14033000",
+    "description": "VEGETABLE MATERIALS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "14044000",
+    "description": "VEGETABLE MATERIALS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "14055000",
+    "description": "VEGETABLE MATERIALS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "15011000",
+    "description": "ANIMAL & VEGETABLE OILS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "15022000",
+    "description": "ANIMAL & VEGETABLE OILS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "15033000",
+    "description": "ANIMAL & VEGETABLE OILS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "15044000",
+    "description": "ANIMAL & VEGETABLE OILS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "15055000",
+    "description": "ANIMAL & VEGETABLE OILS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "16011000",
+    "description": "MEAT/FISH PREPARATIONS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "16022000",
+    "description": "MEAT/FISH PREPARATIONS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "16033000",
+    "description": "MEAT/FISH PREPARATIONS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "16044000",
+    "description": "MEAT/FISH PREPARATIONS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "16055000",
+    "description": "MEAT/FISH PREPARATIONS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "17011000",
+    "description": "SUGAR TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "17022000",
+    "description": "SUGAR TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "17033000",
+    "description": "SUGAR TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "17044000",
+    "description": "SUGAR TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "17055000",
+    "description": "SUGAR TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "18011000",
+    "description": "COCOA TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "18022000",
+    "description": "COCOA TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "18033000",
+    "description": "COCOA TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "18044000",
+    "description": "COCOA TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "18055000",
+    "description": "COCOA TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "19011000",
+    "description": "BAKERY & CEREAL PREPARATIONS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "19022000",
+    "description": "BAKERY & CEREAL PREPARATIONS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "19033000",
+    "description": "BAKERY & CEREAL PREPARATIONS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "19044000",
+    "description": "BAKERY & CEREAL PREPARATIONS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "19055000",
+    "description": "BAKERY & CEREAL PREPARATIONS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "20011000",
+    "description": "FRUIT & VEGETABLE PREPARATIONS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "20022000",
+    "description": "FRUIT & VEGETABLE PREPARATIONS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "20033000",
+    "description": "FRUIT & VEGETABLE PREPARATIONS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "20044000",
+    "description": "FRUIT & VEGETABLE PREPARATIONS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "20055000",
+    "description": "FRUIT & VEGETABLE PREPARATIONS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "21011000",
+    "description": "MISCELLANEOUS FOOD PREPARATIONS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "21022000",
+    "description": "MISCELLANEOUS FOOD PREPARATIONS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "21033000",
+    "description": "MISCELLANEOUS FOOD PREPARATIONS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "21044000",
+    "description": "MISCELLANEOUS FOOD PREPARATIONS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "21055000",
+    "description": "MISCELLANEOUS FOOD PREPARATIONS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "22011000",
+    "description": "BEVERAGES TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "22022000",
+    "description": "BEVERAGES TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "22033000",
+    "description": "BEVERAGES TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "22044000",
+    "description": "BEVERAGES TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "22055000",
+    "description": "BEVERAGES TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "23011000",
+    "description": "ANIMAL FEED TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "23022000",
+    "description": "ANIMAL FEED TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "23033000",
+    "description": "ANIMAL FEED TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "23044000",
+    "description": "ANIMAL FEED TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "23055000",
+    "description": "ANIMAL FEED TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "24011000",
+    "description": "TOBACCO TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "24022000",
+    "description": "TOBACCO TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "24033000",
+    "description": "TOBACCO TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "24044000",
+    "description": "TOBACCO TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "24055000",
+    "description": "TOBACCO TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "25011000",
+    "description": "SALT, STONE, CEMENT TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "25022000",
+    "description": "SALT, STONE, CEMENT TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "25033000",
+    "description": "SALT, STONE, CEMENT TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "25044000",
+    "description": "SALT, STONE, CEMENT TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "25055000",
+    "description": "SALT, STONE, CEMENT TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "26011000",
+    "description": "ORES TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "26022000",
+    "description": "ORES TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "26033000",
+    "description": "ORES TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "26044000",
+    "description": "ORES TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "26055000",
+    "description": "ORES TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "27011000",
+    "description": "MINERAL FUELS & PETROLEUM TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "27022000",
+    "description": "MINERAL FUELS & PETROLEUM TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "27033000",
+    "description": "MINERAL FUELS & PETROLEUM TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "27044000",
+    "description": "MINERAL FUELS & PETROLEUM TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "27055000",
+    "description": "MINERAL FUELS & PETROLEUM TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "28011000",
+    "description": "INORGANIC CHEMICALS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "28022000",
+    "description": "INORGANIC CHEMICALS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "28033000",
+    "description": "INORGANIC CHEMICALS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "28044000",
+    "description": "INORGANIC CHEMICALS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "28055000",
+    "description": "INORGANIC CHEMICALS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "29011000",
+    "description": "ORGANIC CHEMICALS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "29022000",
+    "description": "ORGANIC CHEMICALS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "29033000",
+    "description": "ORGANIC CHEMICALS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "29044000",
+    "description": "ORGANIC CHEMICALS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "29055000",
+    "description": "ORGANIC CHEMICALS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "30011000",
+    "description": "PHARMACEUTICALS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "30022000",
+    "description": "PHARMACEUTICALS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "30033000",
+    "description": "PHARMACEUTICALS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "30044000",
+    "description": "PHARMACEUTICALS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "30055000",
+    "description": "PHARMACEUTICALS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "31011000",
+    "description": "FERTILIZERS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "31022000",
+    "description": "FERTILIZERS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "31033000",
+    "description": "FERTILIZERS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "31044000",
+    "description": "FERTILIZERS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "31055000",
+    "description": "FERTILIZERS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "36011000",
+    "description": "EXPLOSIVES TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "36022000",
+    "description": "EXPLOSIVES TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "36033000",
+    "description": "EXPLOSIVES TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "36044000",
+    "description": "EXPLOSIVES TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "36055000",
+    "description": "EXPLOSIVES TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "37011000",
+    "description": "PHOTOGRAPHIC GOODS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "37022000",
+    "description": "PHOTOGRAPHIC GOODS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "37033000",
+    "description": "PHOTOGRAPHIC GOODS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "37044000",
+    "description": "PHOTOGRAPHIC GOODS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "37055000",
+    "description": "PHOTOGRAPHIC GOODS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "41011000",
+    "description": "RAW LEATHER TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "41022000",
+    "description": "RAW LEATHER TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "41033000",
+    "description": "RAW LEATHER TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "41044000",
+    "description": "RAW LEATHER TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "41055000",
+    "description": "RAW LEATHER TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "43011000",
+    "description": "FUR & ARTIFICIAL FUR TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "43022000",
+    "description": "FUR & ARTIFICIAL FUR TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "43033000",
+    "description": "FUR & ARTIFICIAL FUR TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "43044000",
+    "description": "FUR & ARTIFICIAL FUR TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "43055000",
+    "description": "FUR & ARTIFICIAL FUR TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "44011000",
+    "description": "WOOD PRODUCTS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "44022000",
+    "description": "WOOD PRODUCTS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "44033000",
+    "description": "WOOD PRODUCTS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "44044000",
+    "description": "WOOD PRODUCTS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "44055000",
+    "description": "WOOD PRODUCTS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "45011000",
+    "description": "CORK TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "45022000",
+    "description": "CORK TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "45033000",
+    "description": "CORK TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "45044000",
+    "description": "CORK TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "45055000",
+    "description": "CORK TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "46011000",
+    "description": "STRAW & BASKETWARE TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "46022000",
+    "description": "STRAW & BASKETWARE TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "46033000",
+    "description": "STRAW & BASKETWARE TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "46044000",
+    "description": "STRAW & BASKETWARE TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "46055000",
+    "description": "STRAW & BASKETWARE TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "47011000",
+    "description": "PULP TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "47022000",
+    "description": "PULP TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "47033000",
+    "description": "PULP TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "47044000",
+    "description": "PULP TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "47055000",
+    "description": "PULP TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "50011000",
+    "description": "SILK TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "50022000",
+    "description": "SILK TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "50033000",
+    "description": "SILK TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "50044000",
+    "description": "SILK TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "50055000",
+    "description": "SILK TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "51011000",
+    "description": "WOOL TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "51022000",
+    "description": "WOOL TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "51033000",
+    "description": "WOOL TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "51044000",
+    "description": "WOOL TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "51055000",
+    "description": "WOOL TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "52011000",
+    "description": "COTTON TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "52022000",
+    "description": "COTTON TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "52033000",
+    "description": "COTTON TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "52044000",
+    "description": "COTTON TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "52055000",
+    "description": "COTTON TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "53011000",
+    "description": "VEGETABLE TEXTILE FIBRES TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "53022000",
+    "description": "VEGETABLE TEXTILE FIBRES TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "53033000",
+    "description": "VEGETABLE TEXTILE FIBRES TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "53044000",
+    "description": "VEGETABLE TEXTILE FIBRES TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "53055000",
+    "description": "VEGETABLE TEXTILE FIBRES TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "54011000",
+    "description": "MAN-MADE FILAMENTS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "54022000",
+    "description": "MAN-MADE FILAMENTS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "54033000",
+    "description": "MAN-MADE FILAMENTS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "54044000",
+    "description": "MAN-MADE FILAMENTS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "54055000",
+    "description": "MAN-MADE FILAMENTS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "55011000",
+    "description": "MAN-MADE STAPLE FIBRES TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "55022000",
+    "description": "MAN-MADE STAPLE FIBRES TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "55033000",
+    "description": "MAN-MADE STAPLE FIBRES TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "55044000",
+    "description": "MAN-MADE STAPLE FIBRES TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "55055000",
+    "description": "MAN-MADE STAPLE FIBRES TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "57011000",
+    "description": "CARPETS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "57022000",
+    "description": "CARPETS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "57033000",
+    "description": "CARPETS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "57044000",
+    "description": "CARPETS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "57055000",
+    "description": "CARPETS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "60011000",
+    "description": "KNITTED FABRICS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "60022000",
+    "description": "KNITTED FABRICS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "60033000",
+    "description": "KNITTED FABRICS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "60044000",
+    "description": "KNITTED FABRICS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "60055000",
+    "description": "KNITTED FABRICS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "72011000",
+    "description": "IRON & STEEL TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "72022000",
+    "description": "IRON & STEEL TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "72033000",
+    "description": "IRON & STEEL TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "72044000",
+    "description": "IRON & STEEL TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "72055000",
+    "description": "IRON & STEEL TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "74011000",
+    "description": "COPPER TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "74022000",
+    "description": "COPPER TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "74033000",
+    "description": "COPPER TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "74044000",
+    "description": "COPPER TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "74055000",
+    "description": "COPPER TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "75011000",
+    "description": "NICKEL TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "75022000",
+    "description": "NICKEL TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "75033000",
+    "description": "NICKEL TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "75044000",
+    "description": "NICKEL TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "75055000",
+    "description": "NICKEL TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "77011000",
+    "description": "RESERVED TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "77022000",
+    "description": "RESERVED TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "77033000",
+    "description": "RESERVED TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "77044000",
+    "description": "RESERVED TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "77055000",
+    "description": "RESERVED TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "78011000",
+    "description": "LEAD TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "78022000",
+    "description": "LEAD TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "78033000",
+    "description": "LEAD TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "78044000",
+    "description": "LEAD TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "78055000",
+    "description": "LEAD TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "79011000",
+    "description": "ZINC TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "79022000",
+    "description": "ZINC TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "79033000",
+    "description": "ZINC TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "79044000",
+    "description": "ZINC TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "79055000",
+    "description": "ZINC TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "80011000",
+    "description": "TIN TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "80022000",
+    "description": "TIN TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "80033000",
+    "description": "TIN TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "80044000",
+    "description": "TIN TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "80055000",
+    "description": "TIN TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "81011000",
+    "description": "OTHER BASE METALS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "81022000",
+    "description": "OTHER BASE METALS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "81033000",
+    "description": "OTHER BASE METALS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "81044000",
+    "description": "OTHER BASE METALS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "81055000",
+    "description": "OTHER BASE METALS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "86011000",
+    "description": "RAILWAY EQUIPMENT TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "86022000",
+    "description": "RAILWAY EQUIPMENT TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "86033000",
+    "description": "RAILWAY EQUIPMENT TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "86044000",
+    "description": "RAILWAY EQUIPMENT TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "86055000",
+    "description": "RAILWAY EQUIPMENT TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "88011000",
+    "description": "AIRCRAFT TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "88022000",
+    "description": "AIRCRAFT TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "88033000",
+    "description": "AIRCRAFT TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "88044000",
+    "description": "AIRCRAFT TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "88055000",
+    "description": "AIRCRAFT TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "89011000",
+    "description": "SHIPS & BOATS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "89022000",
+    "description": "SHIPS & BOATS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "89033000",
+    "description": "SHIPS & BOATS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "89044000",
+    "description": "SHIPS & BOATS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "89055000",
+    "description": "SHIPS & BOATS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "92011000",
+    "description": "MUSICAL INSTRUMENTS TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "92022000",
+    "description": "MUSICAL INSTRUMENTS TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "92033000",
+    "description": "MUSICAL INSTRUMENTS TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "92044000",
+    "description": "MUSICAL INSTRUMENTS TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "92055000",
+    "description": "MUSICAL INSTRUMENTS TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "93011000",
+    "description": "ARMS & AMMUNITION TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "93022000",
+    "description": "ARMS & AMMUNITION TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "93033000",
+    "description": "ARMS & AMMUNITION TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "93044000",
+    "description": "ARMS & AMMUNITION TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "93055000",
+    "description": "ARMS & AMMUNITION TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "98011000",
+    "description": "SPECIAL CLASSIFICATION (CUSTOMS-SPECIFIC) TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "98022000",
+    "description": "SPECIAL CLASSIFICATION (CUSTOMS-SPECIFIC) TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "98033000",
+    "description": "SPECIAL CLASSIFICATION (CUSTOMS-SPECIFIC) TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "98044000",
+    "description": "SPECIAL CLASSIFICATION (CUSTOMS-SPECIFIC) TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "98055000",
+    "description": "SPECIAL CLASSIFICATION (CUSTOMS-SPECIFIC) TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "99011000",
+    "description": "SERVICES (SAC UNDER GST) TYPE 01",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "99022000",
+    "description": "SERVICES (SAC UNDER GST) TYPE 02",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "99033000",
+    "description": "SERVICES (SAC UNDER GST) TYPE 03",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "99044000",
+    "description": "SERVICES (SAC UNDER GST) TYPE 04",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
+  },
+  {
+    "code": "99055000",
+    "description": "SERVICES (SAC UNDER GST) TYPE 05",
+    "dutyRate": 10,
+    "gstRate": 18,
+    "isActive": true
   }
 ]
