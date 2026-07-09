@@ -11,7 +11,7 @@ const ProductList = () => {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const hsnRes = await hsnApi.list({ limit: 1000 });
+        const hsnRes = await hsnApi.list({ limit: 4000 });
         const sortedHsn = (hsnRes.data?.items || []).sort((a, b) =>
           (a.code || "").localeCompare(b.code || "", undefined, { sensitivity: "base" })
         ).map((item) => ({

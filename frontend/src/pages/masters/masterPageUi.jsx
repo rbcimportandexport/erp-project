@@ -26,6 +26,8 @@ export const MasterHeader = ({
   statOneLabel = "Total Records",
   statTwoLabel = "Active Master",
   statThreeLabel = "Ready For Use",
+  sort,
+  setSort,
 }) => (
   <div className="mb-5 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
     <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
@@ -59,8 +61,31 @@ export const MasterHeader = ({
       </div>
     </div>
 
-    <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-2">
-      <SearchBar value={search} onChange={setSearch} placeholder={searchPlaceholder || `Search ${title.toLowerCase()}`} />
+    <div className="mt-5 flex flex-col sm:flex-row gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-2">
+      <div className="flex-1">
+        <SearchBar value={search} onChange={setSearch} placeholder={searchPlaceholder || `Search ${title.toLowerCase()}`} />
+      </div>
+      {setSort && (
+        <select
+          value={sort || "-createdAt"}
+          onChange={(e) => setSort(e.target.value)}
+          className="h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50"
+        >
+          <option value="-createdAt">Newest First</option>
+          <option value="code">Code (A-Z)</option>
+          <option value="-code">Code (Z-A)</option>
+          <option value="description">Description (A-Z)</option>
+          <option value="-description">Description (Z-A)</option>
+          {title === "HSN Codes" && (
+            <>
+              <option value="dutyRate">Duty (Low to High)</option>
+              <option value="-dutyRate">Duty (High to Low)</option>
+              <option value="gstRate">GST (Low to High)</option>
+              <option value="-gstRate">GST (High to Low)</option>
+            </>
+          )}
+        </select>
+      )}
     </div>
   </div>
 );
