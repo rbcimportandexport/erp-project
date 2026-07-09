@@ -15,9 +15,10 @@ import { indiaPortApi, chinaPortApi } from "../../api/portApi";
 import containerApi from "../../api/containerApi";
 import { uploadDocument } from "../../api/documentApi";
 import { useAlert } from "../../hooks/useAlert";
+import hsnMaster from "../../data/hsnMaster.json";
 
 // ── Spell-check contenteditable input ─────────────────────────────────────────
-const SpellCheckInput = ({ value, onChange, spellCheck = true }) => {
+const SpellCheckInput = ({ value, onChange, onFocus, onBlur, spellCheck = true }) => {
   const ref = useRef(null);
   const isFocused = useRef(false);
 
@@ -37,15 +38,20 @@ const SpellCheckInput = ({ value, onChange, spellCheck = true }) => {
       contentEditable
       spellCheck={spellCheck}
       suppressContentEditableWarning
-      onFocus={() => { isFocused.current = true; }}
-      onBlur={() => { isFocused.current = false; }}
+      onFocus={(e) => {
+        isFocused.current = true;
+        if (onFocus) onFocus(e);
+      }}
+      onBlur={(e) => {
+        isFocused.current = false;
+        if (onBlur) onBlur(e);
+      }}
       onInput={handleInput}
       className="spell-check-input min-h-[38px] w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50"
     />
   );
 };
 // ──────────────────────────────────────────────────────────────────────────────
-
 
 const emptyItem = {
   description: "",
@@ -143,6 +149,7 @@ const InvoiceMaker = () => {
     }
   };
 
+  const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [spellingErrors, setSpellingErrors] = useState(new Set());
   const [shipmentRows, setShipmentRows] = useState([]);
   const [containersList, setContainersList] = useState([]);
@@ -569,7 +576,23 @@ const InvoiceMaker = () => {
     });
   };
   const updateItem = (index, field, value) => {
-    setItems((current) => current.map((item, itemIndex) => (itemIndex === index ? { ...item, [field]: value } : item)));
+    setItems((current) => current.map((item, itemIndex) => {
+      if (itemIndex === index) {
+        const updated = { ...item, [field]: value };
+        if (field === "description") {
+          const match = hsnMaster.find(m => m.description.toUpperCase() === String(value || "").trim().toUpperCase());
+          if (match) {
+            updated.hsnCode = match.hsn;
+            updated.unit = match.unit;
+            updated.bcd = match.bcd;
+            updated.sws = match.sws;
+            updated.gst = match.gst;
+          }
+        }
+        return updated;
+      }
+      return item;
+    }));
   };
   const addItem = () => setItems((current) => [...current, emptyItem]);
   const removeItem = (index) => setItems((current) => current.filter((_, itemIndex) => itemIndex !== index));
@@ -1070,13 +1093,45 @@ const InvoiceMaker = () => {
               {items.map((item, index) => (
                 <tr key={index} className="border-b border-slate-100">
                   <td className="px-3 py-2 text-center font-medium text-slate-500 align-middle">{index + 1}</td>
-                  <td className="px-3 py-2 min-w-[240px] align-middle">
+                  <td className="px-3 py-2 min-w-[240px] align-middle relative">
                     <div className="flex flex-col gap-1">
                       <SpellCheckInput
                         value={item.description}
                         onChange={(val) => updateItem(index, "description", val)}
+                        onFocus={() => setActiveRowIndex(index)}
+                        onBlur={() => {
+                          setTimeout(() => setActiveRowIndex(null), 250);
+                        }}
                         spellCheck={!item.ignoreSpelling}
                       />
+                      {activeRowIndex === index && (item.description || "").trim().length >= 2 && (() => {
+                        const query = (item.description || "").trim().toLowerCase();
+                        const suggestions = hsnMaster.filter(m => m.description.toLowerCase().includes(query)).slice(0, 5);
+                        if (suggestions.length === 0) return null;
+                        return (
+                          <div className="absolute left-3 right-3 z-50 mt-1 max-h-48 overflow-y-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg text-left">
+                            {suggestions.map((sug) => (
+                              <button
+                                key={sug.description}
+                                type="button"
+                                onMouseDown={() => {
+                                  updateItem(index, "description", sug.description);
+                                  updateItem(index, "hsnCode", sug.hsn);
+                                  updateItem(index, "unit", sug.unit);
+                                  updateItem(index, "bcd", sug.bcd);
+                                  updateItem(index, "sws", sug.sws);
+                                  updateItem(index, "gst", sug.gst);
+                                  setActiveRowIndex(null);
+                                }}
+                                className="block w-full px-3 py-1.5 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                              >
+                                <div className="font-bold text-slate-800">{sug.description}</div>
+                                <div className="text-[10px] text-slate-500">HSN: {sug.hsn} | GST: {sug.gst}% | BCD: {sug.bcd}%</div>
+                              </button>
+                            ))}
+                          </div>
+                        );
+                      })()}
                       {spellingErrors.has(index) && (
                         <button
                           type="button"

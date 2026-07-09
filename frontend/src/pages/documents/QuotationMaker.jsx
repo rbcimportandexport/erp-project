@@ -15,6 +15,7 @@ import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
 import TopBar from "../../components/layout/TopBar";
+import hsnMaster from "../../data/hsnMaster.json";
 
 // Helper to sanitize numeric inputs
 const toNumber = (val) => {
@@ -90,6 +91,7 @@ const QuotationMaker = () => {
     }
   });
   const [stampImg, setStampImg] = useState("");
+  const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -292,7 +294,19 @@ const QuotationMaker = () => {
   };
 
   const updateItem = (index, field, value) => {
-    setItems((current) => current.map((item, itemIndex) => (itemIndex === index ? { ...item, [field]: value } : item)));
+    setItems((current) => current.map((item, itemIndex) => {
+      if (itemIndex === index) {
+        const updated = { ...item, [field]: value };
+        if (field === "description") {
+          const match = hsnMaster.find(m => m.description.toUpperCase() === String(value || "").trim().toUpperCase());
+          if (match) {
+            updated.unit = match.unit;
+          }
+        }
+        return updated;
+      }
+      return item;
+    }));
   };
 
   const addItem = () => setItems((current) => [...current, emptyItem]);
@@ -605,8 +619,39 @@ const QuotationMaker = () => {
               {items.map((item, index) => (
                 <tr key={index} className="border-b border-slate-100">
                   <td className="px-3 py-2 text-center font-medium text-slate-500 align-middle">{index + 1}</td>
-                  <td className="px-3 py-2 min-w-[240px] align-middle">
-                    <Input value={item.description} onChange={(event) => updateItem(index, "description", event.target.value)} />
+                  <td className="px-3 py-2 min-w-[240px] align-middle relative">
+                    <Input
+                      value={item.description}
+                      onChange={(event) => updateItem(index, "description", event.target.value)}
+                      onFocus={() => setActiveRowIndex(index)}
+                      onBlur={() => {
+                        setTimeout(() => setActiveRowIndex(null), 250);
+                      }}
+                    />
+                    {activeRowIndex === index && (item.description || "").trim().length >= 2 && (() => {
+                      const query = (item.description || "").trim().toLowerCase();
+                      const suggestions = hsnMaster.filter(m => m.description.toLowerCase().includes(query)).slice(0, 5);
+                      if (suggestions.length === 0) return null;
+                      return (
+                        <div className="absolute left-3 right-3 z-50 mt-1 max-h-48 overflow-y-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg text-left">
+                          {suggestions.map((sug) => (
+                            <button
+                              key={sug.description}
+                              type="button"
+                              onMouseDown={() => {
+                                updateItem(index, "description", sug.description);
+                                updateItem(index, "unit", sug.unit);
+                                setActiveRowIndex(null);
+                              }}
+                              className="block w-full px-3 py-1.5 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                            >
+                              <div className="font-bold text-slate-800">{sug.description}</div>
+                              <div className="text-[10px] text-slate-500">Unit: {sug.unit} | HSN: {sug.hsn}</div>
+                            </button>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td className="px-3 py-2 align-middle w-24">
                     <Input value={item.quantity} onChange={(event) => updateItem(index, "quantity", event.target.value)} />
