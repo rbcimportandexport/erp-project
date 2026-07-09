@@ -9,6 +9,13 @@ const seedHsnCodes = async () => {
   try {
     await connectDB();
 
+    try {
+      await HsnCode.collection.dropIndex("code_1");
+      console.log("Unique index code_1 dropped successfully");
+    } catch (err) {
+      console.log("Index code_1 not found or already dropped");
+    }
+
     console.log("Cleaning existing HSN codes...");
     await HsnCode.deleteMany({});
 

@@ -26,6 +26,10 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
   const [form, setForm] = useState({});
   const debouncedSearch = useDebounce(search);
 
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
+
   const { data, loading, refetch } = useFetch(
     () => api.list({ search: debouncedSearch, page, ...filters }),
     [api, debouncedSearch, page, JSON.stringify(filters)]
