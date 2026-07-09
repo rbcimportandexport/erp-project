@@ -57,6 +57,7 @@ export const masterRowClass = () => "bg-white ring-1 ring-slate-200 hover:-trans
 
 export const MasterHeader = ({
   items,
+  total,
   openAdd,
   search,
   setSearch,
@@ -71,38 +72,41 @@ export const MasterHeader = ({
   setSort,
   customFilters,
   setCustomFilters,
-}) => (
-  <div className="mb-5 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-    <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
-      <div className="flex items-center gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-lg font-black text-brand-700 ring-1 ring-brand-100">
-          {getInitials(title)}
-        </div>
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Master Directory</p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight text-slate-950">{title}</h1>
-          <p className="mt-1 text-sm font-medium text-slate-500">{description}</p>
-        </div>
-      </div>
+}) => {
+  const displayTotal = typeof total === "number" ? total : items.length;
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">{statOneLabel}</p>
-          <p className="text-xl font-black text-slate-950">{items.length}</p>
+  return (
+    <div className="mb-5 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-lg font-black text-brand-700 ring-1 ring-brand-100">
+            {getInitials(title)}
+          </div>
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Master Directory</p>
+            <h1 className="mt-1 text-3xl font-black tracking-tight text-slate-950">{title}</h1>
+            <p className="mt-1 text-sm font-medium text-slate-500">{description}</p>
+          </div>
         </div>
-        <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
-          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-600">{statTwoLabel}</p>
-          <p className="text-xl font-black text-blue-700">{items.length}</p>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">{statOneLabel}</p>
+            <p className="text-xl font-black text-slate-950">{displayTotal}</p>
+          </div>
+          <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-600">{statTwoLabel}</p>
+            <p className="text-xl font-black text-blue-700">{displayTotal}</p>
+          </div>
+          <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-emerald-600">{statThreeLabel}</p>
+            <p className="text-xl font-black text-emerald-700">{displayTotal}</p>
+          </div>
+          <Button className="h-12 rounded-2xl px-5 font-black" onClick={openAdd}>
+            {addLabel || `Add ${title}`}
+          </Button>
         </div>
-        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3">
-          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-emerald-600">{statThreeLabel}</p>
-          <p className="text-xl font-black text-emerald-700">{items.length}</p>
-        </div>
-        <Button className="h-12 rounded-2xl px-5 font-black" onClick={openAdd}>
-          {addLabel || `Add ${title}`}
-        </Button>
       </div>
-    </div>
 
     <div className="mt-5 flex flex-col md:flex-row gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-2">
       <div className="flex-1">
@@ -142,9 +146,9 @@ export const MasterHeader = ({
           )}
         </select>
       )}
-    </div>
   </div>
-);
+  );
+};
 
 export const EditCellButton = ({ row, table, children }) => {
   const label = String(children || "-");

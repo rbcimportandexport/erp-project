@@ -125,6 +125,7 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
       {renderHeader ? (
         renderHeader({
           items: data?.items || [],
+          total: data?.total || 0,
           loading,
           openAdd: () => { setSelected(null); setForm({}); setOpen(true); },
           search,
