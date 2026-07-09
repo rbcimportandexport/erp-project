@@ -17,7 +17,7 @@ const Table = ({ columns, data = [], getRowClassName, meta, variant = "default" 
 
   if (variant === "cards") {
     return (
-      <div className="overflow-x-auto rounded-[24px] border border-slate-200 bg-white p-3 shadow-sm">
+      <div className="w-full max-w-full overflow-x-auto rounded-[24px] border border-slate-200 bg-white p-3 shadow-sm">
         <table className="min-w-[1100px] w-full border-separate border-spacing-y-2 text-sm">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -64,7 +64,7 @@ const Table = ({ columns, data = [], getRowClassName, meta, variant = "default" 
   }
 
   return (
-    <div className="overflow-x-auto rounded-md border border-slate-200 bg-white">
+    <div className="w-full max-w-full overflow-x-auto rounded-md border border-slate-200 bg-white">
       <table className="min-w-[1100px] w-full divide-y divide-slate-200 text-sm">
         <thead className="bg-slate-50">
           {table.getHeaderGroups().map((headerGroup) => (
