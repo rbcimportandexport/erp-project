@@ -469,7 +469,7 @@ const QuotationMaker = () => {
       <TopBar
         title="Quotation Maker"
         actions={
-          <div className="flex gap-2 items-center">
+          <div className="flex flex-wrap gap-2 items-center">
             <Button onClick={() => generatePdf(true)} loading={saving}>
               <FileDown className="h-4 w-4" />Save Document
             </Button>
@@ -583,13 +583,13 @@ const QuotationMaker = () => {
       </section>
 
       {/* Items Section */}
-      <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
+      <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm w-full max-w-full overflow-hidden">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-950">Items List</h2>
           <Button onClick={addItem}><Plus className="h-4 w-4" />Add Item</Button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+        <div className="w-full max-w-full overflow-x-auto rounded-xl border border-slate-200">
+          <table className="min-w-[900px] w-full text-sm">
             <thead>
               <tr className="bg-slate-50 text-left text-slate-600">
                 <th className="px-3 py-2 w-[60px] text-center">Sr. No.</th>
@@ -633,7 +633,7 @@ const QuotationMaker = () => {
       </section>
 
       {/* PDF Style Preview */}
-      <section className="print-sheet rounded-md bg-white p-6 shadow-sm mb-10 overflow-x-auto">
+      <section className="print-sheet rounded-md bg-white p-6 shadow-sm mb-10 overflow-x-auto w-full max-w-full">
         <div className="no-print mb-4 flex items-center justify-between border-b border-slate-200 pb-3">
           <div>
             <h2 className="text-lg font-semibold text-slate-950">PDF Style Live Preview</h2>
