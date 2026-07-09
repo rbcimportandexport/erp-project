@@ -146,6 +146,7 @@ export const MasterHeader = ({
           )}
         </select>
       )}
+    </div>
   </div>
   );
 };
