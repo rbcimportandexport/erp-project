@@ -1126,7 +1126,7 @@ const InvoiceMaker = () => {
       </section>
 
       <section className="print-sheet rounded-md bg-white p-6 shadow-sm overflow-x-auto w-full max-w-full">
-        <div className="no-print mb-4 flex items-center justify-between border-b border-slate-200 pb-3">
+        <div className="no-print mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-3">
           <div>
             <h2 className="text-lg font-semibold text-slate-950">PDF Style Preview</h2>
             <p className="text-sm text-slate-500">This preview is what will open when you click Convert to PDF.</p>

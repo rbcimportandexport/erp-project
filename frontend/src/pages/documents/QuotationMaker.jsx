@@ -634,7 +634,7 @@ const QuotationMaker = () => {
 
       {/* PDF Style Preview */}
       <section className="print-sheet rounded-md bg-white p-6 shadow-sm mb-10 overflow-x-auto w-full max-w-full">
-        <div className="no-print mb-4 flex items-center justify-between border-b border-slate-200 pb-3">
+        <div className="no-print mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-3">
           <div>
             <h2 className="text-lg font-semibold text-slate-950">PDF Style Live Preview</h2>
             <p className="text-sm text-slate-500">Is preview par click karke aap details directly change aur type bhi kar sakte hain.</p>
