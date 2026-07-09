@@ -209,26 +209,28 @@ const AnalyticsPage = () => {
             <BarChart3 className="h-5 w-5 text-slate-400" />
           </div>
 
-          <div className="flex h-60 items-end gap-2 px-1 pt-4">
-            {monthlyData.map((d) => {
-              const heightPercent = Math.round((d.count / maxMonthCount) * 100);
-              return (
-                <div key={d.name} className="flex flex-1 flex-col items-center">
-                  <span className="text-xs font-black text-slate-700 mb-1 h-4">
-                    {d.count > 0 ? d.count : ""}
-                  </span>
-                  <div className="relative w-full h-40 bg-slate-50 rounded-t-lg overflow-hidden flex items-end">
-                    <div 
-                      className="w-full rounded-t bg-gradient-to-t from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 transition-all duration-300"
-                      style={{ height: `${Math.max(heightPercent, 2)}%` }}
-                    />
+          <div className="overflow-x-auto pb-2 scrollbar-thin">
+            <div className="flex h-60 items-end gap-2 px-1 pt-4 min-w-[500px] lg:min-w-0">
+              {monthlyData.map((d) => {
+                const heightPercent = Math.round((d.count / maxMonthCount) * 100);
+                return (
+                  <div key={d.name} className="flex flex-1 flex-col items-center">
+                    <span className="text-xs font-black text-slate-700 mb-1 h-4">
+                      {d.count > 0 ? d.count : ""}
+                    </span>
+                    <div className="relative w-full h-40 bg-slate-50 rounded-t-lg overflow-hidden flex items-end">
+                      <div 
+                        className="w-full rounded-t bg-gradient-to-t from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 transition-all duration-300"
+                        style={{ height: `${Math.max(heightPercent, 2)}%` }}
+                      />
+                    </div>
+                    <span className="mt-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      {d.name.slice(0, 3)}
+                    </span>
                   </div>
-                  <span className="mt-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                    {d.name.slice(0, 3)}
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 
