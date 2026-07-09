@@ -20,6 +20,7 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
   const lastAutoEditId = useRef(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [sort, setSort] = useState("-createdAt");
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -32,8 +33,8 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
   }, [debouncedSearch]);
 
   const { data, loading, refetch } = useFetch(
-    () => api.list({ search: debouncedSearch, page, sort, ...filters }),
-    [api, debouncedSearch, page, sort, JSON.stringify(filters)]
+    () => api.list({ search: debouncedSearch, page, limit, sort, ...filters }),
+    [api, debouncedSearch, page, limit, sort, JSON.stringify(filters)]
   );
 
   const openEditor = (record) => {
@@ -141,7 +142,17 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
         </>
       )}
       {loading ? <Loader /> : <Table columns={tableColumns} data={data?.items || []} getRowClassName={getRowClassName} meta={{ openEdit: openEditor }} variant={tableVariant} />}
-      <Pagination page={data?.page || page} pages={data?.pages || 1} onPageChange={setPage} />
+      <Pagination
+        page={data?.page || page}
+        pages={data?.pages || 1}
+        total={data?.total || 0}
+        limit={limit}
+        onPageChange={setPage}
+        onLimitChange={(newLimit) => {
+          setLimit(newLimit);
+          setPage(1);
+        }}
+      />
 
       <Modal
         open={open}
