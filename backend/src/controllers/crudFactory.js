@@ -4,8 +4,15 @@ const { writeActivityLog } = require("../middleware/activityLog");
 const buildQuery = (search, fields = []) => {
   if (!search || fields.length === 0) return {};
   const escapedSearch = String(search).replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-  const regex = new RegExp(escapedSearch, "i");
-  return { $or: fields.map((field) => ({ [field]: regex })) };
+  const isNumeric = /^\d+$/.test(search);
+  return {
+    $or: fields.map((field) => {
+      if (field === "code" && isNumeric) {
+        return { [field]: new RegExp("^" + escapedSearch, "i") };
+      }
+      return { [field]: new RegExp(escapedSearch, "i") };
+    })
+  };
 };
 
 const createCrudController = ({ Model, moduleName, searchFields = [], populate = [] }) => ({
