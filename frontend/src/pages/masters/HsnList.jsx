@@ -34,7 +34,15 @@ const HsnList = () => (
         accessorKey: "code",
         cell: ({ row, table }) => <EditCellButton row={row} table={table}>{row.original.code}</EditCellButton>,
       },
-      { header: "Description", accessorKey: "description", cell: ({ row }) => row.original.description || "-" },
+      {
+        header: "Description",
+        accessorKey: "description",
+        cell: ({ row }) => (
+          <div className="min-w-[360px] max-w-[720px] whitespace-normal break-words leading-6 tracking-normal text-slate-700">
+            {row.original.description || "-"}
+          </div>
+        ),
+      },
       { header: "Duty", accessorKey: "dutyRate", cell: ({ row }) => row.original.dutyRate ?? row.original.duty_rate ?? "-" },
       { header: "GST", accessorKey: "gstRate", cell: ({ row }) => row.original.gstRate ?? row.original.gst_rate ?? "-" },
     ]}

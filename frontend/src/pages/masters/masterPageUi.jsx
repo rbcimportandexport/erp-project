@@ -1,5 +1,6 @@
 import Button from "../../components/common/Button";
 import SearchBar from "../../components/common/SearchBar";
+import hsnMaster from "../../data/hsnMaster.json";
 
 const getInitials = (value) => {
   const words = String(value || "-")
@@ -115,6 +116,16 @@ const hsnChapters = [
   { value: "99", label: "Chapter 99 - Services (SAC under GST)" },
 ];
 
+const mainExcelChapterCodes = new Set(
+  hsnMaster
+    .map((item) => String(item.hsn || "").trim().slice(0, 2))
+    .filter((chapter) => /^\d{2}$/.test(chapter))
+);
+
+const mainExcelChapters = hsnChapters.filter(
+  (chapter) => chapter.value === "" || mainExcelChapterCodes.has(chapter.value)
+);
+
 export const masterRowClass = () => "bg-white ring-1 ring-slate-200 hover:-translate-y-0.5 hover:ring-brand-200";
 
 export const MasterHeader = ({
@@ -177,7 +188,7 @@ export const MasterHeader = ({
       {title === "HSN Codes" && setCustomFilters && (
         <select
           value={customFilters?.source || "ICEGATE"}
-          onChange={(e) => setCustomFilters({ ...customFilters, source: e.target.value })}
+          onChange={(e) => setCustomFilters({ ...customFilters, source: e.target.value, chapters: "" })}
           className="h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50"
         >
           <option value="ICEGATE">Universal HSN</option>
@@ -190,7 +201,7 @@ export const MasterHeader = ({
           onChange={(e) => setCustomFilters({ ...customFilters, chapters: e.target.value })}
           className="h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50"
         >
-          {hsnChapters.map((ch) => (
+          {(customFilters?.source === "MAIN_EXCEL" ? mainExcelChapters : hsnChapters).map((ch) => (
             <option key={ch.value} value={ch.value}>
               {ch.label}
             </option>

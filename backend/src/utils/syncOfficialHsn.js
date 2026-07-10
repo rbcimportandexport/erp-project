@@ -21,7 +21,7 @@ const decodeHtml = (value) =>
     .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)));
 
 const textContent = (html) =>
-  decodeHtml(html.replace(/<[^>]*>/g, " ")).replace(/\s+/g, " ").trim();
+  decodeHtml(html.replace(/<[^>]*>/g, "")).replace(/\s+/g, " ").trim();
 
 const getCookie = (response) => {
   const raw = response.headers.get("set-cookie") || "";
@@ -95,7 +95,8 @@ const syncOfficialHsn = async () => {
 
     await connectDB();
     const verifiedAt = new Date();
-    const allExisting = await HsnCode.find({}).sort({ createdAt: 1 });
+    // Keep the user's Main Excel list completely separate from the Universal list.
+    const allExisting = await HsnCode.find({ source: "ICEGATE" }).sort({ createdAt: 1 });
     const existingByCode = new Map();
     for (const item of allExisting) {
       const group = existingByCode.get(item.code) || [];
