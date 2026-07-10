@@ -15,14 +15,14 @@ import { useAlert } from "../hooks/useAlert";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
 
-const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId, onEditClosed, tableVariant, renderHeader, filters = {} }) => {
+const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId, onEditClosed, tableVariant, renderHeader, filters = {}, initialCustomFilters = {} }) => {
   const alert = useAlert();
   const lastAutoEditId = useRef(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [sort, setSort] = useState("-createdAt");
-  const [customFilters, setCustomFilters] = useState({});
+  const [customFilters, setCustomFilters] = useState(initialCustomFilters);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
@@ -127,7 +127,7 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
           items: data?.items || [],
           total: data?.total || 0,
           loading,
-          openAdd: () => { setSelected(null); setForm({}); setOpen(true); },
+          openAdd: () => { setSelected(null); setForm({ ...customFilters }); setOpen(true); },
           search,
           setSearch,
           title,

@@ -176,6 +176,16 @@ export const MasterHeader = ({
       </div>
       {title === "HSN Codes" && setCustomFilters && (
         <select
+          value={customFilters?.source || "ICEGATE"}
+          onChange={(e) => setCustomFilters({ ...customFilters, source: e.target.value })}
+          className="h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50"
+        >
+          <option value="ICEGATE">Universal HSN</option>
+          <option value="MAIN_EXCEL">Main Excel HSN</option>
+        </select>
+      )}
+      {title === "HSN Codes" && setCustomFilters && (
+        <select
           value={customFilters?.chapters || ""}
           onChange={(e) => setCustomFilters({ ...customFilters, chapters: e.target.value })}
           className="h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50"

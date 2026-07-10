@@ -6,6 +6,7 @@ const HsnList = () => (
   <ResourcePage
     title="HSN Codes"
     api={hsnApi}
+    initialCustomFilters={{ source: "ICEGATE" }}
     tableVariant="cards"
     getRowClassName={masterRowClass}
     renderHeader={(props) => (
@@ -16,6 +17,16 @@ const HsnList = () => (
       { name: "description", label: "Description", required: true },
       { name: "dutyRate", label: "Duty Rate", type: "number" },
       { name: "gstRate", label: "GST Rate", type: "number" },
+      {
+        name: "source",
+        label: "HSN List",
+        type: "select",
+        required: true,
+        options: [
+          { value: "ICEGATE", label: "Universal HSN" },
+          { value: "MAIN_EXCEL", label: "Main Excel HSN" },
+        ],
+      },
     ]}
     columns={[
       {

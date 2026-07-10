@@ -10,6 +10,7 @@
     "seed:admin": "node src/utils/seedAdmin.js",
     "seed:hsn": "node src/utils/seedHsnCodes.js",
     "sync:hsn": "node src/utils/syncOfficialHsn.js",
+    "sync:hsn:excel": "node src/utils/syncMainExcelHsn.js",
     "seed:users": "node src/utils/seedUsers.js"
   },
   "keywords": [
