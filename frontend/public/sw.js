@@ -1,9 +1,7 @@
-const CACHE_NAME = "rbc-erp-v2";
+const CACHE_NAME = "rbc-erp-v3";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",
-  "/rbc-app-icon-192.png",
-  "/rbc-app-icon-512.png",
   "/rbc-app-logo.webp"
 ];
 
