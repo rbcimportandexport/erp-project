@@ -38,7 +38,7 @@ const HsnList = () => (
         header: "Description",
         accessorKey: "description",
         cell: ({ row }) => (
-          <div className="min-w-[360px] max-w-[720px] whitespace-normal break-words leading-6 tracking-normal text-slate-700">
+          <div className="w-full min-w-0 max-w-[720px] whitespace-normal break-words leading-6 tracking-normal text-slate-700 md:min-w-[360px]">
             {row.original.description || "-"}
           </div>
         ),

@@ -36,12 +36,12 @@ const Table = ({ columns, data = [], getRowClassName, meta, variant = "default" 
                   return (
                     <div 
                       key={cell.id} 
-                      className={`flex items-center justify-between gap-4 py-2 ${index > 0 ? "border-t border-slate-100/60" : ""}`}
+                      className={`flex items-start justify-between gap-4 py-2 ${index > 0 ? "border-t border-slate-100/60" : ""}`}
                     >
                       <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
                         {typeof header === 'string' ? header : cell.column.id}
                       </span>
-                      <div className="text-sm font-bold text-slate-800 text-right truncate max-w-[180px]">
+                      <div className="min-w-0 max-w-[68%] whitespace-normal break-words text-right text-sm font-bold leading-5 text-slate-800 [overflow-wrap:anywhere]">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </div>
                     </div>
