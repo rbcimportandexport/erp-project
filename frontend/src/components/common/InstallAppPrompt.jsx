@@ -27,15 +27,15 @@ const InstallAppPrompt = () => {
     window.addEventListener("beforeinstallprompt", onBeforeInstall);
     window.addEventListener("appinstalled", onInstalled);
 
-    let mobileTimer;
-    if (isMobile) mobileTimer = window.setTimeout(() => setShow(true), 1200);
+    let iosTimer;
+    if (isIos) iosTimer = window.setTimeout(() => setShow(true), 1200);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", onBeforeInstall);
       window.removeEventListener("appinstalled", onInstalled);
-      if (mobileTimer) window.clearTimeout(mobileTimer);
+      if (iosTimer) window.clearTimeout(iosTimer);
     };
-  }, [isMobile]);
+  }, [isIos, isMobile]);
 
   const install = async () => {
     if (installEvent) {
@@ -45,7 +45,8 @@ const InstallAppPrompt = () => {
       setInstallEvent(null);
       return;
     }
-    setShowManualHelp(true);
+    if (isIos) setShowManualHelp(true);
+    else setShow(false);
   };
 
   const dismiss = () => {
