@@ -61,7 +61,9 @@ const InstallAppPrompt = () => {
         <X className="h-5 w-5" />
       </button>
       <div className="flex items-center gap-3 pr-8">
-        <img src="/rbc-app-icon.svg" alt="RBC ERP" className="h-12 w-12 rounded-xl" />
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1 shadow-inner">
+          <img src="/rbc-app-logo.webp" alt="RBC ERP" className="h-full w-full object-contain" />
+        </div>
         <div>
           <p className="font-black">Download RBC ERP App</p>
           <p className="text-xs text-slate-300">Fast access ke liye phone par install karein.</p>
