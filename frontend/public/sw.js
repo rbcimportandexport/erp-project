@@ -1,5 +1,11 @@
-const CACHE_NAME = "rbc-erp-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/rbc-app-icon.svg", "/rbc-app-logo.webp"];
+const CACHE_NAME = "rbc-erp-v2";
+const APP_SHELL = [
+  "/",
+  "/manifest.webmanifest",
+  "/rbc-app-icon-192.png",
+  "/rbc-app-icon-512.png",
+  "/rbc-app-logo.webp"
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
