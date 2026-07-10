@@ -9,20 +9,40 @@ const seedHsnCodes = async () => {
   try {
     await connectDB();
 
-    try {
-      await HsnCode.collection.dropIndex("code_1");
-      console.log("Unique index code_1 dropped successfully");
-    } catch (err) {
-      console.log("Index code_1 not found or already dropped");
+    const seen = new Set();
+    const validHsnData = hsnData.filter((item) => {
+      const code = String(item.code || "").trim();
+      const description = String(item.description || "").trim();
+      const key = `${code}|${description.toUpperCase()}`;
+      if (!/^\d{4,8}$/.test(code) || !description || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    console.log(`Adding/updating ${validHsnData.length} HSN records one by one...`);
+    let added = 0;
+    let updated = 0;
+
+    for (const item of validHsnData) {
+      const code = String(item.code).trim();
+      const description = String(item.description).trim();
+      const result = await HsnCode.updateOne(
+        { code, description },
+        {
+          $set: {
+            dutyRate: Number(item.dutyRate) || 0,
+            gstRate: Number(item.gstRate) || 0,
+            isActive: item.isActive !== false,
+          },
+          $setOnInsert: { code, description },
+        },
+        { upsert: true }
+      );
+      if (result.upsertedCount) added += 1;
+      else updated += 1;
     }
 
-    console.log("Cleaning existing HSN codes...");
-    await HsnCode.deleteMany({});
-
-    console.log(`Seeding ${hsnData.length} HSN codes...`);
-    await HsnCode.insertMany(hsnData);
-
-    console.log("HSN codes seeded successfully!");
+    console.log(`HSN import complete: ${added} added, ${updated} updated.`);
     process.exit(0);
   } catch (error) {
     console.error("Failed to seed HSN codes:", error.message);
