@@ -7,7 +7,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search" }) => (
       value={value}
       onChange={(event) => onChange(event.target.value)}
       placeholder={placeholder}
-      className="h-10 w-full rounded-md border border-slate-300 bg-white pl-9 pr-3 text-sm outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-50"
+      className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-9 pr-3 text-sm outline-none transition-all focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
     />
   </div>
 );

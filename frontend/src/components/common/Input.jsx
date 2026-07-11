@@ -13,9 +13,9 @@ const Input = forwardRef(({ label, error, className = "", type = "text", ...prop
         <input
           ref={ref}
           type={inputType}
-          className={`h-10 w-full rounded-md border border-slate-300 bg-white pl-3 ${
+          className={`h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-3 ${
             isPassword ? "pr-10" : "pr-3"
-          } text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-50 ${className}`}
+          } text-sm outline-none transition-all focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-100 ${className}`}
           {...props}
         />
         {isPassword && (
