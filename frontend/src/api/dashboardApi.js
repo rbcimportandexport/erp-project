@@ -40,6 +40,7 @@ export const getEtaPriorities = async () => {
   // Use containers endpoint with order logic since eta-priorities list is containers sorted by eta
   const response = await axiosInstance.get("/containers", {
     params: {
+      status: "active",
       limit: 1000,
       sort: "etaDate"
     }

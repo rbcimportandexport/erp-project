@@ -114,8 +114,8 @@ const Dashboard = () => {
         const res = await containerApi.list({ status: "done", limit: 1000 });
         list = res.data?.items || [];
       } else if (key === "pendingContainers") {
-        const res = await containerApi.list({ limit: 1000 });
-        list = (res.data?.items || []).filter((item) => item.status?.toLowerCase() !== "done");
+        const res = await containerApi.list({ status: "active", limit: 1000 });
+        list = res.data?.items || [];
       } else if (key === "pendingBoe") {
         const res = await getPendingBoe();
         list = res.data || [];
@@ -128,8 +128,8 @@ const Dashboard = () => {
           }))
           .filter((c) => c._id || c.id);
       } else if (key === "pendingBl") {
-        const res = await containerApi.list({ limit: 1000 });
-        list = (res.data?.items || []).filter((item) => item.status?.toLowerCase() !== "done" && !item.blNo && !item.bl_no);
+        const res = await containerApi.list({ status: "active", limit: 1000 });
+        list = (res.data?.items || []).filter((item) => !item.blNo && !item.bl_no);
       }
       setModalData(list);
     } catch (error) {

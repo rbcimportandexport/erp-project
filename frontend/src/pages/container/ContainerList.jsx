@@ -156,13 +156,6 @@ const ContainerList = () => {
     fetchOptions();
   }, []);
 
-  if (loadingOptions) {
-    return (
-      <div className="flex h-40 items-center justify-center">
-        <span className="text-sm text-slate-500 animate-pulse">Loading dropdown options...</span>
-      </div>
-    );
-  }
 
   return (
     <ResourcePage
