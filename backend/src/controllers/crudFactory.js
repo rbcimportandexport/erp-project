@@ -1,13 +1,16 @@
 const { successResponse, errorResponse } = require("../utils/apiResponse");
 const { writeActivityLog } = require("../middleware/activityLog");
+const ApprovalRequest = require("../models/ApprovalRequest");
 
 const buildQuery = (search, fields = []) => {
-  if (!search || fields.length === 0) return {};
-  const escapedSearch = String(search).replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-  const isNumeric = /^\d+$/.test(search);
+  if (!search) return {};
+  const trimmed = String(search).trim();
+  if (!trimmed || fields.length === 0) return {};
+
+  const escapedSearch = trimmed.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
   return {
     $or: fields.map((field) => {
-      if (field === "code" && isNumeric) {
+      if (field === "code") {
         return { [field]: new RegExp("^" + escapedSearch, "i") };
       }
       return { [field]: new RegExp(escapedSearch, "i") };
@@ -18,6 +21,7 @@ const buildQuery = (search, fields = []) => {
 const createCrudController = ({ Model, moduleName, searchFields = [], populate = [] }) => ({
   list: async (req, res) => {
     try {
+      console.log(`[CRUD LIST] ${moduleName} incoming query:`, req.query);
       const page = Math.max(Number(req.query.page) || 1, 1);
       const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 5000);
       const skip = (page - 1) * limit;
@@ -50,6 +54,7 @@ const createCrudController = ({ Model, moduleName, searchFields = [], populate =
           }
         }
       }
+      console.log(`[CRUD LIST] ${moduleName} final database query:`, JSON.stringify(query));
 
       let request = Model.find(query).sort(req.query.sort || "-createdAt").skip(skip).limit(limit);
       populate.forEach((path) => {
@@ -66,6 +71,18 @@ const createCrudController = ({ Model, moduleName, searchFields = [], populate =
 
   create: async (req, res) => {
     try {
+      if (req.user && req.user.role !== "masterAdmin") {
+        const request = await ApprovalRequest.create({
+          moduleName,
+          action: "create",
+          requestedData: req.body,
+          requestedBy: req.user._id,
+          status: "pending",
+        });
+        await writeActivityLog({ req, action: "create", module: "ApprovalRequest", recordId: request._id, description: `Approval request created for ${moduleName} creation` });
+        return successResponse(res, null, "Approval request submitted successfully. It will be active once approved by Master Admin.", 202);
+      }
+
       const item = await Model.create(req.body);
       await writeActivityLog({ req, action: "create", module: moduleName, recordId: item._id, description: `${moduleName} created` });
       return successResponse(res, item, `${moduleName} created`, 201);
@@ -90,6 +107,23 @@ const createCrudController = ({ Model, moduleName, searchFields = [], populate =
 
   update: async (req, res) => {
     try {
+      if (req.user && req.user.role !== "masterAdmin") {
+        const originalRecord = await Model.findById(req.params.id);
+        if (!originalRecord) return errorResponse(res, `${moduleName} not found`, "Record not found", 404);
+
+        const request = await ApprovalRequest.create({
+          moduleName,
+          action: "update",
+          recordId: req.params.id,
+          originalData: originalRecord.toObject(),
+          requestedData: req.body,
+          requestedBy: req.user._id,
+          status: "pending",
+        });
+        await writeActivityLog({ req, action: "create", module: "ApprovalRequest", recordId: request._id, description: `Approval request created for ${moduleName} update` });
+        return successResponse(res, null, "Approval request submitted successfully. It will be active once approved by Master Admin.", 202);
+      }
+
       const item = await Model.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
       if (!item) return errorResponse(res, `${moduleName} not found`, "Record not found", 404);
       await writeActivityLog({ req, action: "update", module: moduleName, recordId: item._id, description: `${moduleName} updated` });
@@ -101,6 +135,23 @@ const createCrudController = ({ Model, moduleName, searchFields = [], populate =
 
   remove: async (req, res) => {
     try {
+      if (req.user && req.user.role !== "masterAdmin") {
+        const originalRecord = await Model.findById(req.params.id);
+        if (!originalRecord) return errorResponse(res, `${moduleName} not found`, "Record not found", 404);
+
+        const request = await ApprovalRequest.create({
+          moduleName,
+          action: "delete",
+          recordId: req.params.id,
+          originalData: originalRecord.toObject(),
+          requestedData: {},
+          requestedBy: req.user._id,
+          status: "pending",
+        });
+        await writeActivityLog({ req, action: "create", module: "ApprovalRequest", recordId: request._id, description: `Approval request created for ${moduleName} deletion` });
+        return successResponse(res, null, "Approval request submitted successfully. It will be active once approved by Master Admin.", 202);
+      }
+
       const item = await Model.findByIdAndDelete(req.params.id);
       if (!item) return errorResponse(res, `${moduleName} not found`, "Record not found", 404);
       await writeActivityLog({ req, action: "delete", module: moduleName, recordId: item._id, description: `${moduleName} deleted` });

@@ -23,6 +23,7 @@ import ProductRates from "../pages/masters/ProductRates";
 import PaymentsPage from "../pages/payments/PaymentsPage";
 import ReportsPage from "../pages/reports/ReportsPage";
 import UsersPage from "../pages/users/UsersPage";
+import Approvals from "../pages/approvals/Approvals";
 import AnalyticsPage from "../pages/analytics/AnalyticsPage";
 import PrivateRoute from "./PrivateRoute";
 import RoleRoute from "./RoleRoute";
@@ -56,6 +57,9 @@ const AppRoutes = () => (
         <Route path="masters/invoice-templates" element={<InvoiceTemplates />} />
         <Route element={<RoleRoute roles={["masterAdmin", "admin"]} />}>
           <Route path="users" element={<UsersPage />} />
+        </Route>
+        <Route element={<RoleRoute roles={["masterAdmin"]} />}>
+          <Route path="approvals" element={<Approvals />} />
         </Route>
       </Route>
     </Route>

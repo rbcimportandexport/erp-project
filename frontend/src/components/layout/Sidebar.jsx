@@ -28,6 +28,7 @@ const adminItems = [
   { to: "/users", label: "Users", icon: UserCog },
   { to: "/reports", label: "Reports", icon: Activity },
   { to: "/activity-logs", label: "Activity", icon: Truck },
+  { to: "/approvals", label: "Approvals", icon: ClipboardList },
 ];
 
 const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
