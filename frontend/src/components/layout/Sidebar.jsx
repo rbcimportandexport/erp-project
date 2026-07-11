@@ -55,30 +55,31 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
       {/* Sidebar aside panel */}
       <aside 
         className={`
-          fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-[#0f172a] border-r border-slate-800 text-slate-300 transition-all duration-300 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] shrink-0
+          fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-white border-r border-slate-200 text-slate-700 transition-all duration-300 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] shrink-0
           ${mobileOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"}
           md:sticky md:top-0 md:h-screen md:translate-x-0 md:flex
           ${collapsed ? "md:w-20" : "md:w-64"}
         `}
       >
-        <div className="flex h-16 items-center justify-between px-4">
+        <div className="flex h-16 items-center justify-between px-6 border-b border-slate-100 shrink-0">
           <Link 
             to="/" 
             onClick={onMobileClose}
-            className="min-w-0 font-bold text-2xl tracking-wider text-white uppercase"
+            className="min-w-0 font-bold text-2xl tracking-wider text-slate-900 uppercase"
           >
-            {collapsed ? <span className="text-amber-400">R</span> : <>RBC <span className="text-amber-400 font-extrabold">ERP</span></>}
+            {collapsed ? <span className="text-brand-600 font-bold">R</span> : <>RBC <span className="text-brand-600 font-extrabold">ERP</span></>}
           </Link>
           <Button 
             variant="ghost" 
-            className="h-8 w-8 px-0 text-slate-400 hover:bg-slate-850 hover:text-white hidden md:flex" 
+            className="h-8 w-8 px-0 text-slate-400 hover:bg-slate-50 hover:text-slate-800 hidden md:flex" 
             onClick={onToggle} 
             aria-label="Toggle sidebar"
           >
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </Button>
         </div>
-        <nav className="space-y-1 px-3">
+
+        <nav className="flex-1 space-y-1 px-3 py-4">
           {items.map((item) => {
             const Icon = item.icon;
             return (
@@ -87,14 +88,14 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                 to={item.to}
                 end={item.end}
                 onClick={onMobileClose}
-                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-slate-800 text-amber-400 shadow-sm border-l-2 border-amber-400" : "text-slate-400 hover:bg-slate-800/40 hover:text-slate-200"}`}
+                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 <span className={`truncate ${collapsed ? "md:hidden" : ""}`}>{item.label}</span>
               </NavLink>
             );
           })}
-          {(!collapsed || mobileOpen) && <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wider text-slate-500">Masters</div>}
+          {(!collapsed || mobileOpen) && <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Masters</div>}
           {masterItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -102,7 +103,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                 key={item.to}
                 to={item.to}
                 onClick={onMobileClose}
-                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-slate-800 text-amber-400 shadow-sm border-l-2 border-amber-400" : "text-slate-400 hover:bg-slate-800/40 hover:text-slate-200"}`}
+                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 <span className={`truncate ${collapsed ? "md:hidden" : ""}`}>{item.label}</span>
@@ -110,7 +111,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
             );
           })}
           {visibleAdminItems.length > 0 && (!collapsed || mobileOpen) && (
-            <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wider text-slate-500">Admin</div>
+            <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Admin</div>
           )}
           {visibleAdminItems.map((item) => {
             const Icon = item.icon;
@@ -119,7 +120,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                 key={item.to}
                 to={item.to}
                 onClick={onMobileClose}
-                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-slate-800 text-amber-400 shadow-sm border-l-2 border-amber-400" : "text-slate-400 hover:bg-slate-800/40 hover:text-slate-200"}`}
+                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 <span className={`truncate ${collapsed ? "md:hidden" : ""}`}>{item.label}</span>
