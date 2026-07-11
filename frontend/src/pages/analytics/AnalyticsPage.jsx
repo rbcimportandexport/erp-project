@@ -124,33 +124,33 @@ const AnalyticsPage = () => {
 
       {/* Top Section: Last Month vs This Month */}
       <section className="grid gap-6 md:grid-cols-3">
-        <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col justify-between animate-fade-in-up">
           <div>
             <span className="inline-flex rounded-xl bg-slate-100 p-2 text-slate-700 mb-4">
               <Calendar className="h-5 w-5" />
             </span>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Last Month Loads</p>
-            <h3 className="mt-2 text-4xl font-black text-slate-950">
-              {lastMonthCount} <span className="text-lg font-bold text-slate-400">Containers</span>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Last Month Loads</p>
+            <h3 className="mt-2 text-3xl font-bold text-slate-900">
+              {lastMonthCount} <span className="text-sm font-semibold text-slate-400">Containers</span>
             </h3>
           </div>
-          <p className="mt-4 text-xs font-bold text-slate-500">
+          <p className="mt-4 text-xs font-semibold text-slate-500">
             For {dayjs().subtract(1, "month").format("MMMM YYYY")}
           </p>
         </div>
 
-        <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col justify-between animate-fade-in-up animation-delay-75">
           <div>
             <span className="inline-flex rounded-xl bg-brand-50 p-2 text-brand-600 mb-4">
               <TrendingUp className="h-5 w-5" />
             </span>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">This Month Loads</p>
-            <h3 className="mt-2 text-4xl font-black text-slate-950">
-              {thisMonthCount} <span className="text-lg font-bold text-slate-400">Containers</span>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">This Month Loads</p>
+            <h3 className="mt-2 text-3xl font-bold text-slate-900">
+              {thisMonthCount} <span className="text-sm font-semibold text-slate-400">Containers</span>
             </h3>
           </div>
           <div className="mt-4 flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500">
+            <span className="text-xs font-semibold text-slate-500">
               For {dayjs().format("MMMM YYYY")}
             </span>
             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -161,13 +161,12 @@ const AnalyticsPage = () => {
           </div>
         </div>
 
-        {/* Visual comparison bar card */}
-        <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col justify-between animate-fade-in-up animation-delay-150">
           <div>
             <span className="inline-flex rounded-xl bg-indigo-50 p-2 text-indigo-600 mb-4">
               <ArrowLeftRight className="h-5 w-5" />
             </span>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Comparison Status</p>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Comparison Status</p>
             <div className="mt-4 space-y-3">
               <div className="flex justify-between text-xs font-bold text-slate-700">
                 <span>Last Month ({lastMonthCount})</span>
@@ -200,22 +199,22 @@ const AnalyticsPage = () => {
       {/* Middle Section: Bar Chart & Top Importers */}
       <section className="grid gap-6 lg:grid-cols-2">
         {/* Monthly Loads since January */}
-        <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-brand-600">Month-Wise Load</p>
-              <h2 className="text-xl font-black text-slate-950">Loads Since January</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-600">Month-Wise Load</p>
+              <h2 className="text-lg font-bold text-slate-900">Loads Since January</h2>
             </div>
             <BarChart3 className="h-5 w-5 text-slate-400" />
           </div>
 
           <div className="overflow-x-auto pb-2 scrollbar-thin">
-            <div className="flex h-60 items-end gap-2 px-1 pt-4 min-w-[500px] lg:min-w-0">
+            <div className="flex h-60 items-end gap-1 sm:gap-2 px-1 pt-4 w-full">
               {monthlyData.map((d) => {
                 const heightPercent = Math.round((d.count / maxMonthCount) * 100);
                 return (
                   <div key={d.name} className="flex flex-1 flex-col items-center">
-                    <span className="text-xs font-black text-slate-700 mb-1 h-4">
+                    <span className="text-xs font-bold text-slate-700 mb-1 h-4">
                       {d.count > 0 ? d.count : ""}
                     </span>
                     <div className="relative w-full h-40 bg-slate-50 rounded-t-lg overflow-hidden flex items-end">
@@ -235,11 +234,11 @@ const AnalyticsPage = () => {
         </div>
 
         {/* Top Importers / Customers */}
-        <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up animation-delay-75">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-brand-600">Customer Share</p>
-              <h2 className="text-xl font-black text-slate-950">Top Customers (This Year)</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-600">Customer Share</p>
+              <h2 className="text-lg font-bold text-slate-900">Top Customers (This Year)</h2>
             </div>
             <Users className="h-5 w-5 text-slate-400" />
           </div>
@@ -251,7 +250,7 @@ const AnalyticsPage = () => {
                 <div key={p.name} className="space-y-1">
                   <div className="flex items-center justify-between text-sm font-bold text-slate-950">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400 text-xs font-black">#{idx + 1}</span>
+                      <span className="text-slate-400 text-xs font-bold">#{idx + 1}</span>
                       <span className="truncate max-w-[200px] sm:max-w-xs">{p.name}</span>
                     </div>
                     <span>{p.count} Loads</span>
@@ -276,11 +275,11 @@ const AnalyticsPage = () => {
       </section>
 
       {/* Bottom Section: Weekly breakdown with selector */}
-      <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up animation-delay-150">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-brand-600">Time-Slot Analysis</p>
-            <h2 className="text-xl font-black text-slate-950">Week-Wise Load Breakdown</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-600">Time-Slot Analysis</p>
+            <h2 className="text-lg font-bold text-slate-900">Week-Wise Load Breakdown</h2>
           </div>
           <div className="flex gap-2">
             <select
@@ -307,11 +306,11 @@ const AnalyticsPage = () => {
           {weeksData.map((w) => {
             const heightPercent = Math.round((w.count / maxWeekCount) * 100);
             return (
-              <div key={w.name} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 flex flex-col items-center gap-4">
-                <p className="text-xs font-black uppercase tracking-wider text-slate-500">{w.name}</p>
+              <div key={w.name} className="rounded-xl border border-slate-100 bg-slate-50 p-4 flex flex-col items-center gap-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{w.name}</p>
                 
                 <div className="flex flex-col items-center justify-end w-full h-36">
-                  <span className="text-sm font-black text-slate-700 mb-1.5 h-5">
+                  <span className="text-sm font-bold text-slate-700 mb-1.5 h-5">
                     {w.count > 0 ? `${w.count} Loads` : "0 Loads"}
                   </span>
                   <div className="relative w-16 h-28 bg-slate-200 rounded-t-lg overflow-hidden flex items-end">

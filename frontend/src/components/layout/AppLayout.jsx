@@ -16,7 +16,7 @@ const AppLayout = () => {
         mobileOpen={mobileOpen}
         onMobileClose={() => setMobileOpen(false)}
       />
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 overflow-x-hidden">
         <Navbar onMenuClick={() => setMobileOpen((value) => !value)} />
         <main className="p-4 md:p-6">
           <Breadcrumb />
