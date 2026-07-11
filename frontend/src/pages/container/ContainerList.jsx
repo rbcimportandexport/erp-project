@@ -167,34 +167,34 @@ const ContainerList = () => {
       renderHeader={({ items, openAdd, search, setSearch }) => {
         const counts = getPriorityCounts(items);
         return (
-          <div className="mb-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-            <div className="bg-slate-950 px-6 py-6 text-white">
+          <div className="mb-6 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm animate-fade-in-up">
+            <div className="bg-[#0f172a] px-6 py-6 text-white">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.24em] text-brand-55">Shipment Board</p>
-                  <h1 className="mt-2 text-3xl font-black tracking-tight">Containers</h1>
-                  <p className="mt-2 text-sm text-slate-300">Container number par click karo, edit direct open hoga.</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Shipment Board</p>
+                  <h1 className="mt-1 text-2xl font-bold tracking-tight">Containers</h1>
+                  <p className="mt-1 text-xs text-slate-400">Container number par click karo, edit direct open hoga.</p>
                 </div>
-                <Button className="h-11 rounded-xl px-5" onClick={openAdd}>Add Container</Button>
+                <Button className="h-10 rounded-xl px-5 text-xs font-semibold" onClick={openAdd}>Add Container</Button>
               </div>
             </div>
 
-            <div className="grid gap-px bg-slate-200 md:grid-cols-4">
+            <div className="grid gap-px bg-slate-100 border-b border-slate-100 md:grid-cols-4">
               <div className="bg-white p-4">
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Visible Records</p>
-                <p className="mt-2 text-3xl font-black text-slate-950">{items.length}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Visible Records</p>
+                <p className="mt-1 text-2xl font-bold text-slate-900">{items.length}</p>
               </div>
-              <div className="bg-red-50 p-4">
-                <p className="text-xs font-bold uppercase tracking-wide text-red-700">High Priority</p>
-                <p className="mt-2 text-3xl font-black text-red-700">{counts.red}</p>
+              <div className="bg-white p-4 border-l border-slate-100">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-rose-500">High Priority</p>
+                <p className="mt-1 text-2xl font-bold text-rose-600">{counts.red}</p>
               </div>
-              <div className="bg-amber-50 p-4">
-                <p className="text-xs font-bold uppercase tracking-wide text-amber-700">Medium Priority</p>
-                <p className="mt-2 text-3xl font-black text-amber-700">{counts.yellow}</p>
+              <div className="bg-white p-4 border-l border-slate-100">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-amber-500">Medium Priority</p>
+                <p className="mt-1 text-2xl font-bold text-amber-600">{counts.yellow}</p>
               </div>
-              <div className="bg-emerald-50 p-4">
-                <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">Low Priority</p>
-                <p className="mt-2 text-3xl font-black text-emerald-700">{counts.green}</p>
+              <div className="bg-white p-4 border-l border-slate-100">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-500">Low Priority</p>
+                <p className="mt-1 text-2xl font-bold text-emerald-600">{counts.green}</p>
               </div>
             </div>
 

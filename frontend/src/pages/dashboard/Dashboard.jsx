@@ -174,7 +174,7 @@ const Dashboard = () => {
     <>
       <TopBar title="Dashboard" />
 
-      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">ETA Priority Control</p>
@@ -237,7 +237,7 @@ const Dashboard = () => {
         </div>
       </section>
 
-      <section className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 animate-fade-in-up animation-delay-75">
         {metricCards.map((card) => {
           const Icon = card.icon;
           return (
@@ -260,7 +260,7 @@ const Dashboard = () => {
         })}
       </section>
 
-      <section className="mt-5 overflow-hidden rounded-xl border border-red-150 bg-white shadow-sm">
+      <section className="mt-5 overflow-hidden rounded-xl border border-red-150 bg-white shadow-sm animate-fade-in-up animation-delay-150">
         <div className="flex flex-col gap-3 border-b border-red-100 bg-red-50/30 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-600">Urgent ETA Watch</p>

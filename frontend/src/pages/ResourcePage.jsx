@@ -145,7 +145,13 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
           <div className="mb-4 max-w-md"><SearchBar value={search} onChange={setSearch} placeholder={`Search ${title.toLowerCase()}`} /></div>
         </>
       )}
-      {loading ? <Loader /> : <Table columns={tableColumns} data={data?.items || []} getRowClassName={getRowClassName} meta={{ openEdit: openEditor }} variant={tableVariant} />}
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="animate-fade-in-up animation-delay-75">
+          <Table columns={tableColumns} data={data?.items || []} getRowClassName={getRowClassName} meta={{ openEdit: openEditor }} variant={tableVariant} />
+        </div>
+      )}
       <Pagination
         page={data?.page || page}
         pages={data?.pages || 1}
