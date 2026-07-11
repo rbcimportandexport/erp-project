@@ -21,8 +21,8 @@ const Navbar = ({ onMenuClick }) => {
         <Menu className="h-6 w-6 text-slate-800 shrink-0" />
       </Button>
       <div>
-        <p className="text-base font-black text-slate-950 capitalize tracking-tight">{user?.name || "ERP User"}</p>
-        <p className="text-xs font-bold text-brand-600 uppercase tracking-wider mt-0.5">{roleLabel}</p>
+        <p className="text-sm font-bold text-slate-900 capitalize tracking-tight">{user?.name || "ERP User"}</p>
+        <p className="text-[10px] font-semibold text-brand-600 uppercase tracking-[0.12em] mt-0.5">{roleLabel}</p>
       </div>
       <Button variant="secondary" onClick={logout}><LogOut className="h-4 w-4" />Logout</Button>
     </header>
