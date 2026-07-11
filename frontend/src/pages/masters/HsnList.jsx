@@ -43,8 +43,22 @@ const HsnList = () => (
           </div>
         ),
       },
-      { header: "Duty", accessorKey: "dutyRate", cell: ({ row }) => row.original.dutyRate ?? row.original.duty_rate ?? "-" },
-      { header: "GST", accessorKey: "gstRate", cell: ({ row }) => row.original.gstRate ?? row.original.gst_rate ?? "-" },
+      { 
+        header: "Duty", 
+        accessorKey: "dutyRate", 
+        cell: ({ row }) => {
+          const val = row.original.dutyRate ?? row.original.duty_rate;
+          return val !== null && val !== undefined && val !== "" ? `${val}%` : "-";
+        }
+      },
+      { 
+        header: "GST", 
+        accessorKey: "gstRate", 
+        cell: ({ row }) => {
+          const val = row.original.gstRate ?? row.original.gst_rate;
+          return val !== null && val !== undefined && val !== "" ? `${val}%` : "-";
+        }
+      },
     ]}
   />
 );
