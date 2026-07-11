@@ -23,6 +23,10 @@ import Loader from "../../components/common/Loader";
 import TopBar from "../../components/layout/TopBar";
 import Modal from "../../components/common/Modal";
 import { useFetch } from "../../hooks/useFetch";
+import { useAuth } from "../../hooks/useAuth";
+import { createCrudApi } from "../../api/crudApi";
+
+const activityLogApi = createCrudApi("/activity-logs");
 
 const metricCards = [
   { key: "totalContainers", label: "Total Containers", icon: Boxes },
@@ -83,8 +87,14 @@ const getContainerNo = (item) => item.container_no || item.containerNo || "-";
 const getImporterName = (item) => item.importer?.name || item.importer_name || "-";
 
 const Dashboard = () => {
+  const { user } = useAuth();
   const { data, loading } = useFetch(getStats, []);
   const { data: etaContainers = [], loading: etaLoading } = useFetch(getEtaPriorities, []);
+
+  const { data: logsData, loading: logsLoading } = useFetch(
+    () => user?.role === "masterAdmin" ? activityLogApi.list({ limit: 8, sort: "-createdAt" }) : Promise.resolve({ data: { items: [] } }),
+    [user?.role]
+  );
 
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
@@ -329,6 +339,66 @@ const Dashboard = () => {
           )}
         </div>
       </section>
+
+      {/* Master Admin Activity Audit Section */}
+      {user?.role === "masterAdmin" && (
+        <section className="mt-5 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm animate-fade-in-up animation-delay-200">
+          <div className="flex flex-col gap-3 border-b border-slate-100 bg-slate-50/50 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-600">Audit Trail</p>
+              <h2 className="mt-1 text-xl font-bold text-slate-950">Recent Admin Activities (Edits & Deletes)</h2>
+            </div>
+            <Link 
+              to="/activity-logs"
+              className="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1.5"
+            >
+              View Full Logs
+            </Link>
+          </div>
+
+          <div className="divide-y divide-slate-100">
+            {logsLoading ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+              </div>
+            ) : logsData?.items && logsData.items.length > 0 ? (
+              logsData.items.map((log) => {
+                const isDelete = log.action?.toLowerCase().includes("delete") || log.action?.toLowerCase().includes("remove");
+                const isUpdate = log.action?.toLowerCase().includes("update") || log.action?.toLowerCase().includes("edit");
+                
+                return (
+                  <div key={log._id || log.id} className="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white hover:bg-slate-50/40 transition-colors">
+                    <div className="flex items-start gap-3">
+                      <span className={`inline-flex items-center rounded-lg px-2.5 py-0.5 text-xs font-semibold uppercase ${
+                        isDelete ? "bg-red-50 text-red-700 border border-red-100" :
+                        isUpdate ? "bg-amber-50 text-amber-700 border border-amber-100" :
+                        "bg-blue-50 text-blue-700 border border-blue-100"
+                      }`}>
+                        {log.action || "CRUD"}
+                      </span>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-800">
+                          {log.description}
+                        </p>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          Module: <span className="font-semibold text-slate-600">{log.module || "General"}</span> | User: <span className="font-bold text-slate-700">{log.user?.name || "System"}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs text-slate-400 font-medium whitespace-nowrap self-end sm:self-center">
+                      {dayjs(log.createdAt || log.created_at).format("DD MMM YYYY, hh:mm A")}
+                    </span>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="px-5 py-10 text-center bg-white">
+                <p className="text-sm font-semibold text-slate-400">No admin activities logged yet</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       <Modal
         open={openModal}
