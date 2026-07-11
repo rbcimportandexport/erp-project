@@ -65,7 +65,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
           <Link 
             to="/" 
             onClick={onMobileClose}
-            className="min-w-0 font-black text-2xl tracking-wider text-slate-950 uppercase"
+            className="min-w-0 font-bold text-2xl tracking-wider text-slate-950 uppercase"
           >
             {collapsed ? "RBC" : "RBC ERP"}
           </Link>
