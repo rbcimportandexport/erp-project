@@ -40,30 +40,30 @@ const priorityConfig = {
     label: "High Priority",
     range: "0-7 days",
     rowClass: "border-red-200 bg-red-50 text-red-700",
-    panelClass: "border border-slate-200 border-l-4 border-l-red-500 bg-white hover:border-slate-300 hover:shadow-md transition-all text-slate-900",
-    badgeClass: "bg-red-100 text-red-700",
-    textClass: "text-red-600",
-    iconClass: "text-red-500",
+    panelClass: "border border-slate-200 border-t-[3px] border-t-rose-500 bg-gradient-to-b from-rose-50/10 to-white",
+    badgeClass: "bg-rose-50 text-rose-600 border border-rose-100",
+    textClass: "text-rose-600",
+    barColorClass: "bg-rose-500",
     sort: 0,
   },
   yellow: {
     label: "Medium Priority",
     range: "8-15 days",
     rowClass: "border-amber-200 bg-amber-50 text-amber-700",
-    panelClass: "border border-slate-200 border-l-4 border-l-amber-500 bg-white hover:border-slate-300 hover:shadow-md transition-all text-slate-900",
-    badgeClass: "bg-amber-100 text-amber-750",
+    panelClass: "border border-slate-200 border-t-[3px] border-t-amber-500 bg-gradient-to-b from-amber-50/10 to-white",
+    badgeClass: "bg-amber-50 text-amber-600 border border-amber-100",
     textClass: "text-amber-600",
-    iconClass: "text-amber-500",
+    barColorClass: "bg-amber-500",
     sort: 1,
   },
   green: {
     label: "Low Priority",
     range: "16+ days",
     rowClass: "border-emerald-200 bg-emerald-50 text-emerald-700",
-    panelClass: "border border-slate-200 border-l-4 border-l-emerald-500 bg-white hover:border-slate-300 hover:shadow-md transition-all text-slate-900",
-    badgeClass: "bg-emerald-100 text-emerald-700",
+    panelClass: "border border-slate-200 border-t-[3px] border-t-emerald-500 bg-gradient-to-b from-emerald-50/10 to-white",
+    badgeClass: "bg-emerald-50 text-emerald-600 border border-emerald-100",
     textClass: "text-emerald-600",
-    iconClass: "text-emerald-500",
+    barColorClass: "bg-emerald-500",
     sort: 2,
   },
 };
@@ -190,23 +190,50 @@ const Dashboard = () => {
         </div>
 
         <div className="mt-5 grid gap-4 lg:grid-cols-3">
-          {Object.entries(priorityConfig).map(([tone, config]) => (
-            <Link
-              key={tone}
-              to="/containers"
-              className={`relative overflow-hidden rounded-xl border p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${config.panelClass}`}
-            >
-              <div className="relative flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">{config.range}</p>
-                  <h2 className="mt-1.5 text-base font-bold">{config.label}</h2>
+          {Object.entries(priorityConfig).map(([tone, config]) => {
+            const count = priorityCounts[tone] || 0;
+            const totalVal = data?.totalContainers || (priorityCounts.red + priorityCounts.yellow + priorityCounts.green) || 1;
+            const percentage = Math.min(Math.round((count / totalVal) * 100), 100);
+            
+            return (
+              <Link
+                key={tone}
+                to="/containers"
+                className={`group relative overflow-hidden rounded-xl border p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${config.panelClass}`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${config.badgeClass}`}>
+                      {config.range}
+                    </span>
+                    <h2 className="mt-3 text-xs font-bold text-slate-500 uppercase tracking-wider">{config.label}</h2>
+                  </div>
+                  <div className={`rounded-lg p-2 ${config.badgeClass} group-hover:scale-110 transition-transform duration-200`}>
+                    <AlertTriangle className="h-4 w-4" />
+                  </div>
                 </div>
-                <AlertTriangle className={`h-5 w-5 ${config.iconClass}`} />
-              </div>
-              <p className={`relative mt-5 text-4xl font-bold leading-none ${config.textClass}`}>{priorityCounts[tone]}</p>
-              <p className="relative mt-2 text-xs font-semibold text-slate-500">containers</p>
-            </Link>
-          ))}
+                
+                <div className="mt-4 flex items-baseline gap-2">
+                  <span className={`text-4xl font-extrabold tracking-tight ${config.textClass}`}>{count}</span>
+                  <span className="text-xs font-semibold text-slate-400">containers</span>
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="mt-5">
+                  <div className="flex items-center justify-between text-[10px] font-semibold text-slate-400 mb-1.5">
+                    <span>Distribution</span>
+                    <span>{percentage}%</span>
+                  </div>
+                  <div className="h-1.5 w-full rounded-full bg-slate-100">
+                    <div 
+                      className={`h-1.5 rounded-full ${config.barColorClass} transition-all duration-500`}
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
