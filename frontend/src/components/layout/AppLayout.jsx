@@ -9,16 +9,16 @@ const AppLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-100">
       <Sidebar 
         collapsed={collapsed} 
         onToggle={() => setCollapsed((value) => !value)} 
         mobileOpen={mobileOpen}
         onMobileClose={() => setMobileOpen(false)}
       />
-      <div className="min-w-0 flex-1 overflow-x-hidden">
+      <div className="flex flex-1 flex-col min-w-0 h-full overflow-hidden">
         <Navbar onMenuClick={() => setMobileOpen((value) => !value)} />
-        <main className="p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-thin">
           <Breadcrumb />
           <Outlet />
         </main>

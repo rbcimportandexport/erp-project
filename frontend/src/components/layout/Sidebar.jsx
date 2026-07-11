@@ -55,7 +55,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
       {/* Sidebar aside panel */}
       <aside 
         className={`
-          fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-white border-r border-slate-200 text-slate-700 transition-all duration-300 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] shrink-0
+          fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-white border-r border-slate-200 text-slate-700 transition-all duration-300 overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] shrink-0
           ${mobileOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"}
           md:sticky md:top-0 md:h-screen md:translate-x-0 md:flex
           ${collapsed ? "md:w-20" : "md:w-64"}
