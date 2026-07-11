@@ -14,9 +14,12 @@ import TopBar from "../components/layout/TopBar";
 import { useAlert } from "../hooks/useAlert";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
+import { useAuth } from "../hooks/useAuth";
+import { canEdit, canDelete } from "../utils/permissions";
 
 const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId, onEditClosed, tableVariant, renderHeader, filters = {}, initialCustomFilters = {} }) => {
   const alert = useAlert();
+  const { user } = useAuth();
   const lastAutoEditId = useRef(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -28,6 +31,9 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
   const [confirmId, setConfirmId] = useState(null);
   const [form, setForm] = useState({});
   const debouncedSearch = useDebounce(search);
+
+  const hasEditPermission = canEdit(user?.role);
+  const hasDeletePermission = canDelete(user?.role);
 
   useEffect(() => {
     setPage(1);
@@ -76,19 +82,26 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
   }, [api, alert, data, loading, openEditId]);
 
   const tableColumns = useMemo(
-    () => [
-      ...columns,
-      {
-        header: "Actions",
-        cell: ({ row }) => (
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => openEditor(row.original)}>Edit</Button>
-            <Button variant="danger" className="h-10 w-10 p-0 flex items-center justify-center hover:bg-red-700 active:scale-95 transition-all" onClick={() => setConfirmId(row.original._id)} aria-label="Delete"><Trash2 className="h-5 w-5 shrink-0" /></Button>
-          </div>
-        ),
-      },
-    ],
-    [columns]
+    () => {
+      const baseColumns = [...columns];
+      if (hasEditPermission || hasDeletePermission) {
+        baseColumns.push({
+          header: "Actions",
+          cell: ({ row }) => (
+            <div className="flex gap-2">
+              {hasEditPermission && (
+                <Button variant="secondary" onClick={() => openEditor(row.original)}>Edit</Button>
+              )}
+              {hasDeletePermission && (
+                <Button variant="danger" className="h-10 w-10 p-0 flex items-center justify-center hover:bg-red-700 active:scale-95 transition-all" onClick={() => setConfirmId(row.original._id)} aria-label="Delete"><Trash2 className="h-5 w-5 shrink-0" /></Button>
+              )}
+            </div>
+          ),
+        });
+      }
+      return baseColumns;
+    },
+    [columns, hasEditPermission, hasDeletePermission]
   );
 
   const save = async () => {
@@ -135,12 +148,13 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
           setSort,
           customFilters,
           setCustomFilters,
+          hasEditPermission,
         })
       ) : (
         <>
           <TopBar
             title={title}
-            actions={<Button onClick={() => { setSelected(null); setForm({}); setOpen(true); }}><Plus className="h-4 w-4" />Add</Button>}
+            actions={hasEditPermission && <Button onClick={() => { setSelected(null); setForm({}); setOpen(true); }}><Plus className="h-4 w-4" />Add</Button>}
           />
           <div className="mb-4 max-w-md"><SearchBar value={search} onChange={setSearch} placeholder={`Search ${title.toLowerCase()}`} /></div>
         </>
@@ -166,9 +180,9 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
 
       <Modal
         open={open}
-        title={selected ? `Edit ${title}` : `Add ${title}`}
+        title={selected ? (hasEditPermission ? `Edit ${title}` : `View ${title}`) : `Add ${title}`}
         onClose={closeEditor}
-        footer={<div className="flex justify-end gap-2"><Button variant="secondary" onClick={closeEditor}>Cancel</Button><Button onClick={save}>Save</Button></div>}
+        footer={<div className="flex justify-end gap-2"><Button variant="secondary" onClick={closeEditor}>{hasEditPermission ? "Cancel" : "Close"}</Button>{hasEditPermission && <Button onClick={save}>Save</Button>}</div>}
       >
         <div className="grid gap-4 md:grid-cols-2">
           {fields.map((field) => {
@@ -189,6 +203,7 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
                   value={displayValue}
                   onChange={(event) => setForm((value) => ({ ...value, [field.name]: event.target.value }))}
                   required={field.required}
+                  disabled={!hasEditPermission}
                 />
               );
             }
@@ -200,6 +215,7 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
                 value={displayValue}
                 onChange={(event) => setForm((value) => ({ ...value, [field.name]: field.type === "number" ? Number(event.target.value) : event.target.value }))}
                 required={field.required}
+                disabled={!hasEditPermission}
               />
             );
           })}

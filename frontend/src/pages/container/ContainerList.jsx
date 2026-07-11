@@ -164,7 +164,7 @@ const ContainerList = () => {
       getRowClassName={getPriorityRowClassName}
       tableVariant="cards"
       filters={{ missing: missingField, status: statusFilter }}
-      renderHeader={({ items, openAdd, search, setSearch }) => {
+      renderHeader={({ items, openAdd, search, setSearch, hasEditPermission }) => {
         const counts = getPriorityCounts(items);
         return (
           <div className="mb-6 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm animate-fade-in-up">
@@ -173,9 +173,15 @@ const ContainerList = () => {
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Shipment Board</p>
                   <h1 className="mt-1 text-2xl font-bold tracking-tight">Containers</h1>
-                  <p className="mt-1 text-xs text-slate-400">Container number par click karo, edit direct open hoga.</p>
+                  <p className="mt-1 text-xs text-slate-400">
+                    {hasEditPermission 
+                      ? "Container number par click karo, edit direct open hoga." 
+                      : "Container number par click karo, details view open hoga."}
+                  </p>
                 </div>
-                <Button className="h-10 rounded-xl px-5 text-xs font-semibold" onClick={openAdd}>Add Container</Button>
+                {hasEditPermission && (
+                  <Button className="h-10 rounded-xl px-5 text-xs font-semibold" onClick={openAdd}>Add Container</Button>
+                )}
               </div>
             </div>
 
