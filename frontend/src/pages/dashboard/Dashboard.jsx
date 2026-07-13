@@ -177,7 +177,7 @@ const Dashboard = () => {
       const eta = item.eta_date || item.etaDate;
       return { ...item, eta, priority: getEtaPriority(eta) };
     })
-    .filter((item) => item.status?.toLowerCase() !== "done" && (!item.eta || item.priority.daysLeft >= 0))
+    .filter((item) => item.status?.toLowerCase() !== "done")
     .sort((a, b) => {
       if (a.priority.sort !== b.priority.sort) return a.priority.sort - b.priority.sort;
       if (!a.eta) return 1;
@@ -298,7 +298,9 @@ const Dashboard = () => {
 
         <div className="divide-y divide-slate-100">
           {highPriorityRows.map((item) => {
-            const daysLeft = Math.max(item.priority.daysLeft ?? 0, 0);
+            const dl = item.priority.daysLeft ?? 0;
+            const daysLeft = dl < 0 ? `Overdue by ${Math.abs(dl)} days` : `${dl} days left`;
+            const daysLeftDesktop = dl < 0 ? `Overdue by ${Math.abs(dl)} days` : `${dl} days`;
             return (
               <Link
                 key={item.id || item._id}
@@ -309,8 +311,8 @@ const Dashboard = () => {
                 <div className="flex flex-col gap-2 lg:hidden">
                   <div className="flex items-center justify-between">
                     <span className="text-base font-bold text-slate-900 tracking-tight">{getContainerNo(item)}</span>
-                    <span className="rounded-lg bg-red-50 border border-red-200 px-2.5 py-0.5 text-xs font-semibold text-red-700">
-                      {daysLeft} days left
+                    <span className={`rounded-lg px-2.5 py-0.5 text-xs font-semibold ${dl < 0 ? "bg-rose-100 text-rose-800 border border-rose-200" : "bg-red-50 border border-red-200 text-red-700"}`}>
+                      {daysLeft}
                     </span>
                   </div>
                   <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
@@ -337,7 +339,7 @@ const Dashboard = () => {
                 </div>
                 <div className="hidden lg:block">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Days Left</p>
-                  <p className="mt-0.5 text-sm font-semibold text-red-600">{daysLeft} days</p>
+                  <p className={`mt-0.5 text-sm font-semibold ${dl < 0 ? "text-rose-700 font-extrabold" : "text-red-650"}`}>{daysLeftDesktop}</p>
                 </div>
                 <div className="hidden lg:block">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Status</p>
