@@ -256,7 +256,7 @@ const rawContainers = [
     containerNo: "RBC20260630-215",
     importerName: "RAMDEV BEAUTY COLLECTION",
     exporterName: "YIWU WANYU IMPORT AND EXPORT CO.,LTD",
-    loadingDate: "30/06/2026",
+    loadingDate: "01/07/2026",
     etaDate: null,
     cblEta: "13/08/2026",
     cblBlNo: "HLCUNG12606CWVK1",

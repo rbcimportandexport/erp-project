@@ -17,14 +17,14 @@ import { useFetch } from "../hooks/useFetch";
 import { useAuth } from "../hooks/useAuth";
 import { canEdit, canDelete } from "../utils/permissions";
 
-const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId, onEditClosed, tableVariant, renderHeader, filters = {}, initialCustomFilters = {} }) => {
+const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId, onEditClosed, tableVariant, renderHeader, filters = {}, initialCustomFilters = {}, initialSort = "-createdAt" }) => {
   const alert = useAlert();
   const { user } = useAuth();
   const lastAutoEditId = useRef(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [sort, setSort] = useState("-createdAt");
+  const [sort, setSort] = useState(initialSort);
   const [customFilters, setCustomFilters] = useState(initialCustomFilters);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
