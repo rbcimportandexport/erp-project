@@ -6,6 +6,9 @@ const authorize = require("../middleware/role");
 router.get("/stats", protect, authorize("masterAdmin", "admin", "user"), controller.stats);
 router.get("/upcoming-eta", protect, authorize("masterAdmin", "admin", "user"), controller.upcomingEta);
 router.get("/pending-boe", protect, authorize("masterAdmin", "admin", "user"), controller.pendingBoe);
+router.get("/pending-cbl", protect, authorize("masterAdmin", "admin", "user"), controller.pendingCbl);
+router.get("/pending-ewaybill", protect, authorize("masterAdmin", "admin", "user"), controller.pendingEWayBill);
+router.get("/pending-cpl", protect, authorize("masterAdmin", "admin", "user"), controller.pendingCpl);
 router.get("/pending-line-payment", protect, authorize("masterAdmin", "admin", "user"), controller.pendingLinePayment);
 
 module.exports = router;

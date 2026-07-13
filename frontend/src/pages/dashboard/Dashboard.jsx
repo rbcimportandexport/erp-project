@@ -16,6 +16,9 @@ import {
   getStats,
   getUpcomingEta,
   getPendingBoe,
+  getPendingCbl,
+  getPendingEWayBill,
+  getPendingCpl,
   getPendingLinePayment,
 } from "../../api/dashboardApi";
 import containerApi from "../../api/containerApi";
@@ -35,6 +38,9 @@ const metricCards = [
   { key: "doneContainers", label: "Containers Done", icon: CheckCircle2 },
   { key: "pendingContainers", label: "Pending Containers", icon: Clock },
   { key: "pendingBoe", label: "Pending BOE", icon: FileWarning },
+  { key: "pendingCbl", label: "Pending CBL", icon: FileWarning },
+  { key: "pendingEWayBill", label: "Pending E-Way Bill", icon: FileWarning },
+  { key: "pendingCpl", label: "Pending CPL", icon: FileWarning },
   { key: "pendingLinePayment", label: "Pending Line Payment", icon: IndianRupee },
   { key: "pendingBl", label: "Pending BL", icon: AlertTriangle },
 ];
@@ -134,6 +140,15 @@ const Dashboard = () => {
         list = res.data?.items || [];
       } else if (key === "pendingBoe") {
         const res = await getPendingBoe();
+        list = res.data || [];
+      } else if (key === "pendingCbl") {
+        const res = await getPendingCbl();
+        list = res.data || [];
+      } else if (key === "pendingEWayBill") {
+        const res = await getPendingEWayBill();
+        list = res.data || [];
+      } else if (key === "pendingCpl") {
+        const res = await getPendingCpl();
         list = res.data || [];
       } else if (key === "pendingLinePayment") {
         const res = await getPendingLinePayment();

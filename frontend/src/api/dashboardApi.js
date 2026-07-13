@@ -55,6 +55,24 @@ export const getPendingBoe = async () => {
   return { data: mapKeys(resData) };
 };
 
+export const getPendingCbl = async () => {
+  const response = await axiosInstance.get("/dashboard/pending-cbl");
+  const resData = response.data.data || response.data;
+  return { data: mapKeys(resData) };
+};
+
+export const getPendingEWayBill = async () => {
+  const response = await axiosInstance.get("/dashboard/pending-ewaybill");
+  const resData = response.data.data || response.data;
+  return { data: mapKeys(resData) };
+};
+
+export const getPendingCpl = async () => {
+  const response = await axiosInstance.get("/dashboard/pending-cpl");
+  const resData = response.data.data || response.data;
+  return { data: mapKeys(resData) };
+};
+
 export const getPendingLinePayment = async () => {
   const response = await axiosInstance.get("/dashboard/pending-line-payment");
   const resData = response.data.data || response.data;

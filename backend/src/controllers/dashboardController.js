@@ -11,9 +11,26 @@ exports.stats = async (req, res) => {
     const todayEnd = endOfToday();
     const nextWeek = addDays(todayStart, 7);
 
-    const boeContainers = await Document.distinct("container", { docType: "BOE" });
+    const [boeContainers, cblContainers, ewayContainers, cplContainers] = await Promise.all([
+      Document.distinct("container", { docType: "BOE" }),
+      Document.distinct("container", { docType: "CBL" }),
+      Document.distinct("container", { docType: "EWayBill" }),
+      Document.distinct("container", { docType: "CPL" })
+    ]);
 
-    const [totalContainers, upcomingEta, todaysTasks, doneContainers, pendingContainers, linePaymentPending, pendingBl, pendingBoeCount] = await Promise.all([
+    const [
+      totalContainers,
+      upcomingEta,
+      todaysTasks,
+      doneContainers,
+      pendingContainers,
+      linePaymentPending,
+      pendingBl,
+      pendingBoeCount,
+      pendingCblCount,
+      pendingEWayCount,
+      pendingCplCount
+    ] = await Promise.all([
       Container.countDocuments(),
       Container.countDocuments({
         status: { $nin: ["done", "DONE"] },
@@ -38,6 +55,18 @@ exports.stats = async (req, res) => {
         status: { $nin: ["done", "DONE"] },
         _id: { $nin: boeContainers }
       }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        _id: { $nin: cblContainers }
+      }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        _id: { $nin: ewayContainers }
+      }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        _id: { $nin: cplContainers }
+      }),
     ]);
 
     return successResponse(res, {
@@ -49,6 +78,9 @@ exports.stats = async (req, res) => {
       pendingBoe: pendingBoeCount,
       pendingLinePayment: linePaymentPending,
       pendingBl,
+      pendingCbl: pendingCblCount,
+      pendingEWayBill: pendingEWayCount,
+      pendingCpl: pendingCplCount,
     }, "Dashboard stats fetched");
   } catch (error) {
     return errorResponse(res, error.message, "Unable to fetch dashboard stats", 500);
@@ -79,6 +111,45 @@ exports.pendingBoe = async (req, res) => {
     return successResponse(res, items, "Pending BOE fetched");
   } catch (error) {
     return errorResponse(res, error.message, "Unable to fetch pending BOE", 500);
+  }
+};
+
+exports.pendingCbl = async (req, res) => {
+  try {
+    const withCbl = await Document.distinct("container", { docType: "CBL" });
+    const items = await Container.find({ 
+      status: { $nin: ["done", "DONE"] },
+      _id: { $nin: withCbl } 
+    }).populate("importer exporter").sort("etaDate");
+    return successResponse(res, items, "Pending CBL fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch pending CBL", 500);
+  }
+};
+
+exports.pendingEWayBill = async (req, res) => {
+  try {
+    const withEWay = await Document.distinct("container", { docType: "EWayBill" });
+    const items = await Container.find({ 
+      status: { $nin: ["done", "DONE"] },
+      _id: { $nin: withEWay } 
+    }).populate("importer exporter").sort("etaDate");
+    return successResponse(res, items, "Pending E-Way Bill fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch pending E-Way Bill", 500);
+  }
+};
+
+exports.pendingCpl = async (req, res) => {
+  try {
+    const withCpl = await Document.distinct("container", { docType: "CPL" });
+    const items = await Container.find({ 
+      status: { $nin: ["done", "DONE"] },
+      _id: { $nin: withCpl } 
+    }).populate("importer exporter").sort("etaDate");
+    return successResponse(res, items, "Pending CPL fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch pending CPL", 500);
   }
 };
 
