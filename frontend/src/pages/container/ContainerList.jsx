@@ -34,6 +34,8 @@ const statusOptions = [
   "AWATING FOR CHECKLIST",
   "CHECKLIST APPROVED",
   "HOLD AT ANSHU",
+  "WORK IN PROCESS",
+  "DESCRIPTION AND VALUE DONE",
 ].map((val) => ({ value: val, label: val }));
 
 const partyOptions = [
@@ -61,12 +63,17 @@ const shippingLineOptions = [
   "HMM",
   "COSCO",
   "PEAK",
+  "FMC",
+  "IIPL",
+  "ESL",
 ].map((value) => ({ value, label: value }));
 
 const portOfChinaOptions = [
   "NINGBO",
   "NANSHA",
   "WUHAN",
+  "CHINA AIR",
+  "DA CHAN BAY",
 ].map((value) => ({ value, label: value }));
 
 const documentProcessedOptions = [

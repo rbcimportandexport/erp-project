@@ -25,7 +25,8 @@ const containerSchema = new mongoose.Schema(
         "BL", "BOE", "CBL", "CFS PAYMENT", "CHA PHOTO FILE", "CHECKLIST",
         "CPL", "DONE", "DUTY", "E-WAY BILL", "ECPL", "FECPL", "LINE PAYMENT",
         "MD", "P&I", "HOLD AT CHA", "HOLD AT PARTY", "HOLD AT SIR", "HOLD AT ME",
-        "WORK NOT STARTED", "AWATING FOR CHECKLIST", "CHECKLIST APPROVED", "HOLD AT ANSHU"
+        "WORK NOT STARTED", "AWATING FOR CHECKLIST", "CHECKLIST APPROVED", "HOLD AT ANSHU",
+        "WORK IN PROCESS", "DESCRIPTION AND VALUE DONE"
       ],
       default: "pending"
     },
