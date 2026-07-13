@@ -163,6 +163,7 @@ const ContainerList = () => {
     fetchOptions();
   }, []);
 
+  const priorityFilter = searchParams.get("priority") || "";
 
   return (
     <ResourcePage
@@ -170,7 +171,7 @@ const ContainerList = () => {
       api={containerApi}
       getRowClassName={getPriorityRowClassName}
       tableVariant="cards"
-      filters={{ missing: missingField, status: statusFilter }}
+      filters={{ missing: missingField, status: statusFilter, priority: priorityFilter || undefined }}
       initialSort="-containerSeq"
       renderHeader={({ items, openAdd, search, setSearch, hasEditPermission }) => {
         const counts = getPriorityCounts(items);
@@ -225,6 +226,26 @@ const ContainerList = () => {
                   <option value="active">Active Containers</option>
                   <option value="done">Completed (Done)</option>
                   <option value="">All Containers</option>
+                </select>
+              </div>
+              <div className="w-full md:w-48">
+                <select
+                  value={priorityFilter}
+                  onChange={(e) => {
+                    const nextParams = new URLSearchParams(searchParams);
+                    if (e.target.value) {
+                      nextParams.set("priority", e.target.value);
+                    } else {
+                      nextParams.delete("priority");
+                    }
+                    setSearchParams(nextParams);
+                  }}
+                  className="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-50 font-medium text-slate-700"
+                >
+                  <option value="">All Priorities</option>
+                  <option value="red">🔴 High Priority</option>
+                  <option value="yellow">🟡 Medium Priority</option>
+                  <option value="green">🟢 Low Priority</option>
                 </select>
               </div>
               <div className="w-full md:w-64">

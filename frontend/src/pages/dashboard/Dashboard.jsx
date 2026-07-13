@@ -223,7 +223,7 @@ const Dashboard = () => {
             return (
               <Link
                 key={tone}
-                to="/containers"
+                to={`/containers?priority=${tone}`}
                 className={`group relative overflow-hidden rounded-xl border p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${config.panelClass}`}
               >
                 <div className="flex items-start justify-between gap-4">

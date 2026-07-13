@@ -68,6 +68,45 @@ exports.list = async (req, res) => {
       }
     }
 
+    if (req.query.priority) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      query.status = { $nin: ["done", "DONE"] };
+
+      if (req.query.priority === "red") {
+        const maxEta = new Date(today);
+        maxEta.setDate(today.getDate() + 7);
+        query.etaDate = { $lte: maxEta };
+      } else if (req.query.priority === "yellow") {
+        const minEta = new Date(today);
+        minEta.setDate(today.getDate() + 8);
+        const maxEta = new Date(today);
+        maxEta.setDate(today.getDate() + 15);
+        query.etaDate = { $gte: minEta, $lte: maxEta };
+      } else if (req.query.priority === "green") {
+        const minEta = new Date(today);
+        minEta.setDate(today.getDate() + 16);
+        const greenCondition = {
+          $or: [
+            { etaDate: { $gte: minEta } },
+            { etaDate: null },
+            { etaDate: { $exists: false } }
+          ]
+        };
+        if (query.$or) {
+          query.$and = [
+            { $or: query.$or },
+            greenCondition
+          ];
+          delete query.$or;
+        } else if (query.$and) {
+          query.$and.push(greenCondition);
+        } else {
+          query.$or = greenCondition.$or;
+        }
+      }
+    }
+
     const [items, total] = await Promise.all([
       applyPopulate(Container.find(query).sort(req.query.sort || "-createdAt").skip((page - 1) * limit).limit(limit)),
       Container.countDocuments(query),
