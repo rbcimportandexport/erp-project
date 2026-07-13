@@ -171,7 +171,7 @@ const ContainerList = () => {
       getRowClassName={getPriorityRowClassName}
       tableVariant="cards"
       filters={{ missing: missingField, status: statusFilter }}
-      initialSort="-containerNo"
+      initialSort="-containerSeq"
       renderHeader={({ items, openAdd, search, setSearch, hasEditPermission }) => {
         const counts = getPriorityCounts(items);
         return (

@@ -34,9 +34,18 @@ const containerSchema = new mongoose.Schema(
     remarks: { type: String, trim: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    containerSeq: { type: Number, index: true },
   },
   { timestamps: true }
 );
+
+containerSchema.pre("save", function(next) {
+  if (this.containerNo) {
+    const match = this.containerNo.match(/-(\d+)$/);
+    this.containerSeq = match ? parseInt(match[1], 10) : 0;
+  }
+  next();
+});
 
 containerSchema.index({ containerNo: "text", remarks: "text", blNo: "text", cblBlNo: "text" });
 

@@ -274,6 +274,16 @@ const seed = async () => {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected successfully!");
 
+    // Migration: Populate containerSeq for all existing containers
+    const allContainers = await Container.find({});
+    for (const c of allContainers) {
+      if (c.containerNo) {
+        const match = c.containerNo.match(/-(\d+)$/);
+        c.containerSeq = match ? parseInt(match[1], 10) : 0;
+        await c.save();
+      }
+    }
+
     // Fetch master user to use as creator
     const creatorUser = await User.findOne({ role: "masterAdmin" }) || await User.findOne({});
     if (!creatorUser) {
