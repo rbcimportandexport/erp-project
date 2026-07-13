@@ -271,7 +271,7 @@ const rawContainers = [
 const seed = async () => {
   try {
     console.log("Connecting to Database...");
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected successfully!");
 
     // Fetch master user to use as creator
