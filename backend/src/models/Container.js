@@ -13,6 +13,8 @@ const containerSchema = new mongoose.Schema(
     shippingLine: { type: String, trim: true },
     portOfChina: { type: String, trim: true },
     blNo: { type: String, trim: true },
+    cblEta: Date,
+    cblBlNo: { type: String, trim: true },
     etaDate: Date,
     etaDays: { type: String, trim: true },
     unloadingDate: Date,
@@ -35,7 +37,7 @@ const containerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-containerSchema.index({ containerNo: "text", remarks: "text", blNo: "text" });
+containerSchema.index({ containerNo: "text", remarks: "text", blNo: "text", cblBlNo: "text" });
 
 module.exports = mongoose.model("Container", containerSchema);
 

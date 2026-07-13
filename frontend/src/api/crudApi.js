@@ -19,6 +19,8 @@ const mapKeys = (item) => {
   if ("container_no" in mapped && !("containerNo" in mapped)) mapped.containerNo = mapped.container_no;
   if ("loading_date" in mapped && !("loadingDate" in mapped)) mapped.loadingDate = mapped.loading_date;
   if ("eta_date" in mapped && !("etaDate" in mapped)) mapped.etaDate = mapped.eta_date;
+  if ("cbl_eta" in mapped && !("cblEta" in mapped)) mapped.cblEta = mapped.cbl_eta;
+  if ("cbl_bl_no" in mapped && !("cblBlNo" in mapped)) mapped.cblBlNo = mapped.cbl_bl_no;
   if ("unloading_date" in mapped && !("unloadingDate" in mapped)) mapped.unloadingDate = mapped.unloading_date;
   if ("shipping_line" in mapped && !("shippingLine" in mapped)) mapped.shippingLine = mapped.shipping_line;
   if ("port_of_china" in mapped && !("portOfChina" in mapped)) mapped.portOfChina = mapped.port_of_china;
@@ -49,6 +51,7 @@ const mapPayload = (payload) => {
   // Format blank dates to null
   if (mapped.loadingDate === "") mapped.loadingDate = null;
   if (mapped.etaDate === "") mapped.etaDate = null;
+  if (mapped.cblEta === "") mapped.cblEta = null;
   if (mapped.unloadingDate === "") mapped.unloadingDate = null;
 
   return mapped;

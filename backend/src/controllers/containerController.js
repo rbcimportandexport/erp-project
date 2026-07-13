@@ -3,6 +3,7 @@ const Document = require("../models/Document");
 const Transport = require("../models/Transport");
 const { successResponse, errorResponse } = require("../utils/apiResponse");
 const { writeActivityLog } = require("../middleware/activityLog");
+const ApprovalRequest = require("../models/ApprovalRequest");
 
 const populate = ["importer", "exporter", "hsnCode", "createdBy", "updatedBy"];
 
@@ -80,6 +81,18 @@ exports.list = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
+    if (req.user && req.user.role !== "masterAdmin") {
+      const request = await ApprovalRequest.create({
+        moduleName: "Container",
+        action: "create",
+        requestedData: req.body,
+        requestedBy: req.user._id,
+        status: "pending",
+      });
+      await writeActivityLog({ req, action: "create", module: "ApprovalRequest", recordId: request._id, description: "Approval request created for Container creation" });
+      return successResponse(res, null, "Approval request submitted successfully. It will be active once approved by Master Admin.", 202);
+    }
+
     const container = await Container.create({ ...req.body, createdBy: req.user._id, updatedBy: req.user._id });
     await writeActivityLog({ req, action: "create", module: "Container", recordId: container._id, description: "Container created" });
     return successResponse(res, container, "Container created", 201);
@@ -105,6 +118,23 @@ exports.getById = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    if (req.user && req.user.role !== "masterAdmin") {
+      const originalRecord = await Container.findById(req.params.id);
+      if (!originalRecord) return errorResponse(res, "Container not found", "Record not found", 404);
+
+      const request = await ApprovalRequest.create({
+        moduleName: "Container",
+        action: "update",
+        recordId: req.params.id,
+        originalData: originalRecord.toObject(),
+        requestedData: req.body,
+        requestedBy: req.user._id,
+        status: "pending",
+      });
+      await writeActivityLog({ req, action: "create", module: "ApprovalRequest", recordId: request._id, description: "Approval request created for Container update" });
+      return successResponse(res, null, "Approval request submitted successfully. It will be active once approved by Master Admin.", 202);
+    }
+
     const container = await Container.findByIdAndUpdate(req.params.id, { ...req.body, updatedBy: req.user._id }, { new: true, runValidators: true });
     if (!container) return errorResponse(res, "Container not found", "Record not found", 404);
     await writeActivityLog({ req, action: "update", module: "Container", recordId: container._id, description: "Container updated" });
@@ -116,6 +146,23 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    if (req.user && req.user.role !== "masterAdmin") {
+      const originalRecord = await Container.findById(req.params.id);
+      if (!originalRecord) return errorResponse(res, "Container not found", "Record not found", 404);
+
+      const request = await ApprovalRequest.create({
+        moduleName: "Container",
+        action: "delete",
+        recordId: req.params.id,
+        originalData: originalRecord.toObject(),
+        requestedData: {},
+        requestedBy: req.user._id,
+        status: "pending",
+      });
+      await writeActivityLog({ req, action: "create", module: "ApprovalRequest", recordId: request._id, description: "Approval request created for Container deletion" });
+      return successResponse(res, null, "Approval request submitted successfully. It will be active once approved by Master Admin.", 202);
+    }
+
     const container = await Container.findByIdAndDelete(req.params.id);
     if (!container) return errorResponse(res, "Container not found", "Record not found", 404);
     await writeActivityLog({ req, action: "delete", module: "Container", recordId: container._id, description: "Container deleted" });

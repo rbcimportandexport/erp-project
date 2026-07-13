@@ -227,7 +227,9 @@ const ContainerList = () => {
                 >
                   <option value="">Filter Missing Fields...</option>
                   <option value="etaDate">⚠️ Missing ETA Date</option>
+                  <option value="cblEta">⚠️ Missing CBL ETA Date</option>
                   <option value="blNo">⚠️ Missing BL No</option>
+                  <option value="cblBlNo">⚠️ Missing CBL BL No</option>
                   <option value="party">⚠️ Missing Party</option>
                   <option value="cha">⚠️ Missing CHA</option>
                   <option value="shippingLine">⚠️ Missing Shipping Line</option>
@@ -256,7 +258,9 @@ const ContainerList = () => {
         { name: "shippingLine", label: "Shipping Line", type: "select", options: shippingLineOptions },
         { name: "portOfChina", label: "Port Of China", type: "select", options: portOfChinaOptions },
         { name: "blNo", label: "BL No" },
+        { name: "cblBlNo", label: "CBL BL No" },
         { name: "etaDate", label: "ETA Date", type: "date" },
+        { name: "cblEta", label: "CBL ETA Date", type: "date" },
         { name: "etaDays", label: "ETA Days" },
         { name: "unloadingDate", label: "Unloading Date", type: "date" },
         { name: "status", label: "Status", type: "select", options: statusOptions },
@@ -283,7 +287,9 @@ const ContainerList = () => {
         { header: "Shipping", accessorKey: "shipping_line", cell: ({ row }) => row.original.shipping_line || row.original.shippingLine || "-" },
         { header: "Port Of China", accessorKey: "port_of_china", cell: ({ row }) => row.original.port_of_china || row.original.portOfChina || "-" },
         { header: "BL No", accessorKey: "bl_no", cell: ({ row }) => row.original.bl_no || row.original.blNo || "-" },
+        { header: "CBL BL No", accessorKey: "cbl_bl_no", cell: ({ row }) => row.original.cbl_bl_no || row.original.cblBlNo || "-" },
         { header: "ETA", accessorKey: "eta_date", cell: ({ row }) => row.original.eta_date || row.original.etaDate ? dayjs(row.original.eta_date || row.original.etaDate).format("DD MMM YYYY") : "-" },
+        { header: "CBL ETA", accessorKey: "cbl_eta", cell: ({ row }) => row.original.cbl_eta || row.original.cblEta ? dayjs(row.original.cbl_eta || row.original.cblEta).format("DD MMM YYYY") : "-" },
         {
           header: "Priority",
           cell: ({ row }) => {
