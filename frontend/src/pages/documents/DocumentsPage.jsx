@@ -1,17 +1,26 @@
 import { useState, useEffect } from "react";
-import { FileText, Plus } from "lucide-react";
+import { FileText, Plus, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { deleteDocument, getAllDocuments } from "../../api/documentApi";
+import { deleteDocument, getAllDocuments, uploadDocument } from "../../api/documentApi";
+import containerApi from "../../api/containerApi";
 import Button from "../../components/common/Button";
 import PdfPreview from "../../components/common/PdfPreview";
 import Table from "../../components/common/Table";
 import TopBar from "../../components/layout/TopBar";
+import Modal from "../../components/common/Modal";
+import Select from "../../components/common/Select";
 import { useAlert } from "../../hooks/useAlert";
 
 const DocumentsPage = () => {
   const [recentDocs, setRecentDocs] = useState([]);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(true);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [containers, setContainers] = useState([]);
+  const [selectedContainer, setSelectedContainer] = useState("");
+  const [docType, setDocType] = useState("");
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const alert = useAlert();
   const navigate = useNavigate();
 
@@ -30,7 +39,43 @@ const DocumentsPage = () => {
 
   useEffect(() => {
     loadRecentDocs();
+    const fetchContainers = async () => {
+      try {
+        const res = await containerApi.list({ limit: 1000 });
+        setContainers(res.data?.items || []);
+      } catch (err) {
+        console.error("Error fetching containers:", err);
+      }
+    };
+    fetchContainers();
   }, []);
+
+  const handleUploadSubmit = async (e) => {
+    if (e) e.preventDefault();
+    if (!selectedContainer || !docType || !file) {
+      alert.error("Please fill all fields and select a file");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("docType", docType);
+
+      await uploadDocument(selectedContainer, formData);
+      alert.success("Document uploaded successfully");
+      setUploadOpen(false);
+      setSelectedContainer("");
+      setDocType("");
+      setFile(null);
+      loadRecentDocs();
+    } catch (err) {
+      alert.error(err.response?.data?.message || err.message || "Failed to upload document");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -47,9 +92,14 @@ const DocumentsPage = () => {
       <TopBar
         title="Documents"
         actions={
-          <Button onClick={() => navigate("/documents/invoice-maker")}>
-            <Plus className="h-4 w-4" />Create Document
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setUploadOpen(true)} variant="secondary">
+              <Upload className="h-4 w-4" />Upload Document
+            </Button>
+            <Button onClick={() => navigate("/documents/invoice-maker")}>
+              <Plus className="h-4 w-4" />Create Document
+            </Button>
+          </div>
         }
       />
 
@@ -108,10 +158,19 @@ const DocumentsPage = () => {
               accessorKey: "docType",
               cell: ({ value, row }) => {
                 const labels = {
-                  CPL: "Packing List",
-                  CBL: "Commercial Invoice",
+                  CPL: "1. CPL",
+                  CBL: "2. CBL",
+                  MD: "3. MD",
+                  ECPL: "4. ECPL",
+                  FECPL: "5. FECPL",
+                  "P&I": "6. P&I",
+                  BL: "7. BL",
+                  CHECKLIST: "8. CHECKLIST",
+                  "LINE INVOICE": "9. LINE INVOICE",
+                  BOE: "10. BOE",
+                  "E-WAY BILL": "11. E-WAY BILL",
+                  "CHA PHOTO FILE": "12. CHA PHOTO FILE",
                   QUOTATION: "Quotation",
-                  BOE: "BOE",
                 };
                 let resolved = labels[value] || value;
                 if (!resolved || resolved === "-") {
@@ -158,6 +217,64 @@ const DocumentsPage = () => {
             <PdfPreview path={preview} />
           </div>
         </div>
+      )}
+
+      {uploadOpen && (
+        <Modal
+          open={uploadOpen}
+          title="Upload Document"
+          onClose={() => setUploadOpen(false)}
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button variant="secondary" onClick={() => setUploadOpen(false)}>Cancel</Button>
+              <Button onClick={handleUploadSubmit} disabled={uploading}>
+                {uploading ? "Uploading..." : "Upload"}
+              </Button>
+            </div>
+          }
+        >
+          <form onSubmit={handleUploadSubmit} className="space-y-4">
+            <Select
+              label="Select Container"
+              value={selectedContainer}
+              onChange={(e) => setSelectedContainer(e.target.value)}
+              required
+              options={containers.map((c) => ({ value: c._id || c.id, label: c.containerNo }))}
+            />
+
+            <Select
+              label="Document Type"
+              value={docType}
+              onChange={(e) => setDocType(e.target.value)}
+              required
+              options={[
+                { value: "CPL", label: "1. CPL" },
+                { value: "CBL", label: "2. CBL" },
+                { value: "MD", label: "3. MD" },
+                { value: "ECPL", label: "4. ECPL" },
+                { value: "FECPL", label: "5. FECPL" },
+                { value: "P&I", label: "6. P&I" },
+                { value: "BL", label: "7. BL" },
+                { value: "CHECKLIST", label: "8. CHECKLIST" },
+                { value: "LINE INVOICE", label: "9. LINE INVOICE" },
+                { value: "BOE", label: "10. BOE" },
+                { value: "E-WAY BILL", label: "11. E-WAY BILL" },
+                { value: "CHA PHOTO FILE", label: "12. CHA PHOTO FILE" },
+                { value: "Other", label: "Other" },
+              ]}
+            />
+
+            <div className="block">
+              <span className="mb-1 block text-sm font-medium text-slate-700">Select File</span>
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                required
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm outline-none transition-all focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+              />
+            </div>
+          </form>
+        </Modal>
       )}
     </>
   );

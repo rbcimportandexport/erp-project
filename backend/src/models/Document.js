@@ -5,7 +5,7 @@ const documentSchema = new mongoose.Schema(
     container: { type: mongoose.Schema.Types.ObjectId, ref: "Container", required: true },
     docType: {
       type: String,
-      enum: ["CPL", "CBL", "ECPL", "FECPL", "BL", "HBL", "BOE", "LinePayment", "EWayBill", "Other"],
+      enum: ["CPL", "CBL", "MD", "ECPL", "FECPL", "P&I", "BL", "HBL", "CHECKLIST", "LINE INVOICE", "BOE", "EWayBill", "E-WAY BILL", "CHA PHOTO FILE", "LinePayment", "Other"],
       required: true,
     },
     fileName: { type: String, required: true, trim: true },
