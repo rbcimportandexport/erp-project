@@ -41,7 +41,7 @@ const DocumentsPage = () => {
     loadRecentDocs();
     const fetchContainers = async () => {
       try {
-        const res = await containerApi.list({ limit: 1000 });
+        const res = await containerApi.list({ limit: 1000, sort: "-containerSeq" });
         setContainers(res.data?.items || []);
       } catch (err) {
         console.error("Error fetching containers:", err);

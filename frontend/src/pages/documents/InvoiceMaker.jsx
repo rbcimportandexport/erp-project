@@ -193,7 +193,7 @@ const InvoiceMaker = () => {
           exporterApi.list({ limit: 1000 }),
           indiaPortApi.list({ limit: 1000 }),
           chinaPortApi.list({ limit: 1000 }),
-          containerApi.list({ limit: 1000 }),
+          containerApi.list({ limit: 1000, sort: "-containerSeq" }),
         ]);
 
         const sortedImporters = (impRes.status === "fulfilled" ? impRes.value.data?.items : [])
