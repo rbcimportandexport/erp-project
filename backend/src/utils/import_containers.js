@@ -9,6 +9,13 @@ const Exporter = require("../models/Exporter");
 const Container = require("../models/Container");
 const User = require("../models/User");
 
+const makeFuzzyRegex = (name) => {
+  if (!name) return /^$/;
+  const escaped = name.trim().replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+  const parts = escaped.split(/[\s.,_]+/);
+  return new RegExp("^" + parts.join("[\\s.,_-]*") + "$", "i");
+};
+
 const run = async () => {
   try {
     console.log("Connecting to MongoDB Atlas...");
@@ -65,7 +72,7 @@ const run = async () => {
       let importerId = null;
       if (importerName && importerName.trim() !== "") {
         const nameTrimmed = importerName.trim();
-        let importerObj = await Importer.findOne({ name: new RegExp(`^${nameTrimmed}$`, "i") });
+        let importerObj = await Importer.findOne({ name: makeFuzzyRegex(nameTrimmed) });
         if (!importerObj) {
           importerObj = new Importer({ name: nameTrimmed });
           await importerObj.save();
@@ -87,7 +94,7 @@ const run = async () => {
       let exporterId = null;
       if (exporterName && exporterName.trim() !== "") {
         const nameTrimmed = exporterName.trim();
-        let exporterObj = await Exporter.findOne({ name: new RegExp(`^${nameTrimmed}$`, "i") });
+        let exporterObj = await Exporter.findOne({ name: makeFuzzyRegex(nameTrimmed) });
         if (!exporterObj) {
           exporterObj = new Exporter({ name: nameTrimmed });
           await exporterObj.save();

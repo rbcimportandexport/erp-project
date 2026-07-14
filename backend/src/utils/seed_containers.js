@@ -7,6 +7,13 @@ const Importer = require("../models/Importer");
 const Exporter = require("../models/Exporter");
 const User = require("../models/User");
 
+const makeFuzzyRegex = (name) => {
+  if (!name) return /^$/;
+  const escaped = name.trim().replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+  const parts = escaped.split(/[\s.,_]+/);
+  return new RegExp("^" + parts.join("[\\s.,_-]*") + "$", "i");
+};
+
 const parseDate = (dateStr) => {
   if (!dateStr) return null;
   const [day, month, year] = dateStr.split("/");
@@ -293,14 +300,14 @@ const seed = async () => {
 
     for (const raw of rawContainers) {
       // Find or create Importer
-      let importer = await Importer.findOne({ name: new RegExp(`^${raw.importerName.trim()}$`, "i") });
+      let importer = await Importer.findOne({ name: makeFuzzyRegex(raw.importerName.trim()) });
       if (!importer) {
         console.log(`Creating Importer: ${raw.importerName}`);
         importer = await Importer.create({ name: raw.importerName.trim() });
       }
 
       // Find or create Exporter
-      let exporter = await Exporter.findOne({ name: new RegExp(`^${raw.exporterName.trim()}$`, "i") });
+      let exporter = await Exporter.findOne({ name: makeFuzzyRegex(raw.exporterName.trim()) });
       if (!exporter) {
         console.log(`Creating Exporter: ${raw.exporterName}`);
         exporter = await Exporter.create({ name: raw.exporterName.trim() });
