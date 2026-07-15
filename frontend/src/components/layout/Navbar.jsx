@@ -1,54 +1,58 @@
-import { Bell, LogOut, Menu, Search } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+
+const menuItems = [
+  { key: "K", label: "Company" },
+  { key: "Y", label: "Data" },
+  { key: "Z", label: "Exchange" },
+  { key: "G", label: "Go To", active: true },
+  { key: "O", label: "Import" },
+  { key: "E", label: "Export" },
+  { key: "M", label: "E-mail" },
+  { key: "P", label: "Print" },
+  { key: "F1", label: "Help" },
+];
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
-  const roleLabel = { masterAdmin:"Master Admin", admin:"Admin", user:"User" }[user?.role] || "User";
-  const initials = (user?.name || "U").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
+  const roleLabel = { masterAdmin: "Master Admin", admin: "Admin", user: "User" }[user?.role] || "User";
 
   return (
     <header className="erp-header">
-      {/* Menu toggle */}
+      {/* Sidebar Toggle */}
       <button
         onClick={onMenuClick}
         className="btn btn-ghost btn-icon"
         aria-label="Toggle sidebar"
-        style={{ flexShrink:0 }}
+        style={{ color: "#b8d0e8", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}
       >
-        <Menu size={18} />
+        <Menu size={15} />
       </button>
 
-      {/* Global Search */}
-      <div className="header-search">
-        <Search size={13} className="header-search-icon" />
-        <input type="search" placeholder="Search containers, documents, importers…" />
+      {/* Tally-style keyboard shortcut items */}
+      <div className="header-menu-items">
+        {menuItems.map(item => (
+          <div
+            key={item.key}
+            className={`header-menu-item${item.active ? " active-menu" : ""}`}
+          >
+            <span className="key">{item.key}: </span>
+            <span>{item.label}</span>
+          </div>
+        ))}
       </div>
 
-      <div style={{ flex:1 }} />
-
-      {/* Company / Year tag */}
-      <div style={{ display:"flex", alignItems:"center", gap:"6px" }}>
-        <span className="badge badge-indigo" style={{ fontSize:"11px" }}>RBC Import &amp; Export</span>
-        <span className="badge badge-slate" style={{ fontSize:"11px" }}>FY 2025–26</span>
+      {/* Company name center */}
+      <div className="header-company" style={{ flex: "0 0 auto" }}>
+        RBC Import &amp; Export
       </div>
 
       <div className="header-divider" />
 
-      {/* Notifications */}
-      <button className="header-badge-btn" aria-label="Notifications">
-        <Bell size={15} />
-        <span className="dot" />
-      </button>
-
-      <div className="header-divider" />
-
-      {/* User */}
-      <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
-        <div className="header-meta">
-          <div className="header-meta-name">{user?.name || "ERP User"}</div>
-          <div className="header-meta-role">{roleLabel}</div>
-        </div>
-        <div className="header-avatar">{initials}</div>
+      {/* User info */}
+      <div className="header-user-info" style={{ flexShrink: 0 }}>
+        <div className="header-user-name">{user?.name || "ERP User"}</div>
+        <div className="header-user-role">{roleLabel}</div>
       </div>
 
       <div className="header-divider" />
@@ -56,10 +60,10 @@ const Navbar = ({ onMenuClick }) => {
       {/* Logout */}
       <button
         onClick={logout}
-        className="btn btn-secondary btn-sm"
-        style={{ gap:"5px" }}
+        className="btn btn-danger btn-sm"
+        style={{ flexShrink: 0, gap: "4px" }}
       >
-        <LogOut size={13} />
+        <LogOut size={12} />
         Logout
       </button>
     </header>
