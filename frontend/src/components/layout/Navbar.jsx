@@ -14,7 +14,7 @@ const Navbar = ({ onMenuClick }) => {
     <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4">
       <Button 
         variant="secondary" 
-        className="h-10 w-10 p-0 flex items-center justify-center rounded-xl md:hidden hover:bg-slate-50 active:scale-95 transition-all" 
+        className="h-10 w-10 p-0 flex items-center justify-center rounded-xl hover:bg-slate-50 active:scale-95 transition-all" 
         onClick={onMenuClick} 
         aria-label="Open menu"
       >

@@ -93,6 +93,8 @@ const QuotationMaker = () => {
   const [stampImg, setStampImg] = useState("");
   const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [showManualDetails, setShowManualDetails] = useState(true);
+  const [showPdfPreview, setShowPdfPreview] = useState(true);
 
   useEffect(() => {
     localStorage.setItem("quotation_maker_form", JSON.stringify(form));
@@ -500,8 +502,18 @@ const QuotationMaker = () => {
 
       {/* Manual Details Section */}
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-slate-950">Quotation Details</h2>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-950">Quotation Details</h2>
+          <Button
+            variant="secondary"
+            onClick={() => setShowManualDetails(!showManualDetails)}
+            className="text-xs py-1.5 px-3"
+          >
+            {showManualDetails ? "Hide Form" : "Show Form"}
+          </Button>
+        </div>
+        {showManualDetails && (
+          <div className="grid gap-4 md:grid-cols-3">
           <div className="flex flex-col justify-end">
             <Input label="Invoice/Quotation No" value={form.invoiceNo} onChange={(event) => updateForm("invoiceNo", event.target.value)} />
             {matchedContainer ? (
@@ -559,6 +571,7 @@ const QuotationMaker = () => {
             </Button>
           </div>
         </div>
+        )}
       </section>
 
       {/* Dynamic Column Width Adjustments */}
@@ -684,14 +697,20 @@ const QuotationMaker = () => {
             <h2 className="text-lg font-semibold text-slate-950">PDF Style Live Preview</h2>
             <p className="text-sm text-slate-500">Is preview par click karke aap details directly change aur type bhi kar sakte hain.</p>
           </div>
-          <Button onClick={() => generatePdf(false)} loading={saving}>
-            <FileDown className="h-4 w-4" />Preview / Print PDF
-          </Button>
+          <div className="flex gap-2 items-center">
+            <Button variant="secondary" onClick={() => setShowPdfPreview(!showPdfPreview)}>
+              {showPdfPreview ? "Hide Preview" : "Show Preview"}
+            </Button>
+            <Button onClick={() => generatePdf(false)} loading={saving}>
+              <FileDown className="h-4 w-4" />Preview / Print PDF
+            </Button>
+          </div>
         </div>
 
         {/* Outer container designed to match Cambria/Georgia formal business quote */}
-        <div 
-          ref={documentRef} 
+        {showPdfPreview && (
+          <div 
+            ref={documentRef} 
           className="mx-auto w-[794px] min-h-[1120px] bg-white p-[34px] relative overflow-hidden text-[#17202a]"
           style={{ fontFamily: 'Cambria, Georgia, serif', borderTop: '10px solid #173b68' }}
         >
@@ -860,6 +879,7 @@ const QuotationMaker = () => {
             RBC Import & Export ERP System - Quotation Commercial Offer Document
           </div>
         </div>
+        )}
       </section>
     </>
   );

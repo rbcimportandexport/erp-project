@@ -31,8 +31,14 @@ const adminItems = [
   { to: "/approvals", label: "Approvals", icon: ClipboardList },
 ];
 
-const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
+const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose }) => {
   const { user } = useAuth();
+  const handleItemClick = () => {
+    onMobileClose();
+    if (window.innerWidth >= 768) {
+      onCollapse(true);
+    }
+  };
   const userRole = user?.role || "user";
 
   const visibleAdminItems = adminItems.filter((item) => {
@@ -59,7 +65,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
           fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-white border-r border-slate-200 text-slate-700 transition-all duration-300 overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] shrink-0
           ${mobileOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"}
           md:sticky md:top-0 md:h-screen md:translate-x-0 md:flex
-          ${collapsed ? "md:w-20" : "md:w-64"}
+          ${collapsed ? "md:w-0 md:overflow-hidden md:border-r-0" : "md:w-64"}
         `}
       >
         <div className="flex h-16 items-center justify-between px-6 border-b border-slate-100 shrink-0">
@@ -88,7 +94,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                 key={item.to}
                 to={item.to}
                 end={item.end}
-                onClick={onMobileClose}
+                onClick={handleItemClick}
                 className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -103,7 +109,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
               <NavLink
                 key={item.to}
                 to={item.to}
-                onClick={onMobileClose}
+                onClick={handleItemClick}
                 className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -120,7 +126,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
               <NavLink
                 key={item.to}
                 to={item.to}
-                onClick={onMobileClose}
+                onClick={handleItemClick}
                 className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
