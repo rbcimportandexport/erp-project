@@ -3,14 +3,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["'Inter'", "sans-serif"],
-        display: ["'Plus Jakarta Sans'", "sans-serif"],
+        sans:    ["'Inter'", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["'Plus Jakarta Sans'", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       colors: {
         brand: {
-          50: "#f0f4ff",
-          600: "#4f46e5",
-          700: "#4338ca",
+          50:  "#EEF2FF",
+          100: "#E0E7FF",
+          600: "#4F46E5",
+          700: "#4338CA",
         },
       },
     },
