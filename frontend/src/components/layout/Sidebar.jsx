@@ -1,6 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
 import { Activity, Boxes, ChevronLeft, ChevronRight, FileText, Gauge, Landmark, Package, Receipt, Ship, Truck, UserCog, Users, Files, ClipboardList } from "lucide-react";
-import Button from "../common/Button";
 import { useAuth } from "../../hooks/useAuth";
 
 const items = [
@@ -31,21 +30,29 @@ const adminItems = [
   { to: "/approvals", label: "Approvals", icon: ClipboardList },
 ];
 
+const NAV_LINK_STYLE =
+  "flex items-center gap-2 py-[6px] px-3 text-[12px] font-semibold border-l-[3px] border-transparent text-[#c5d8ec] no-underline";
+
+const NAV_LINK_ACTIVE =
+  "bg-[#f0b429] text-[#0d1117] border-l-[3px] border-[#c9900a] font-bold";
+
+const NAV_LINK_HOVER = "hover:bg-[#1a3a5c] hover:text-white hover:border-l-[3px] hover:border-[#4da3ff]";
+
 const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose }) => {
   const { user } = useAuth();
+
   const handleItemClick = () => {
     onMobileClose();
     if (window.innerWidth >= 768) {
       onCollapse(true);
     }
   };
+
   const userRole = user?.role || "user";
 
   const visibleAdminItems = adminItems.filter((item) => {
     if (userRole === "masterAdmin") return true;
-    if (userRole === "admin") {
-      return item.to === "/users";
-    }
+    if (userRole === "admin") return item.to === "/users";
     return false;
   });
 
@@ -53,40 +60,85 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
     <>
       {/* Mobile Backdrop */}
       {mobileOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-slate-950/40 md:hidden"
+        <div
+          className="fixed inset-0 z-40 md:hidden"
+          style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
           onClick={onMobileClose}
         />
       )}
 
-      {/* Sidebar aside panel */}
-      <aside 
+      {/* Sidebar */}
+      <aside
+        style={{
+          backgroundColor: "#0d2137",
+          borderRight: "2px solid #071524",
+          width: "220px",
+          minWidth: "220px",
+          display: "flex",
+          flexDirection: "column",
+          position: "fixed",
+          top: 0,
+          bottom: 0,
+          left: 0,
+          zIndex: 40,
+          overflowY: "auto",
+          overflowX: "hidden",
+          transform: mobileOpen ? "translateX(0)" : undefined,
+          transition: "width 0.25s, transform 0.25s",
+        }}
         className={`
-          fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-white border-r border-slate-200 text-slate-700 transition-all duration-300 overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] shrink-0
-          ${mobileOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"}
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
           md:sticky md:top-0 md:h-screen md:translate-x-0 md:flex
-          ${collapsed ? "md:w-0 md:overflow-hidden md:border-r-0" : "md:w-64"}
+          ${collapsed ? "md:!w-0 md:!min-w-0 md:overflow-hidden md:border-r-0" : "md:!w-[220px] md:!min-w-[220px]"}
+          [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
         `}
       >
-        <div className="flex h-16 items-center justify-between px-6 border-b border-slate-100 shrink-0">
-          <Link 
-            to="/" 
+        {/* Logo / Brand Area */}
+        <div style={{
+          backgroundColor: "#071524",
+          borderBottom: "2px solid #030e18",
+          padding: "10px 14px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          minHeight: "44px",
+          flexShrink: 0,
+        }}>
+          <Link
+            to="/"
             onClick={onMobileClose}
-            className="min-w-0 font-bold text-2xl tracking-wider text-slate-900 uppercase"
+            style={{
+              fontWeight: "800",
+              fontSize: "15px",
+              color: "#ffffff",
+              textDecoration: "none",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+            }}
           >
-            {collapsed ? <span className="text-brand-600 font-bold">R</span> : <>RBC <span className="text-brand-600 font-extrabold">ERP</span></>}
+            RBC <span style={{ color: "#f0b429" }}>ERP</span>
           </Link>
-          <Button 
-            variant="ghost" 
-            className="h-8 w-8 px-0 text-slate-400 hover:bg-slate-50 hover:text-slate-800 hidden md:flex" 
-            onClick={onToggle} 
+          <button
+            onClick={onToggle}
             aria-label="Toggle sidebar"
+            className="hidden md:flex"
+            style={{
+              background: "transparent",
+              border: "1px solid #1a3a5c",
+              color: "#c5d8ec",
+              padding: "2px 4px",
+              cursor: "pointer",
+              fontSize: "12px",
+            }}
           >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </Button>
+            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          </button>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-4">
+        {/* Navigation */}
+        <nav style={{ flex: 1, paddingTop: "6px", paddingBottom: "12px" }}>
+
+          {/* Main Menu Items */}
           {items.map((item) => {
             const Icon = item.icon;
             return (
@@ -95,14 +147,29 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
                 to={item.to}
                 end={item.end}
                 onClick={handleItemClick}
-                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
+                className={({ isActive }) =>
+                  `${NAV_LINK_STYLE} ${NAV_LINK_HOVER} ${isActive ? NAV_LINK_ACTIVE : ""}`
+                }
               >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className={`truncate ${collapsed ? "md:hidden" : ""}`}>{item.label}</span>
+                <Icon size={13} style={{ flexShrink: 0 }} />
+                <span style={{ truncate: true }}>{item.label}</span>
               </NavLink>
             );
           })}
-          {(!collapsed || mobileOpen) && <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Masters</div>}
+
+          {/* MASTERS Section */}
+          <div style={{
+            color: "#6b8eac",
+            fontSize: "10px",
+            fontWeight: "700",
+            padding: "10px 12px 3px",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            borderTop: "1px solid #1a3a5c",
+            marginTop: "6px",
+          }}>
+            Masters
+          </div>
           {masterItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -110,30 +177,49 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
                 key={item.to}
                 to={item.to}
                 onClick={handleItemClick}
-                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
+                className={({ isActive }) =>
+                  `${NAV_LINK_STYLE} ${NAV_LINK_HOVER} ${isActive ? NAV_LINK_ACTIVE : ""}`
+                }
               >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className={`truncate ${collapsed ? "md:hidden" : ""}`}>{item.label}</span>
+                <Icon size={13} style={{ flexShrink: 0 }} />
+                <span>{item.label}</span>
               </NavLink>
             );
           })}
-          {visibleAdminItems.length > 0 && (!collapsed || mobileOpen) && (
-            <div className="px-3 pb-1 pt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Admin</div>
+
+          {/* ADMIN Section */}
+          {visibleAdminItems.length > 0 && (
+            <>
+              <div style={{
+                color: "#6b8eac",
+                fontSize: "10px",
+                fontWeight: "700",
+                padding: "10px 12px 3px",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                borderTop: "1px solid #1a3a5c",
+                marginTop: "6px",
+              }}>
+                Admin
+              </div>
+              {visibleAdminItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={handleItemClick}
+                    className={({ isActive }) =>
+                      `${NAV_LINK_STYLE} ${NAV_LINK_HOVER} ${isActive ? NAV_LINK_ACTIVE : ""}`
+                    }
+                  >
+                    <Icon size={13} style={{ flexShrink: 0 }} />
+                    <span>{item.label}</span>
+                  </NavLink>
+                );
+              })}
+            </>
           )}
-          {visibleAdminItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={handleItemClick}
-                className={({ isActive }) => `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all ${isActive ? "bg-brand-50 text-brand-600 shadow-sm border-l-2 border-brand-600" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className={`truncate ${collapsed ? "md:hidden" : ""}`}>{item.label}</span>
-              </NavLink>
-            );
-          })}
         </nav>
       </aside>
     </>

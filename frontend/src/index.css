@@ -15,215 +15,321 @@ body {
   min-width: 320px;
   max-width: 100vw;
   overflow-x: hidden;
-  background: #f8fafc;
-  color: #0f172a;
-  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #eef0f3;
+  color: #1a1a2e;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
-h1, h2, h3, h4, h5, h6, .font-display {
-  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+h1, h2, h3, h4, h5, h6 {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* Enable elastic touch momentum scrolling for all scroll containers */
 .overflow-y-auto,
 .overflow-x-auto,
-.overflow-auto,
-[class*="overflow-"] {
+.overflow-auto {
   -webkit-overflow-scrolling: touch;
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
+button, input, select, textarea { font: inherit; }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animation-delay-75 { animation-delay: 75ms; }
+.animation-delay-75  { animation-delay: 75ms; }
 .animation-delay-100 { animation-delay: 100ms; }
 .animation-delay-150 { animation-delay: 150ms; }
 .animation-delay-200 { animation-delay: 200ms; }
 .animation-delay-300 { animation-delay: 300ms; }
 
-/* ----------------------------------------------------
-   TALLY CLASSIC SCREEN ESTHETICS & LEDGER STYLING
-   ---------------------------------------------------- */
+/* ================================================================
+   TALLY PRO ERP — FULL FLAT UI THEME
+   Font  : Verdana (authentic Tally ERP font)
+   Style : No cards, no shadows, no rounded corners, pure flat
+   ================================================================ */
 
-/* Force monospace font and square corners everywhere */
-* {
-  font-family: 'Consolas', 'Courier New', Courier, monospace !important;
-  border-radius: 0px !important;
+/* ── 1. GLOBAL RESET ── */
+*, *::before, *::after {
+  font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
+  letter-spacing: 0 !important;
+  animation: none !important;
+  transition: background-color 0.1s ease, color 0.1s ease !important;
 }
 
-/* Global Body Styling */
+/* ── 2. BODY ── */
 body {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
+  background-color: #eef0f3 !important;
+  color: #1a1a2e !important;
+  font-size: 13px !important;
 }
 
-/* Tally style grid tables */
-table {
-  border-collapse: collapse !important;
-  border: 1px solid #64748b !important;
-  background-color: #ffffff !important;
+/* ── 3. MAIN CONTENT ── */
+main {
+  background-color: #eef0f3 !important;
+  padding: 8px 10px !important;
 }
+
+/* ── 4. TABLES — Tally Ledger Style ── */
+table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background-color: #ffffff !important;
+  border: 1px solid #6c757d !important;
+  font-size: 12px !important;
+}
+
+thead tr { background-color: #1a3a5c !important; }
 
 th {
-  background-color: #0f3057 !important;
+  background-color: #1a3a5c !important;
   color: #ffffff !important;
-  font-weight: bold !important;
+  font-weight: 700 !important;
   text-transform: uppercase !important;
-  border: 1px solid #64748b !important;
-  padding: 6px 10px !important;
-  font-size: 12px !important;
+  font-size: 11px !important;
+  padding: 5px 8px !important;
+  border: 1px solid #0f2940 !important;
+  white-space: nowrap !important;
 }
 
 td {
-  border: 1px solid #cbd5e1 !important;
-  padding: 6px 10px !important;
+  padding: 4px 8px !important;
+  border: 1px solid #c8cfd7 !important;
   font-size: 12px !important;
-  color: #1e293b !important;
+  color: #1a1a2e !important;
+  vertical-align: middle !important;
 }
 
-/* Alternating ledger rows */
-tr:nth-child(even) td {
-  background-color: #f8fafc !important;
+tbody tr:nth-child(even) { background-color: #f0f4f8 !important; }
+
+tbody tr:hover td {
+  background-color: #fff5cc !important;
+  color: #1a1a2e !important;
 }
 
-/* Hover rows in classic Tally yellow/amber highlight */
-tr:hover td {
-  background-color: #fef08a !important; /* Amber light highlight */
-}
-
-/* Form section elements & panels */
-div[class*="shadow-sm"],
-div[class*="bg-white"],
-section[class*="bg-white"],
-section[class*="rounded-md"] {
-  border: 1px solid #cbd5e1 !important;
-  background-color: #ffffff !important;
-}
-
-/* Top panels / Banner backgrounds */
-div[class*="bg-slate-900"],
-section[class*="bg-slate-900"],
-div[class*="from-slate-900"] {
-  background: #0f3057 !important;
-  color: #ffffff !important;
-  border: 1px solid #0a2240 !important;
-}
-
-/* Inputs, Select dropdowns, Textareas: Solid, flat box borders */
-input,
+/* ── 5. INPUTS / SELECTS / TEXTAREAS ── */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="search"],
 select,
 textarea {
-  border: 1px solid #94a3b8 !important;
   background-color: #ffffff !important;
-  padding: 6px 8px !important;
+  border: 1px solid #8a9ab0 !important;
+  color: #1a1a2e !important;
   font-size: 12px !important;
+  padding: 4px 6px !important;
   outline: none !important;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  border: 1.5px solid #d97706 !important; /* Amber border on active fields */
-  background-color: #fefdf0 !important;
+  border: 1.5px solid #1a3a5c !important;
+  background-color: #fffce8 !important;
+  outline: none !important;
 }
 
-/* Buttons: Rectangular flat buttons */
-button,
-.btn,
-input[type="button"],
-a[class*="bg-brand-600"],
-button[class*="bg-brand-600"],
-button[class*="bg-emerald-600"],
-button[class*="bg-slate-900"] {
-  background-color: #1e40af !important; /* Solid blue */
-  color: #ffffff !important;
-  border: 1px solid #1d4ed8 !important;
-  font-weight: bold !important;
-  padding: 6px 12px !important;
+label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #374151 !important;
   text-transform: uppercase !important;
-  transition: none !important;
+  margin-bottom: 2px !important;
+  display: block !important;
 }
 
-button:hover,
-.btn:hover {
-  background-color: #1d4ed8 !important;
+/* ── 6. BUTTONS ── */
+button {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 5px 14px !important;
+  cursor: pointer !important;
+  text-transform: uppercase !important;
 }
 
-/* Secondary Button Overrides */
-button[class*="bg-slate-100"],
-button[class*="bg-slate-200"],
-button[class*="bg-white"],
-button[class*="variant-secondary"] {
-  background-color: #e2e8f0 !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
+/* Primary */
+button:not([class*="secondary"]):not([class*="ghost"]):not([class*="danger"]):not([class*="outline"]) {
+  background-color: #1a3a5c !important;
+  color: #ffffff !important;
+  border: 1px solid #0f2940 !important;
 }
 
-button[class*="bg-slate-100"]:hover,
-button[class*="bg-white"]:hover {
-  background-color: #cbd5e1 !important;
+button:not([class*="secondary"]):not([class*="ghost"]):not([class*="danger"]):hover {
+  background-color: #0f2940 !important;
 }
 
-/* Sidebar Override */
+/* Secondary */
+button[class*="secondary"],
+button[class*="ghost"],
+button[class*="outline"] {
+  background-color: #d0d9e3 !important;
+  color: #1a1a2e !important;
+  border: 1px solid #8a9ab0 !important;
+}
+
+button[class*="secondary"]:hover,
+button[class*="ghost"]:hover  { background-color: #b8c4d0 !important; }
+
+/* Danger */
+button[class*="danger"] {
+  background-color: #8b0000 !important;
+  color: #ffffff !important;
+  border: 1px solid #5a0000 !important;
+}
+button[class*="danger"]:hover { background-color: #5a0000 !important; }
+
+/* ── 7. SIDEBAR ── */
 aside {
-  background-color: #0f3057 !important;
-  border-right: 2px solid #091d35 !important;
+  background-color: #0d2137 !important;
+  border-right: 2px solid #071524 !important;
 }
 
-aside a {
-  color: #e2e8f0 !important;
+aside > div:first-child {
+  background-color: #071524 !important;
+  border-bottom: 2px solid #030e18 !important;
+  height: auto !important;
+  min-height: 44px !important;
+  padding: 10px 14px !important;
 }
 
-aside a:hover {
-  background-color: #1e40af !important;
+aside a, aside span {
+  color: #c5d8ec !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+aside nav a {
+  display: flex !important;
+  align-items: center !important;
+  padding: 6px 12px !important;
+  height: auto !important;
+  gap: 8px !important;
+  border-left: 3px solid transparent !important;
+  color: #c5d8ec !important;
+  font-size: 12px !important;
+}
+
+aside nav a:hover {
+  background-color: #1a3a5c !important;
   color: #ffffff !important;
+  border-left: 3px solid #4da3ff !important;
 }
 
-/* Active Nav Links in Tally Orange */
-aside a[class*="bg-brand-50"],
-aside a[class*="text-brand-600"] {
-  background-color: #f59e0b !important; /* Tally selected amber */
-  color: #0f172a !important;
-  border-left: 4px solid #d97706 !important;
+/* Active nav item */
+aside nav a[class*="bg-brand-50"],
+aside nav a[class*="text-brand-600"] {
+  background-color: #f0b429 !important;
+  color: #0d1117 !important;
+  border-left: 3px solid #c9900a !important;
+  font-weight: 700 !important;
 }
 
-/* Top Navbar styling */
+/* Section labels: MASTERS, ADMIN */
+aside nav > div {
+  color: #6b8eac !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 8px 12px 3px !important;
+  text-transform: uppercase !important;
+}
+
+/* ── 8. NAVBAR ── */
 header {
-  background-color: #091d35 !important;
+  background-color: #0d2137 !important;
+  color: #e2ecf5 !important;
+  border-bottom: 2px solid #071524 !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 12px !important;
+}
+
+header p, header span { color: #c5d8ec !important; }
+
+header button {
+  background-color: transparent !important;
+  border: 1px solid #1a3a5c !important;
+  color: #c5d8ec !important;
+}
+
+header button:hover { background-color: #1a3a5c !important; }
+
+/* ── 9. PAGE SECTION BANNERS ── */
+div[class*="bg-slate-900"],
+div[class*="bg-slate-800"],
+section[class*="bg-slate-900"] {
+  background-color: #1a3a5c !important;
   color: #ffffff !important;
-  border-bottom: 2px solid #05101e !important;
+  border: 1px solid #0f2940 !important;
+  padding: 8px 14px !important;
 }
 
-header p {
-  color: #cbd5e1 !important;
+div[class*="bg-slate-900"] *,
+div[class*="bg-slate-800"] * { color: #ffffff !important; }
+
+/* ── 10. FLAT SECTION PANELS (replacing cards) ── */
+section {
+  margin-bottom: 6px !important;
+  padding: 8px 10px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #b0b8c4 !important;
 }
 
-/* Badges / priority indicators */
-span[class*="rounded-full"] {
-  border-radius: 0px !important;
-  padding: 2px 6px !important;
+.bg-white {
+  background-color: #ffffff !important;
+  border: 1px solid #b0b8c4 !important;
+}
+
+/* ── 11. HEADINGS ── */
+h2[class*="font-semibold"],
+h2[class*="font-bold"],
+h3[class*="font-semibold"] {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #1a3a5c !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid #b0b8c4 !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 6px !important;
+}
+
+/* ── 12. BADGES / PRIORITY TAGS ── */
+span[class*="rounded"] {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 1px 5px !important;
   border: 1px solid currentColor !important;
 }
 
+span[class*="text-red"],  span[class*="text-rose"]    { color: #cc0000 !important; }
+span[class*="text-orange"],span[class*="text-amber"]  { color: #b45309 !important; }
+span[class*="text-green"], span[class*="text-emerald"]{ color: #166534 !important; }
+
+/* ── 13. MODALS / DIALOGS ── */
+div[role="dialog"] {
+  background-color: #ffffff !important;
+  border: 2px solid #1a3a5c !important;
+}
+
+/* ── 14. SCROLLBARS ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #dce3ea; }
+::-webkit-scrollbar-thumb { background: #8a9ab0; }
+::-webkit-scrollbar-thumb:hover { background: #1a3a5c; }
+
+/* ── 15. BREADCRUMB ── */
+nav[aria-label] {
+  background-color: #dce3ea !important;
+  border-bottom: 1px solid #b0b8c4 !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+}
+
+/* ── 16. PRINT ── */
+@media print {
+  aside, header, .no-print { display: none !important; }
+  body { background: white !important; }
+  * { box-shadow: none !important; }
+}

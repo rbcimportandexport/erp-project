@@ -1,6 +1,5 @@
 import { LogOut, Menu } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
-import Button from "../common/Button";
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
@@ -11,20 +10,99 @@ const Navbar = ({ onMenuClick }) => {
   }[user?.role] || "User";
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4">
-      <Button 
-        variant="secondary" 
-        className="h-10 w-10 p-0 flex items-center justify-center rounded-xl hover:bg-slate-50 active:scale-95 transition-all" 
-        onClick={onMenuClick} 
-        aria-label="Open menu"
+    <header
+      style={{
+        backgroundColor: "#0d2137",
+        color: "#e2ecf5",
+        borderBottom: "2px solid #071524",
+        height: "44px",
+        minHeight: "44px",
+        maxHeight: "44px",
+        padding: "0 12px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexShrink: 0,
+      }}
+    >
+      {/* Menu Toggle Button */}
+      <button
+        onClick={onMenuClick}
+        aria-label="Toggle menu"
+        style={{
+          background: "transparent",
+          border: "1px solid #1a3a5c",
+          color: "#c5d8ec",
+          padding: "4px 8px",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        <Menu className="h-6 w-6 text-slate-800 shrink-0" />
-      </Button>
-      <div>
-        <p className="text-sm font-bold text-slate-900 capitalize tracking-tight">{user?.name || "ERP User"}</p>
-        <p className="text-[10px] font-semibold text-brand-600 uppercase tracking-[0.12em] mt-0.5">{roleLabel}</p>
+        <Menu size={16} />
+      </button>
+
+      {/* App Title — Center */}
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        textAlign: "center",
+      }}>
+        <span style={{
+          fontWeight: "800",
+          fontSize: "13px",
+          color: "#ffffff",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+        }}>
+          RBC <span style={{ color: "#f0b429" }}>IMPORT &amp; EXPORT ERP</span>
+        </span>
       </div>
-      <Button variant="secondary" onClick={logout}><LogOut className="h-4 w-4" />Logout</Button>
+
+      {/* User Info + Logout */}
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{ textAlign: "right" }}>
+          <div style={{
+            fontSize: "12px",
+            fontWeight: "700",
+            color: "#ffffff",
+            textTransform: "uppercase",
+          }}>
+            {user?.name || "ERP User"}
+          </div>
+          <div style={{
+            fontSize: "10px",
+            fontWeight: "600",
+            color: "#f0b429",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+          }}>
+            {roleLabel}
+          </div>
+        </div>
+
+        <button
+          onClick={logout}
+          style={{
+            background: "transparent",
+            border: "1px solid #8b0000",
+            color: "#ffaaaa",
+            padding: "4px 10px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            fontSize: "11px",
+            fontWeight: "700",
+            textTransform: "uppercase",
+          }}
+        >
+          <LogOut size={12} />
+          Logout
+        </button>
+      </div>
     </header>
   );
 };

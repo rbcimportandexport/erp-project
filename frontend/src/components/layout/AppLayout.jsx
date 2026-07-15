@@ -17,7 +17,7 @@ const AppLayout = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-100">
+    <div style={{ display: "flex", height: "100vh", width: "100vw", overflow: "hidden", backgroundColor: "#eef0f3" }}>
       <Sidebar 
         collapsed={collapsed} 
         onToggle={() => setCollapsed((value) => !value)} 
@@ -25,9 +25,9 @@ const AppLayout = () => {
         mobileOpen={mobileOpen}
         onMobileClose={() => setMobileOpen(false)}
       />
-      <div className="flex flex-1 flex-col min-w-0 h-full overflow-hidden">
+      <div style={{ display: "flex", flex: 1, flexDirection: "column", minWidth: 0, height: "100%", overflow: "hidden" }}>
         <Navbar onMenuClick={handleMenuClick} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-thin">
+        <main style={{ flex: 1, overflowY: "auto", padding: "8px 10px", backgroundColor: "#eef0f3" }}>
           <Breadcrumb />
           <Outlet />
         </main>
