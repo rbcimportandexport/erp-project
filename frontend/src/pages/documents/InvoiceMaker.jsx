@@ -1198,7 +1198,6 @@ const InvoiceMaker = () => {
             <Button variant="secondary" onClick={() => setShowPdfPreview(!showPdfPreview)}>
               {showPdfPreview ? "Hide Preview" : "Show Preview"}
             </Button>
-            <Button onClick={convertToPdf}><FileDown className="h-4 w-4" />Convert to PDF Preview</Button>
           </div>
         </div>
         {showPdfPreview && (

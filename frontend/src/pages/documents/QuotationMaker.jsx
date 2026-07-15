@@ -701,9 +701,6 @@ const QuotationMaker = () => {
             <Button variant="secondary" onClick={() => setShowPdfPreview(!showPdfPreview)}>
               {showPdfPreview ? "Hide Preview" : "Show Preview"}
             </Button>
-            <Button onClick={() => generatePdf(false)} loading={saving}>
-              <FileDown className="h-4 w-4" />Preview / Print PDF
-            </Button>
           </div>
         </div>
 

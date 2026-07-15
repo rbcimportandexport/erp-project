@@ -61,3 +61,169 @@ textarea {
 .animation-delay-150 { animation-delay: 150ms; }
 .animation-delay-200 { animation-delay: 200ms; }
 .animation-delay-300 { animation-delay: 300ms; }
+
+/* ----------------------------------------------------
+   TALLY CLASSIC SCREEN ESTHETICS & LEDGER STYLING
+   ---------------------------------------------------- */
+
+/* Force monospace font and square corners everywhere */
+* {
+  font-family: 'Consolas', 'Courier New', Courier, monospace !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+}
+
+/* Global Body Styling */
+body {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Tally style grid tables */
+table {
+  border-collapse: collapse !important;
+  border: 1px solid #64748b !important;
+  background-color: #ffffff !important;
+}
+
+th {
+  background-color: #0f3057 !important;
+  color: #ffffff !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  border: 1px solid #64748b !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+}
+
+td {
+  border: 1px solid #cbd5e1 !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  color: #1e293b !important;
+}
+
+/* Alternating ledger rows */
+tr:nth-child(even) td {
+  background-color: #f8fafc !important;
+}
+
+/* Hover rows in classic Tally yellow/amber highlight */
+tr:hover td {
+  background-color: #fef08a !important; /* Amber light highlight */
+}
+
+/* Form section elements & panels */
+div[class*="shadow-sm"],
+div[class*="bg-white"],
+section[class*="bg-white"],
+section[class*="rounded-md"] {
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+}
+
+/* Top panels / Banner backgrounds */
+div[class*="bg-slate-900"],
+section[class*="bg-slate-900"],
+div[class*="from-slate-900"] {
+  background: #0f3057 !important;
+  color: #ffffff !important;
+  border: 1px solid #0a2240 !important;
+}
+
+/* Inputs, Select dropdowns, Textareas: Solid, flat box borders */
+input,
+select,
+textarea {
+  border: 1px solid #94a3b8 !important;
+  background-color: #ffffff !important;
+  padding: 6px 8px !important;
+  font-size: 12px !important;
+  outline: none !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border: 1.5px solid #d97706 !important; /* Amber border on active fields */
+  background-color: #fefdf0 !important;
+}
+
+/* Buttons: Rectangular flat buttons */
+button,
+.btn,
+input[type="button"],
+a[class*="bg-brand-600"],
+button[class*="bg-brand-600"],
+button[class*="bg-emerald-600"],
+button[class*="bg-slate-900"] {
+  background-color: #1e40af !important; /* Solid blue */
+  color: #ffffff !important;
+  border: 1px solid #1d4ed8 !important;
+  font-weight: bold !important;
+  padding: 6px 12px !important;
+  text-transform: uppercase !important;
+  transition: none !important;
+}
+
+button:hover,
+.btn:hover {
+  background-color: #1d4ed8 !important;
+}
+
+/* Secondary Button Overrides */
+button[class*="bg-slate-100"],
+button[class*="bg-slate-200"],
+button[class*="bg-white"],
+button[class*="variant-secondary"] {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+button[class*="bg-slate-100"]:hover,
+button[class*="bg-white"]:hover {
+  background-color: #cbd5e1 !important;
+}
+
+/* Sidebar Override */
+aside {
+  background-color: #0f3057 !important;
+  border-right: 2px solid #091d35 !important;
+}
+
+aside a {
+  color: #e2e8f0 !important;
+}
+
+aside a:hover {
+  background-color: #1e40af !important;
+  color: #ffffff !important;
+}
+
+/* Active Nav Links in Tally Orange */
+aside a[class*="bg-brand-50"],
+aside a[class*="text-brand-600"] {
+  background-color: #f59e0b !important; /* Tally selected amber */
+  color: #0f172a !important;
+  border-left: 4px solid #d97706 !important;
+}
+
+/* Top Navbar styling */
+header {
+  background-color: #091d35 !important;
+  color: #ffffff !important;
+  border-bottom: 2px solid #05101e !important;
+}
+
+header p {
+  color: #cbd5e1 !important;
+}
+
+/* Badges / priority indicators */
+span[class*="rounded-full"] {
+  border-radius: 0px !important;
+  padding: 2px 6px !important;
+  border: 1px solid currentColor !important;
+}
+
