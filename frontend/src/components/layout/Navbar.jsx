@@ -1,30 +1,73 @@
 import { LogOut, Menu } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
-import Button from "../common/Button";
+
+
+const menuItems = [
+  { key: "K", label: "Company" },
+  { key: "Y", label: "Data" },
+  { key: "Z", label: "Exchange" },
+  { key: "G", label: "Go To", active: true },
+  { key: "O", label: "Import" },
+  { key: "E", label: "Export" },
+  { key: "M", label: "E-mail" },
+  { key: "P", label: "Print" },
+  { key: "F1", label: "Help" },
+];
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
-  const roleLabel = {
-    masterAdmin: "Master Admin",
-    admin: "Admin",
-    user: "User",
-  }[user?.role] || "User";
+  const roleLabel = { masterAdmin: "Master Admin", admin: "Admin", user: "User" }[user?.role] || "User";
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4">
-      <Button 
-        variant="secondary" 
-        className="h-10 w-10 p-0 flex items-center justify-center rounded-xl md:hidden hover:bg-slate-50 active:scale-95 transition-all" 
-        onClick={onMenuClick} 
-        aria-label="Open menu"
+    <header className="erp-header">
+      {/* Sidebar Toggle */}
+      <button
+        onClick={onMenuClick}
+        className="btn btn-ghost btn-icon"
+        aria-label="Toggle sidebar"
+        style={{ color: "#b8d0e8", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}
       >
-        <Menu className="h-6 w-6 text-slate-800 shrink-0" />
-      </Button>
-      <div>
-        <p className="text-sm font-bold text-slate-900 capitalize tracking-tight">{user?.name || "ERP User"}</p>
-        <p className="text-[10px] font-semibold text-brand-600 uppercase tracking-[0.12em] mt-0.5">{roleLabel}</p>
+        <Menu size={15} />
+      </button>
+
+      {/* Tally-style keyboard shortcut items */}
+      <div className="header-menu-items">
+        {menuItems.map(item => (
+          <div
+            key={item.key}
+            className={`header-menu-item${item.active ? " active-menu" : ""}`}
+          >
+            <span className="key">{item.key}: </span>
+            <span>{item.label}</span>
+          </div>
+        ))}
       </div>
-      <Button variant="secondary" onClick={logout}><LogOut className="h-4 w-4" />Logout</Button>
+
+      {/* Company name center */}
+      <div className="header-company" style={{ flex: "0 0 auto" }}>
+        RBC Import &amp; Export
+      </div>
+
+      <div className="header-divider" />
+
+      {/* User info */}
+      <div className="header-user-info" style={{ flexShrink: 0 }}>
+        <div className="header-user-name">{user?.name || "ERP User"}</div>
+        <div className="header-user-role">{roleLabel}</div>
+      </div>
+
+      <div className="header-divider" />
+
+      {/* Logout */}
+      <button
+        onClick={logout}
+        className="btn btn-danger btn-sm"
+        style={{ flexShrink: 0, gap: "4px" }}
+      >
+        <LogOut size={12} />
+        Logout
+      </button>
+
     </header>
   );
 };

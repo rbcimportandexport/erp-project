@@ -154,6 +154,10 @@ const InvoiceMaker = () => {
   const [shipmentRows, setShipmentRows] = useState([]);
   const [containersList, setContainersList] = useState([]);
   const [saving, setSaving] = useState(false);
+
+  const [showManualDetails, setShowManualDetails] = useState(true);
+  const [showPdfPreview, setShowPdfPreview] = useState(true);
+
   const toast = useAlert();
 
   const matchedContainer = useMemo(() => {
@@ -862,8 +866,20 @@ const InvoiceMaker = () => {
       />
 
       <section className="no-print mb-5 rounded-md bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-slate-950">Manual Details</h2>
-        <div className="grid gap-4 md:grid-cols-3">
+
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-950">Manual Details</h2>
+          <Button
+            variant="secondary"
+            onClick={() => setShowManualDetails(!showManualDetails)}
+            className="text-xs py-1.5 px-3"
+          >
+            {showManualDetails ? "Hide Form" : "Show Form"}
+          </Button>
+        </div>
+        {showManualDetails && (
+          <div className="grid gap-4 md:grid-cols-3">
+
   <Select
             label="Document Type"
             value={form.documentType}
@@ -939,12 +955,9 @@ const InvoiceMaker = () => {
             onChange={(event) => updateForm("portOfChina", event.target.value)}
             options={portOfChinaOptions}
           />
-          <Select
-            label="Document Processed"
-            value={form.documentProcessed || ""}
-            onChange={(event) => updateForm("documentProcessed", event.target.value)}
-            options={documentProcessedOptions}
-          />
+
+          {/* Document Processed removed as requested */}
+
 
           {/* From Port Section */}
           <Select
@@ -993,6 +1006,9 @@ const InvoiceMaker = () => {
           <div className="hidden md:block" />
           <div className="hidden md:block" />
         </div>
+
+        )}
+
       </section>
 
       {shipmentRows.length > 0 && (
@@ -1186,9 +1202,16 @@ const InvoiceMaker = () => {
             <h2 className="text-lg font-semibold text-slate-950">PDF Style Preview</h2>
             <p className="text-sm text-slate-500">This preview is what will open when you click Convert to PDF.</p>
           </div>
-          <Button onClick={convertToPdf}><FileDown className="h-4 w-4" />Convert to PDF Preview</Button>
+
+          <div className="flex gap-2 items-center">
+            <Button variant="secondary" onClick={() => setShowPdfPreview(!showPdfPreview)}>
+              {showPdfPreview ? "Hide Preview" : "Show Preview"}
+            </Button>
+          </div>
         </div>
-        <div ref={documentRef} className="mx-auto w-[1120px] bg-white p-0 text-black">
+        {showPdfPreview && (
+          <div ref={documentRef} className="mx-auto w-[1120px] bg-white p-0 text-black">
+
           <table className="w-[1120px] table-fixed border-collapse border-2 border-black text-[10px] font-bold leading-[18px]">
             {form.documentType === "COMMERCIAL INVOICE" ? (
               <colgroup>
@@ -1352,6 +1375,9 @@ const InvoiceMaker = () => {
           <div className="relative h-36 bg-[linear-gradient(#e7edf3_1px,transparent_1px),linear-gradient(90deg,#e7edf3_1px,transparent_1px)] bg-[length:64px_22px]">
           </div>
         </div>
+
+        )}
+
       </section>
     </>
   );
