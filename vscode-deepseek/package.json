@@ -1,0 +1,34 @@
+{
+  "name": "deepseek-vscode",
+  "displayName": "DeepSeek",
+  "publisher": "your-name",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onCommand:deepseek.search",
+    "onCommand:deepseek.setApiKey"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "deepseek.search",
+        "title": "DeepSeek: Search"
+      },
+      {
+        "command": "deepseek.setApiKey",
+        "title": "DeepSeek: Set API Key"
+      }
+    ]
+  },
+  "scripts": {
+    "prepare": "",
+    "postinstall": ""
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}

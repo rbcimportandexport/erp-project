@@ -1,0 +1,168 @@
+const dayjs = require("dayjs");
+const Container = require("../models/Container");
+const Document = require("../models/Document");
+const Payment = require("../models/Payment");
+const { successResponse, errorResponse } = require("../utils/apiResponse");
+const { startOfToday, endOfToday, addDays } = require("../utils/dateHelpers");
+
+exports.stats = async (req, res) => {
+  try {
+    const todayStart = startOfToday();
+    const todayEnd = endOfToday();
+    const nextWeek = addDays(todayStart, 7);
+
+    const [boeContainers, cblContainers, ewayContainers, cplContainers] = await Promise.all([
+      Document.distinct("container", { docType: "BOE" }),
+      Document.distinct("container", { docType: "CBL" }),
+      Document.distinct("container", { docType: "EWayBill" }),
+      Document.distinct("container", { docType: "CPL" })
+    ]);
+
+    const [
+      totalContainers,
+      upcomingEta,
+      todaysTasks,
+      doneContainers,
+      pendingContainers,
+      linePaymentPending,
+      pendingBl,
+      pendingBoeCount,
+      pendingCblCount,
+      pendingEWayCount,
+      pendingCplCount
+    ] = await Promise.all([
+      Container.countDocuments(),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        etaDate: { $gte: todayStart, $lte: nextWeek }
+      }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        $or: [{ etaDate: { $gte: todayStart, $lte: todayEnd } }, { unloadingDate: { $gte: todayStart, $lte: todayEnd } }]
+      }),
+      Container.countDocuments({ status: { $in: ["done", "DONE"] } }),
+      Container.countDocuments({ status: { $nin: ["done", "DONE"] } }),
+      Payment.countDocuments({ pendingAmount: { $gt: 0 } }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        $or: [
+          { blNo: { $exists: false } },
+          { blNo: null },
+          { blNo: "" }
+        ]
+      }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        _id: { $nin: boeContainers }
+      }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        _id: { $nin: cblContainers }
+      }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        _id: { $nin: ewayContainers }
+      }),
+      Container.countDocuments({
+        status: { $nin: ["done", "DONE"] },
+        _id: { $nin: cplContainers }
+      }),
+    ]);
+
+    return successResponse(res, {
+      totalContainers,
+      upcomingEta,
+      todaysTasks,
+      doneContainers,
+      pendingContainers,
+      pendingBoe: pendingBoeCount,
+      pendingLinePayment: linePaymentPending,
+      pendingBl,
+      pendingCbl: pendingCblCount,
+      pendingEWayBill: pendingEWayCount,
+      pendingCpl: pendingCplCount,
+    }, "Dashboard stats fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch dashboard stats", 500);
+  }
+};
+
+exports.upcomingEta = async (req, res) => {
+  try {
+    const items = await Container.find({
+      status: { $nin: ["done", "DONE"] },
+      etaDate: { $gte: startOfToday(), $lte: dayjs().add(7, "day").endOf("day").toDate() }
+    })
+      .populate("importer exporter")
+      .sort("etaDate");
+    return successResponse(res, items, "Upcoming ETA fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch upcoming ETA", 500);
+  }
+};
+
+exports.pendingBoe = async (req, res) => {
+  try {
+    const withBoe = await Document.distinct("container", { docType: "BOE" });
+    const items = await Container.find({ 
+      status: { $nin: ["done", "DONE"] },
+      _id: { $nin: withBoe } 
+    }).populate("importer exporter").sort("etaDate");
+    return successResponse(res, items, "Pending BOE fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch pending BOE", 500);
+  }
+};
+
+exports.pendingCbl = async (req, res) => {
+  try {
+    const withCbl = await Document.distinct("container", { docType: "CBL" });
+    const items = await Container.find({ 
+      status: { $nin: ["done", "DONE"] },
+      _id: { $nin: withCbl } 
+    }).populate("importer exporter").sort("etaDate");
+    return successResponse(res, items, "Pending CBL fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch pending CBL", 500);
+  }
+};
+
+exports.pendingEWayBill = async (req, res) => {
+  try {
+    const withEWay = await Document.distinct("container", { docType: "EWayBill" });
+    const items = await Container.find({ 
+      status: { $nin: ["done", "DONE"] },
+      _id: { $nin: withEWay } 
+    }).populate("importer exporter").sort("etaDate");
+    return successResponse(res, items, "Pending E-Way Bill fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch pending E-Way Bill", 500);
+  }
+};
+
+exports.pendingCpl = async (req, res) => {
+  try {
+    const withCpl = await Document.distinct("container", { docType: "CPL" });
+    const items = await Container.find({ 
+      status: { $nin: ["done", "DONE"] },
+      _id: { $nin: withCpl } 
+    }).populate("importer exporter").sort("etaDate");
+    return successResponse(res, items, "Pending CPL fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch pending CPL", 500);
+  }
+};
+
+exports.pendingLinePayment = async (req, res) => {
+  try {
+    const items = await Payment.find({ pendingAmount: { $gt: 0 } })
+      .populate({
+        path: "container",
+        populate: { path: "importer" }
+      })
+      .sort("-updatedAt");
+    return successResponse(res, items, "Pending line payment fetched");
+  } catch (error) {
+    return errorResponse(res, error.message, "Unable to fetch pending line payment", 500);
+  }
+};
