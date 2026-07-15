@@ -1,5 +1,9 @@
 import { Link, NavLink } from "react-router-dom";
-import { Activity, Boxes, ChevronLeft, ChevronRight, FileText, Gauge, Landmark, Package, Receipt, Ship, Truck, UserCog, Users, Files, ClipboardList } from "lucide-react";
+import {
+  Activity, Boxes, ChevronLeft, ChevronRight, FileText, Gauge,
+  Landmark, Package, Receipt, Ship, Truck, UserCog, Users,
+  Files, ClipboardList,
+} from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
 const items = [
@@ -30,14 +34,6 @@ const adminItems = [
   { to: "/approvals", label: "Approvals", icon: ClipboardList },
 ];
 
-const NAV_LINK_STYLE =
-  "flex items-center gap-2 py-[6px] px-3 text-[12px] font-semibold border-l-[3px] border-transparent text-[#c5d8ec] no-underline";
-
-const NAV_LINK_ACTIVE =
-  "bg-[#f0b429] text-[#0d1117] border-l-[3px] border-[#c9900a] font-bold";
-
-const NAV_LINK_HOVER = "hover:bg-[#1a3a5c] hover:text-white hover:border-l-[3px] hover:border-[#4da3ff]";
-
 const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose }) => {
   const { user } = useAuth();
 
@@ -56,68 +52,86 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
     return false;
   });
 
+  const linkBase = {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "7px 12px",
+    fontSize: "12px",
+    fontWeight: "600",
+    color: "#c5d8ec",
+    textDecoration: "none",
+    borderLeft: "3px solid transparent",
+    cursor: "pointer",
+  };
+
   return (
     <>
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 md:hidden"
-          style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
           onClick={onMobileClose}
+          style={{
+            position: "fixed", inset: 0, zIndex: 40,
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+          className="md:hidden"
         />
       )}
 
-      {/* Sidebar */}
+      {/* ── SIDEBAR ── using sticky (NOT fixed) so flex layout works */}
       <aside
         style={{
           backgroundColor: "#0d2137",
           borderRight: "2px solid #071524",
-          width: "220px",
-          minWidth: "220px",
           display: "flex",
           flexDirection: "column",
-          position: "fixed",
-          top: 0,
-          bottom: 0,
-          left: 0,
-          zIndex: 40,
           overflowY: "auto",
           overflowX: "hidden",
-          transform: mobileOpen ? "translateX(0)" : undefined,
-          transition: "width 0.25s, transform 0.25s",
-        }}
-        className={`
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-          md:sticky md:top-0 md:h-screen md:translate-x-0 md:flex
-          ${collapsed ? "md:!w-0 md:!min-w-0 md:overflow-hidden md:border-r-0" : "md:!w-[220px] md:!min-w-[220px]"}
-          [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-        `}
-      >
-        {/* Logo / Brand Area */}
-        <div style={{
-          backgroundColor: "#071524",
-          borderBottom: "2px solid #030e18",
-          padding: "10px 14px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          minHeight: "44px",
           flexShrink: 0,
-        }}>
+          height: "100vh",
+          /* scrollbar hidden */
+          scrollbarWidth: "none",
+        }}
+        className={[
+          /* mobile: fixed slide-in */
+          "fixed inset-y-0 left-0 z-40",
+          mobileOpen ? "translate-x-0 w-[220px]" : "-translate-x-full w-[220px]",
+          /* desktop: sticky in flex row */
+          collapsed
+            ? "md:static md:translate-x-0 md:w-0 md:min-w-0 md:overflow-hidden md:border-r-0"
+            : "md:static md:translate-x-0 md:w-[220px] md:min-w-[220px]",
+          "transition-all duration-300",
+        ].join(" ")}
+      >
+        {/* ── Brand / Logo ── */}
+        <div
+          style={{
+            backgroundColor: "#071524",
+            borderBottom: "2px solid #030e18",
+            padding: "10px 14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            minHeight: "44px",
+            flexShrink: 0,
+          }}
+        >
           <Link
             to="/"
             onClick={onMobileClose}
             style={{
               fontWeight: "800",
-              fontSize: "15px",
+              fontSize: "14px",
               color: "#ffffff",
               textDecoration: "none",
-              letterSpacing: "0.06em",
               textTransform: "uppercase",
+              letterSpacing: "0.06em",
             }}
           >
             RBC <span style={{ color: "#f0b429" }}>ERP</span>
           </Link>
+
           <button
             onClick={onToggle}
             aria-label="Toggle sidebar"
@@ -126,19 +140,20 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
               background: "transparent",
               border: "1px solid #1a3a5c",
               color: "#c5d8ec",
-              padding: "2px 4px",
+              padding: "2px 5px",
               cursor: "pointer",
-              fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            {collapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
           </button>
         </div>
 
-        {/* Navigation */}
-        <nav style={{ flex: 1, paddingTop: "6px", paddingBottom: "12px" }}>
+        {/* ── Navigation ── */}
+        <nav style={{ flex: 1, paddingTop: "4px", paddingBottom: "16px" }}>
 
-          {/* Main Menu Items */}
+          {/* Main items */}
           {items.map((item) => {
             const Icon = item.icon;
             return (
@@ -147,29 +162,43 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
                 to={item.to}
                 end={item.end}
                 onClick={handleItemClick}
-                className={({ isActive }) =>
-                  `${NAV_LINK_STYLE} ${NAV_LINK_HOVER} ${isActive ? NAV_LINK_ACTIVE : ""}`
-                }
+                style={({ isActive }) => ({
+                  ...linkBase,
+                  backgroundColor: isActive ? "#f0b429" : "transparent",
+                  color: isActive ? "#0d1117" : "#c5d8ec",
+                  borderLeft: isActive ? "3px solid #c9900a" : "3px solid transparent",
+                  fontWeight: isActive ? "700" : "600",
+                })}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.className.includes("active")) {
+                    e.currentTarget.style.backgroundColor = "#1a3a5c";
+                    e.currentTarget.style.color = "#ffffff";
+                    e.currentTarget.style.borderLeft = "3px solid #4da3ff";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.getAttribute("aria-current")) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#c5d8ec";
+                    e.currentTarget.style.borderLeft = "3px solid transparent";
+                  }
+                }}
               >
                 <Icon size={13} style={{ flexShrink: 0 }} />
-                <span style={{ truncate: true }}>{item.label}</span>
+                <span style={{ overflow: "hidden", whiteSpace: "nowrap" }}>{item.label}</span>
               </NavLink>
             );
           })}
 
-          {/* MASTERS Section */}
+          {/* MASTERS label */}
           <div style={{
-            color: "#6b8eac",
-            fontSize: "10px",
-            fontWeight: "700",
-            padding: "10px 12px 3px",
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-            borderTop: "1px solid #1a3a5c",
-            marginTop: "6px",
+            color: "#6b8eac", fontSize: "10px", fontWeight: "700",
+            padding: "10px 12px 4px", textTransform: "uppercase",
+            letterSpacing: "0.07em", borderTop: "1px solid #1a3a5c", marginTop: "6px",
           }}>
             Masters
           </div>
+
           {masterItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -177,28 +206,37 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
                 key={item.to}
                 to={item.to}
                 onClick={handleItemClick}
-                className={({ isActive }) =>
-                  `${NAV_LINK_STYLE} ${NAV_LINK_HOVER} ${isActive ? NAV_LINK_ACTIVE : ""}`
-                }
+                style={({ isActive }) => ({
+                  ...linkBase,
+                  backgroundColor: isActive ? "#f0b429" : "transparent",
+                  color: isActive ? "#0d1117" : "#c5d8ec",
+                  borderLeft: isActive ? "3px solid #c9900a" : "3px solid transparent",
+                  fontWeight: isActive ? "700" : "600",
+                })}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#1a3a5c";
+                  e.currentTarget.style.color = "#ffffff";
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.getAttribute("aria-current")) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#c5d8ec";
+                  }
+                }}
               >
                 <Icon size={13} style={{ flexShrink: 0 }} />
-                <span>{item.label}</span>
+                <span style={{ overflow: "hidden", whiteSpace: "nowrap" }}>{item.label}</span>
               </NavLink>
             );
           })}
 
-          {/* ADMIN Section */}
+          {/* ADMIN label + items */}
           {visibleAdminItems.length > 0 && (
             <>
               <div style={{
-                color: "#6b8eac",
-                fontSize: "10px",
-                fontWeight: "700",
-                padding: "10px 12px 3px",
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                borderTop: "1px solid #1a3a5c",
-                marginTop: "6px",
+                color: "#6b8eac", fontSize: "10px", fontWeight: "700",
+                padding: "10px 12px 4px", textTransform: "uppercase",
+                letterSpacing: "0.07em", borderTop: "1px solid #1a3a5c", marginTop: "6px",
               }}>
                 Admin
               </div>
@@ -209,12 +247,26 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
                     key={item.to}
                     to={item.to}
                     onClick={handleItemClick}
-                    className={({ isActive }) =>
-                      `${NAV_LINK_STYLE} ${NAV_LINK_HOVER} ${isActive ? NAV_LINK_ACTIVE : ""}`
-                    }
+                    style={({ isActive }) => ({
+                      ...linkBase,
+                      backgroundColor: isActive ? "#f0b429" : "transparent",
+                      color: isActive ? "#0d1117" : "#c5d8ec",
+                      borderLeft: isActive ? "3px solid #c9900a" : "3px solid transparent",
+                      fontWeight: isActive ? "700" : "600",
+                    })}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#1a3a5c";
+                      e.currentTarget.style.color = "#ffffff";
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!e.currentTarget.getAttribute("aria-current")) {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#c5d8ec";
+                      }
+                    }}
                   >
                     <Icon size={13} style={{ flexShrink: 0 }} />
-                    <span>{item.label}</span>
+                    <span style={{ overflow: "hidden", whiteSpace: "nowrap" }}>{item.label}</span>
                   </NavLink>
                 );
               })}
