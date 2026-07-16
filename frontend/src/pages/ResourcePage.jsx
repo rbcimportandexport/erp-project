@@ -10,6 +10,7 @@ import Modal from "../components/common/Modal";
 import Pagination from "../components/common/Pagination";
 import SearchBar from "../components/common/SearchBar";
 import Table from "../components/common/Table";
+import FormulaBar from "../components/common/FormulaBar";
 import TopBar from "../components/layout/TopBar";
 import { useAlert } from "../hooks/useAlert";
 import { useDebounce } from "../hooks/useDebounce";
@@ -29,9 +30,10 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
-  const [form, setForm] = useState({});
   const debouncedSearch = useDebounce(search);
+  const [activeCell, setActiveCell] = useState(null);
 
+  const [form, setForm] = useState({});
   const hasEditPermission = canEdit(user?.role);
   const hasDeletePermission = canDelete(user?.role);
 
@@ -122,6 +124,33 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
     }
   };
 
+  const handleInlineSave = async (record, fieldName, newValue) => {
+    try {
+      const id = record._id || record.id;
+      const updatedPayload = {
+        ...record,
+        [fieldName]: newValue === "" ? null : newValue,
+      };
+
+      if (updatedPayload.importer && typeof updatedPayload.importer === "object") {
+        updatedPayload.importer = updatedPayload.importer._id || updatedPayload.importer.id;
+      }
+      if (updatedPayload.exporter && typeof updatedPayload.exporter === "object") {
+        updatedPayload.exporter = updatedPayload.exporter._id || updatedPayload.exporter.id;
+      }
+      if (updatedPayload.hsnCode && typeof updatedPayload.hsnCode === "object") {
+        updatedPayload.hsnCode = updatedPayload.hsnCode._id || updatedPayload.hsnCode.id;
+      }
+
+      await api.update(id, updatedPayload);
+      alert.success(`Saved successfully`);
+      refetch();
+    } catch (error) {
+      const rawMessage = error.response?.data?.error || error.response?.data?.message || error.message || "Failed to save inline edit";
+      alert.error(rawMessage);
+      throw error;
+    }
+  };
   const remove = async () => {
     try {
       await api.remove(confirmId);
@@ -163,7 +192,20 @@ const ResourcePage = ({ title, api, fields, columns, getRowClassName, openEditId
         <Loader />
       ) : (
         <div className="animate-fade-in-up animation-delay-75">
-          <Table columns={tableColumns} data={data?.items || []} getRowClassName={getRowClassName} meta={{ openEdit: openEditor }} variant={tableVariant} />
+          <FormulaBar activeCell={activeCell} onSave={activeCell?.onSave} />
+          <Table 
+            columns={tableColumns} 
+            data={data?.items || []} 
+            getRowClassName={getRowClassName} 
+            meta={{ 
+              openEdit: openEditor, 
+              fields, 
+              onInlineSave: handleInlineSave, 
+              activeCell, 
+              setActiveCell 
+            }} 
+            variant={tableVariant} 
+          />
         </div>
       )}
       <Pagination

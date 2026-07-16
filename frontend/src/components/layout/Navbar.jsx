@@ -1,7 +1,6 @@
 import { LogOut, Menu } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
-
 const menuItems = [
   { key: "K", label: "Company" },
   { key: "Y", label: "Data" },
@@ -25,19 +24,19 @@ const Navbar = ({ onMenuClick }) => {
         onClick={onMenuClick}
         className="btn btn-ghost btn-icon"
         aria-label="Toggle sidebar"
-        style={{ color: "#b8d0e8", border: "1px solid rgba(255,255,255,0.15)", flexShrink: 0 }}
+        style={{ color: "#475569", border: "1px solid #cbd5e1", flexShrink: 0 }}
       >
-        <Menu size={15} />
+        <Menu size={16} />
       </button>
 
-      {/* Tally-style keyboard shortcut items */}
+      {/* Keyboard shortcut items */}
       <div className="header-menu-items">
         {menuItems.map(item => (
           <div
             key={item.key}
             className={`header-menu-item${item.active ? " active-menu" : ""}`}
           >
-            <span className="key">{item.key}: </span>
+            <span className="key">{item.key}</span>
             <span>{item.label}</span>
           </div>
         ))}
@@ -64,10 +63,9 @@ const Navbar = ({ onMenuClick }) => {
         className="btn btn-danger btn-sm"
         style={{ flexShrink: 0, gap: "4px" }}
       >
-        <LogOut size={12} />
+        <LogOut size={13} />
         Logout
       </button>
-
     </header>
   );
 };

@@ -96,10 +96,10 @@ const Sidebar = ({ collapsed, onToggle, onCollapse, mobileOpen, onMobileClose })
           </Link>
           <button
             onClick={onToggle}
-            className="hidden md:flex"
-            style={{ background:"transparent", border:"none", color:"rgba(255,255,255,0.4)", cursor:"pointer", padding:"4px", display:"flex", alignItems:"center" }}
+            className="hidden md:flex hover:text-white transition-colors"
+            style={{ background:"transparent", border:"none", color:"rgba(255,255,255,0.5)", cursor:"pointer", padding:"6px", display:"flex", alignItems:"center" }}
           >
-            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
 
