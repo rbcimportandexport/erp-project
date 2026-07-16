@@ -2,17 +2,18 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Menu, HelpCircle, Building, Database, ArrowUpDown, Search, FileUp, FileDown, Mail } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+import { useAlert } from "../../hooks/useAlert";
 import Modal from "../common/Modal";
 
 const menuItems = [
-  { key: "K", label: "Company", shortcutText: "Alt + K" },
-  { key: "Y", label: "Data", shortcutText: "Alt + Y" },
-  { key: "Z", label: "Exchange", shortcutText: "Alt + Z" },
-  { key: "G", label: "Go To", shortcutText: "Alt + G", active: true },
-  { key: "O", label: "Import", shortcutText: "Alt + O" },
-  { key: "E", label: "Export", shortcutText: "Alt + E" },
-  { key: "M", label: "E-mail", shortcutText: "Alt + M" },
-  { key: "P", label: "Print", shortcutText: "Alt + P" },
+  { key: "K", label: "Company", shortcutText: "K or Alt + K" },
+  { key: "Y", label: "Data", shortcutText: "Y or Alt + Y" },
+  { key: "Z", label: "Exchange", shortcutText: "Z or Alt + Z" },
+  { key: "G", label: "Go To", shortcutText: "G or Alt + G", active: true },
+  { key: "O", label: "Import", shortcutText: "O or Alt + O" },
+  { key: "E", label: "Export", shortcutText: "E or Alt + E" },
+  { key: "M", label: "E-mail", shortcutText: "M or Alt + M" },
+  { key: "P", label: "Print", shortcutText: "P or Alt + P" },
   { key: "F1", label: "Help", shortcutText: "F1" },
 ];
 
@@ -41,6 +42,7 @@ const navigationPaths = [
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const alert = useAlert();
   const roleLabel = { masterAdmin: "Master Admin", admin: "Admin", user: "User" }[user?.role] || "User";
 
   // Modals state
@@ -69,7 +71,12 @@ const Navbar = ({ onMenuClick }) => {
     const handleKeyDown = (e) => {
       // Don't trigger if user is typing in form inputs (unless it's the Go To navigation modal itself)
       const activeEl = document.activeElement;
-      const isTyping = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA" || activeEl.tagName === "SELECT");
+      const isTyping = activeEl && (
+        activeEl.tagName === "INPUT" || 
+        activeEl.tagName === "TEXTAREA" || 
+        activeEl.tagName === "SELECT" ||
+        activeEl.isContentEditable
+      );
       
       // Allow F1 key anywhere (Help modal)
       if (e.key === "F1") {
@@ -78,11 +85,12 @@ const Navbar = ({ onMenuClick }) => {
         return;
       }
 
-      // Check Alt shortcut bindings
-      if (e.altKey) {
-        const key = e.key.toUpperCase();
-        const matched = menuItems.find(item => item.key === key);
-        if (matched) {
+      const key = e.key.toUpperCase();
+      const matched = menuItems.find(item => item.key === key);
+      
+      if (matched) {
+        // Trigger if Alt is pressed (anywhere), OR if not typing in any input (direct keypress)
+        if (e.altKey || !isTyping) {
           e.preventDefault();
           triggerMenuAction(key);
         }
@@ -156,6 +164,7 @@ const Navbar = ({ onMenuClick }) => {
               onClick={() => triggerMenuAction(item.key)}
               className={`header-menu-item${item.active && !activeModal ? " active-menu" : ""}${activeModal === item.key ? " active-menu" : ""}`}
               title={item.shortcutText}
+              style={{ cursor: "pointer" }}
             >
               <span className="key" style={{ textDecoration: "underline" }}>{item.key}</span>
               <span>: {item.label}</span>
@@ -195,7 +204,7 @@ const Navbar = ({ onMenuClick }) => {
       <Modal
         open={activeModal === "K"}
         title="Company Settings & Profile"
-        subtitle="Shortcut: Alt + K"
+        subtitle="Shortcut: Alt + K or K"
         onClose={() => setActiveModal(null)}
       >
         <div className="space-y-4">
@@ -227,7 +236,7 @@ const Navbar = ({ onMenuClick }) => {
       <Modal
         open={activeModal === "Y"}
         title="Database Connections & Logs"
-        subtitle="Shortcut: Alt + Y"
+        subtitle="Shortcut: Alt + Y or Y"
         onClose={() => setActiveModal(null)}
       >
         <div className="space-y-4">
@@ -253,7 +262,7 @@ const Navbar = ({ onMenuClick }) => {
             </div>
           </div>
           <div className="pt-2">
-            <button className="btn btn-primary w-full gap-2" onClick={() => alert("Supabase sync successful!")}>
+            <button className="btn btn-primary w-full gap-2" onClick={() => alert.success("Supabase database sync completed!")}>
               Force Run DB Integrity Sync
             </button>
           </div>
@@ -264,7 +273,7 @@ const Navbar = ({ onMenuClick }) => {
       <Modal
         open={activeModal === "Z"}
         title="Currency Rate Converter"
-        subtitle="Shortcut: Alt + Z"
+        subtitle="Shortcut: Alt + Z or Z"
         onClose={() => setActiveModal(null)}
       >
         <div className="space-y-4">
@@ -328,7 +337,7 @@ const Navbar = ({ onMenuClick }) => {
       <Modal
         open={activeModal === "G"}
         title="Go To Quick Navigator"
-        subtitle="Shortcut: Alt + G"
+        subtitle="Shortcut: Alt + G or G"
         onClose={() => setActiveModal(null)}
       >
         <div className="space-y-4">
@@ -376,7 +385,7 @@ const Navbar = ({ onMenuClick }) => {
       <Modal
         open={activeModal === "O"}
         title="Batch File Import Wizard"
-        subtitle="Shortcut: Alt + O"
+        subtitle="Shortcut: Alt + O or O"
         onClose={() => setActiveModal(null)}
       >
         <div className="space-y-4">
@@ -395,21 +404,21 @@ const Navbar = ({ onMenuClick }) => {
       <Modal
         open={activeModal === "E"}
         title="System Data Export Utility"
-        subtitle="Shortcut: Alt + E"
+        subtitle="Shortcut: Alt + E or E"
         onClose={() => setActiveModal(null)}
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <button className="btn btn-secondary gap-2" onClick={() => alert("Container Logs exported!")}>
+            <button className="btn btn-secondary gap-2" onClick={() => alert.success("Container Logs exported successfully!")}>
               <FileDown className="h-4 w-4" /> Container Logs (.xlsx)
             </button>
-            <button className="btn btn-secondary gap-2" onClick={() => alert("Payments database exported!")}>
+            <button className="btn btn-secondary gap-2" onClick={() => alert.success("Payments ledger exported successfully!")}>
               <FileDown className="h-4 w-4" /> Payments ledger (.xlsx)
             </button>
-            <button className="btn btn-secondary gap-2" onClick={() => alert("Exporters Master exported!")}>
+            <button className="btn btn-secondary gap-2" onClick={() => alert.success("Exporters Master list exported!")}>
               <FileDown className="h-4 w-4" /> Exporters Master (.csv)
             </button>
-            <button className="btn btn-secondary gap-2" onClick={() => alert("Importers Master exported!")}>
+            <button className="btn btn-secondary gap-2" onClick={() => alert.success("Importers Master list exported!")}>
               <FileDown className="h-4 w-4" /> Importers Master (.csv)
             </button>
           </div>
@@ -420,7 +429,7 @@ const Navbar = ({ onMenuClick }) => {
       <Modal
         open={activeModal === "M"}
         title="Quick Email Composer"
-        subtitle="Shortcut: Alt + M"
+        subtitle="Shortcut: Alt + M or M"
         onClose={() => setActiveModal(null)}
       >
         <div className="space-y-3">
@@ -436,7 +445,7 @@ const Navbar = ({ onMenuClick }) => {
             <label className="text-[10px] font-bold text-slate-400 uppercase">Message</label>
             <textarea placeholder="Write message here..." className="form-input h-20 py-2 resize-none" />
           </div>
-          <button className="btn btn-primary w-full gap-2 mt-2" onClick={() => { setActiveModal(null); alert("Email sent successfully!"); }}>
+          <button className="btn btn-primary w-full gap-2 mt-2" onClick={() => { setActiveModal(null); alert.success("Email sent successfully!"); }}>
             <Mail className="h-4 w-4" /> Send Email
           </button>
         </div>
@@ -462,35 +471,35 @@ const Navbar = ({ onMenuClick }) => {
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50">
                 <span className="font-semibold text-slate-600">Company Settings</span>
-                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Alt + K</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">K / Alt + K</kbd>
               </div>
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50">
                 <span className="font-semibold text-slate-600">DB Status & Pools</span>
-                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Alt + Y</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Y / Alt + Y</kbd>
               </div>
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50">
                 <span className="font-semibold text-slate-600">Forex Converter</span>
-                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Alt + Z</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Z / Alt + Z</kbd>
               </div>
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50">
                 <span className="font-semibold text-slate-600">Quick Go To Search</span>
-                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Alt + G</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">G / Alt + G</kbd>
               </div>
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50">
                 <span className="font-semibold text-slate-600">Batch File Import</span>
-                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Alt + O</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">O / Alt + O</kbd>
               </div>
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50">
                 <span className="font-semibold text-slate-600">System Logs Export</span>
-                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Alt + E</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">E / Alt + E</kbd>
               </div>
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50">
                 <span className="font-semibold text-slate-600">Email Composer</span>
-                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Alt + M</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">M / Alt + M</kbd>
               </div>
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50">
                 <span className="font-semibold text-slate-600">Print Current Page</span>
-                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">Alt + P</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-bold shadow-sm">P / Alt + P</kbd>
               </div>
               <div className="flex justify-between p-2 border rounded-lg bg-slate-50 col-span-2">
                 <span className="font-semibold text-slate-600">Toggle Help Directory</span>
